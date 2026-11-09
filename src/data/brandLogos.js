@@ -70,6 +70,21 @@ const ALIASES = {
   'rieseundmuller': 'riese-muller',
   'birelart': 'birel',
   'dedion': 'dedionbouton',
+  'possl': 'possl',
+  'poessl': 'possl',
+  'pössl': 'possl',
+  'niesmannbischoff': 'niesmann-bischoff',
+  'niesmann': 'niesmann-bischoff',
+  'rollerteam': 'roller-team',
+  'braviamobil': 'bravia',
+  'robetamobil': 'robeta',
+  'tournemobil': 'tourne',
+  'megamobil': 'mega-mobil',
+  'thormotorcoach': 'thor',
+  'camplet': 'camp-let',
+  'pleasureway': 'pleasure-way',
+  'granddesign': 'grand-design',
+  'forestriver': 'forest-river',
   'moskvic': 'moskvich'
 };
 

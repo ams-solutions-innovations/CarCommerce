@@ -1,0 +1,763 @@
+[
+  {
+    "file": "066a949bc40bb4da4ac61cfbaf7c6a78.svg",
+    "sha256": "2bbd310bd8a72808a5aa7762b16910362e086e63d107ace30835b3c890fa9131",
+    "bytes": 3419,
+    "references": [
+      "01",
+      "02",
+      "05",
+      "09",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "0d7f4855e2451cfbab53daaca2399c43.svg",
+    "sha256": "291e250ce1f6427dad296bf84c816cd55a547170efb84a3f3e5190a23cdce8f8",
+    "bytes": 465,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "05",
+      "06",
+      "07",
+      "32",
+      "38",
+      "39",
+      "63",
+      "64",
+      "65"
+    ]
+  },
+  {
+    "file": "17299e319f20136dbb0fd06f78cef2c2.svg",
+    "sha256": "abc9aa20f342f5370a2c4d69308e2d20efd65ff8cda5042fd0d3b66b694a9f71",
+    "bytes": 7007,
+    "references": [
+      "10",
+      "38"
+    ]
+  },
+  {
+    "file": "19b2696b50d78da5a5d7dfa453e67ce0.webp",
+    "sha256": "326d020cb18f4adc3df9620cdf1b6a9887ce6a7f662376b19d4c477ae56607d4",
+    "bytes": 35334,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "05",
+      "06",
+      "16",
+      "20",
+      "21",
+      "22",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "29",
+      "30",
+      "31",
+      "32",
+      "33",
+      "38",
+      "40",
+      "50",
+      "53",
+      "54",
+      "55",
+      "59",
+      "60",
+      "61",
+      "62",
+      "65",
+      "66",
+      "67"
+    ]
+  },
+  {
+    "file": "26e89a111558cbd65b679d10fd86636c.svg",
+    "sha256": "e4085171d313f1522d3cae15c967a5d1975c096ac91fbbfea369dc2af895f1bd",
+    "bytes": 8099,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "2aa77b38835e0b66283e034412bbe85d.svg",
+    "sha256": "d64cb295154231a8d78968871a6e364482bd2240fcef44dc924b2878fceb610b",
+    "bytes": 3597,
+    "references": [
+      "01",
+      "09",
+      "12",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "2df609dc363155d6fff3e0b7b430e8f8.jpg",
+    "sha256": "775ce43fdfeac168a80db6e319d7816c8546d69cd0fbb7cd2f50d582a0fcab36",
+    "bytes": 178276,
+    "references": [
+      "05"
+    ]
+  },
+  {
+    "file": "33fcc153d1461b1858fc0ed2282bfe1d.jpg",
+    "sha256": "e1ae302cf35c5074c12b12d7540fbd434719795dd08d7dc4371aea56840bdc46",
+    "bytes": 104380,
+    "references": [
+      "01",
+      "04",
+      "05",
+      "30",
+      "32",
+      "33",
+      "34",
+      "40",
+      "53",
+      "54",
+      "55",
+      "60",
+      "65",
+      "66"
+    ]
+  },
+  {
+    "file": "36f553c85be290121a3322634110dc19.png",
+    "sha256": "b089703d24b8dcadc8488b238b83a43b4b5b13ddff23c98efcea37c8b40c9a41",
+    "bytes": 74879,
+    "references": [
+      "01",
+      "04",
+      "05",
+      "07",
+      "32",
+      "33"
+    ]
+  },
+  {
+    "file": "3b88a266c9b32dd73fb8fc5bb3411205.svg",
+    "sha256": "121e37bef04885d6de518bd189f788973d0f53c38db42ec9a688797e1f35fd5b",
+    "bytes": 7456,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "4421a72aec217c6cd628c7d54e0024cf.svg",
+    "sha256": "168c0396e24911f76fb7eca8bffacba52415909508f6c7ce03c55984bab9e4d4",
+    "bytes": 1680,
+    "references": [
+      "02",
+      "03",
+      "07",
+      "09",
+      "38",
+      "64"
+    ]
+  },
+  {
+    "file": "45527f0a5c14414fcd8e75ff183204db.jpg",
+    "sha256": "c72e2869b3c980f6cfc6fc40c765848fea5883c3eeb61efc23f0ebb466033e97",
+    "bytes": 301354,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "24",
+      "25",
+      "26",
+      "29",
+      "30",
+      "32",
+      "33",
+      "34",
+      "40",
+      "53",
+      "54",
+      "55",
+      "59",
+      "60",
+      "65",
+      "66",
+      "67"
+    ]
+  },
+  {
+    "file": "52c194ca96b925de06dff54634acd30a.svg",
+    "sha256": "b5dde8b31c8aba45f872b2a76723f0a9cb3d8a86f2cea550998213895d0a9793",
+    "bytes": 12217,
+    "references": [
+      "10",
+      "38"
+    ]
+  },
+  {
+    "file": "5939d5787677d064b674911faec8f4db.svg",
+    "sha256": "a3f99058faecd44d49d33bca956c692e26e2d99b10f61148db45335207ba29b0",
+    "bytes": 15632,
+    "references": [
+      "09",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "5bec97e5eb9a95797547ceb453d8740e.svg",
+    "sha256": "70f89e0f2536c9dd57bf98eb503bf5018edb96592bb471635eaab6f87aa5fc56",
+    "bytes": 26519,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "6945c714b6dfd0cf4ddca7386ceaf237.svg",
+    "sha256": "90cf66b9559674de00d96df0be601c40ed4754254e6c48dba9949a1aad423297",
+    "bytes": 2150,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "05",
+      "06",
+      "07",
+      "13",
+      "32",
+      "38",
+      "47",
+      "63",
+      "64",
+      "65"
+    ]
+  },
+  {
+    "file": "69ddafb159e04009fb0057af0f6ab012.svg",
+    "sha256": "dee7d4e2bc9933fdc2943ace08bf417efcc807fa9a9388f1d3865f0f7daee6f6",
+    "bytes": 3584,
+    "references": [
+      "01",
+      "05",
+      "09",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "6dd46d6eca7a2510f9314c2239db6d4f.svg",
+    "sha256": "49e58b05a21d94fde9b48534b6053254bd645c7199c57b9ff670aa1edaea2c6f",
+    "bytes": 5506,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "756e3f301221a44fb81c321926abf1f8.svg",
+    "sha256": "11962f6999a4a39c3061dd9ff081a5e1b87fd8ff87be0ca1448555c098cef350",
+    "bytes": 567,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "05",
+      "06",
+      "07",
+      "09",
+      "11",
+      "13",
+      "32",
+      "38",
+      "39",
+      "64",
+      "65"
+    ]
+  },
+  {
+    "file": "7c8b176a88cb56bf412d4f3b25d04c27.svg",
+    "sha256": "f8593fbb9a35608e0918724ae319007a991a442ba122c2f48d76b28909e76604",
+    "bytes": 1624,
+    "references": [
+      "01",
+      "05",
+      "06",
+      "07",
+      "10",
+      "13",
+      "38",
+      "47",
+      "64"
+    ]
+  },
+  {
+    "file": "80671864548310e5dcaa14fd1d01e058.svg",
+    "sha256": "cf7334ebc69438ee56ba6ad659841af749f4333fa9622c5e244163ff65e37483",
+    "bytes": 12109,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "8daa3bc685d18a25553337c0ead038b3.svg",
+    "sha256": "8265d8102884be29f8441acc724c05f38ef66e785096d1ac8aa2b4ab4f01b21a",
+    "bytes": 9252,
+    "references": [
+      "10",
+      "12",
+      "38"
+    ]
+  },
+  {
+    "file": "915082cca7b54e2bcce753b61333a212.svg",
+    "sha256": "0c8962316ae5aba9d3d70d14c46a1dbe9e9eb08d053fddeb78378e5ad6ec5e43",
+    "bytes": 1013,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "06",
+      "07",
+      "09",
+      "11",
+      "13",
+      "32",
+      "38",
+      "39",
+      "57",
+      "61",
+      "63",
+      "64",
+      "65"
+    ]
+  },
+  {
+    "file": "96365d3bb29442f30996a79837bc1b78.jpg",
+    "sha256": "44569a7652a8acb9bcf014aed43cea4694a047883cd04eafe3e9cf27eb3a92bd",
+    "bytes": 238273,
+    "references": [
+      "05"
+    ]
+  },
+  {
+    "file": "9ce576494b3d76568df65f7beeb3c9e2.svg",
+    "sha256": "b1697e696e45756c0b0e7596806f7f7dc5a72e29913494eb2c66613b6016aa50",
+    "bytes": 4546,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "09",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "a1816b25df1cfe590707e0fe79277c17.svg",
+    "sha256": "294de242f922da90ef752edc2701c50f32a5dc959040eefe50801ba2ef48f758",
+    "bytes": 2400,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "a2007272c1633d9ea61164607b88d5de.svg",
+    "sha256": "023f614f3a4e59996b88f29c9b8b460fe1c0c8847749324bd91371327d257fcb",
+    "bytes": 4188,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "05",
+      "06",
+      "09",
+      "11",
+      "12",
+      "13",
+      "37",
+      "38",
+      "57",
+      "61"
+    ]
+  },
+  {
+    "file": "a4fa68f9c8aae38668d558b0b4812ae3.svg",
+    "sha256": "98507aaa7fdd35d3b4fcde62ea56e15b1cafc6380b12772f304fd1ff619d4d2e",
+    "bytes": 5652,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "a54fb93a94c117743c89e0d1f762f7ba.svg",
+    "sha256": "65f5f52ae512049050286b5c154cba2cb44059f3ba1c770927a47b5e112ed2b5",
+    "bytes": 2280,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "a7a22b55201368869702d79fce33956d.jpg",
+    "sha256": "636b9e46a35e93445eede475029e757e90e6a6b0d41ecbd2dd4aaf87811bf2b0",
+    "bytes": 191498,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "25",
+      "29",
+      "30",
+      "32",
+      "38",
+      "53",
+      "54",
+      "55",
+      "60",
+      "65",
+      "66"
+    ]
+  },
+  {
+    "file": "abcb78f9f651d44572536bbf0f0d5c76.svg",
+    "sha256": "6de84919d1b43c3fc0d2deef6b00fdee0498b97dc689cac7d7cb217a8a4eb63b",
+    "bytes": 8122,
+    "references": [
+      "10",
+      "38"
+    ]
+  },
+  {
+    "file": "ae296428a03abd10df12927ed150ad91.svg",
+    "sha256": "5673db17a79a2e910331b7bd4b681ea53091567edf477b8f3d9aa1b1f0f1d24b",
+    "bytes": 120488,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "ae8464d5416a6377bb37eefff9cd255e.svg",
+    "sha256": "c2c3e7d522a89f9b8ab93c597e349458454e73d3a4931955fbd04eae8dc7d4bd",
+    "bytes": 25748,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "af390f3386942f81ac95adec82480325.svg",
+    "sha256": "f1fb6fcc9f51faeac44cd6f841bb42b73bffe0ad5a8dad29a0ad46ac8b1eea2a",
+    "bytes": 1152,
+    "references": [
+      "01",
+      "05",
+      "06",
+      "07",
+      "09",
+      "13",
+      "32",
+      "38",
+      "47",
+      "64"
+    ]
+  },
+  {
+    "file": "afdd19b8da53197f7c869e3c2ccc1d81.svg",
+    "sha256": "b7bd0572d78c98b0da7955a6c72c61801000601cdb3a856cb963238f484c0be6",
+    "bytes": 4077,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "b27642fd338841fdb35c6a672c5be70f.svg",
+    "sha256": "0c6100b97badbdd9461f630f05729cf44c7ab2e77f65fdb44ff133db757c3c75",
+    "bytes": 6923,
+    "references": [
+      "01",
+      "02",
+      "05",
+      "09",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "b2ce76dc5ccbafc1ad8a35b29d22d0e9.svg",
+    "sha256": "307993bcfc4bf89c8fcca9438a2fd928e7f74eb495518755a2c93fea5cd69e80",
+    "bytes": 1114,
+    "references": [
+      "01",
+      "05",
+      "07",
+      "13",
+      "38",
+      "47",
+      "64"
+    ]
+  },
+  {
+    "file": "b49ac8db89e3166c448617abd7a553fe.svg",
+    "sha256": "2d6529f867ba661cf2a9bc2d014448f922455180d4a0206a43eccbd28b6e71b3",
+    "bytes": 20139,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "08",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "32",
+      "33",
+      "34",
+      "35",
+      "36",
+      "37",
+      "38",
+      "39",
+      "40",
+      "41",
+      "42",
+      "43",
+      "44",
+      "45",
+      "49",
+      "50",
+      "51",
+      "52",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64",
+      "65",
+      "66",
+      "67",
+      "68",
+      "69",
+      "70",
+      "71",
+      "72",
+      "73",
+      "74"
+    ]
+  },
+  {
+    "file": "b4d97723d5dd99e982df1d944dbdddea.svg",
+    "sha256": "308ffe5856b89a47f3a0dd4f9519d782e89758b6822a88bf7dc7a10d34a65192",
+    "bytes": 14348,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "b4f1fa7ca8ba8e6b8869621618805a9d.svg",
+    "sha256": "99dd549d044c11303b90fc342edb5039bd8094a9677b3802047f00736604a7b1",
+    "bytes": 4199,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "c4a5bd42aeffa20bb5aeddeee592cba4.svg",
+    "sha256": "05603b8b6f866eb3dbf8dd097612d8e37c81299ff8abe87a912eb03033acce3f",
+    "bytes": 8867,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "c6b014c62bbd48b58859bbe0d6e9a01a.svg",
+    "sha256": "9d19f51bd93be7436461cea4b38666ea6e127d991999381aebabd0dd922bd81f",
+    "bytes": 1784,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "d51020f4016c796e513ff8ff8a5401b4.svg",
+    "sha256": "bc6d47ef358c79010131034e2ffcaa4d9bd2adc9d443a7099605009f843c0d6a",
+    "bytes": 2052,
+    "references": [
+      "01",
+      "02",
+      "03",
+      "04",
+      "05",
+      "06",
+      "07",
+      "09",
+      "10",
+      "11",
+      "12",
+      "13",
+      "14",
+      "15",
+      "16",
+      "17",
+      "18",
+      "19",
+      "20",
+      "21",
+      "22",
+      "23",
+      "24",
+      "25",
+      "26",
+      "27",
+      "28",
+      "32",
+      "33",
+      "34",
+      "40",
+      "53",
+      "54",
+      "55",
+      "56",
+      "57",
+      "58",
+      "59",
+      "60",
+      "61",
+      "62",
+      "63",
+      "64",
+      "65",
+      "66",
+      "67",
+      "68",
+      "69",
+      "70",
+      "71",
+      "72",
+      "73",
+      "74"
+    ]
+  },
+  {
+    "file": "d60ecef922ef29d4ccca79e8902c2c75.svg",
+    "sha256": "d47789214e5ce0ce73542d8f104b7ac3ed862a7bdf4609a7cc366ae3eebf3246",
+    "bytes": 5005,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "dac15b24c64a4c96063768274c2416d1.svg",
+    "sha256": "9537163b20f2a026657bab2b011c2c811597150f52bebcaee3689195b96e63c4",
+    "bytes": 3696,
+    "references": [
+      "01",
+      "02",
+      "05",
+      "09",
+      "11",
+      "12",
+      "13",
+      "38"
+    ]
+  },
+  {
+    "file": "e010ae310cbe3f4a11cf04ad1155cd7c.svg",
+    "sha256": "23e3aaed0e343abbc796edf635a9bec128253985af8e53ebe231cab519d4f19b",
+    "bytes": 5736,
+    "references": [
+      "10"
+    ]
+  },
+  {
+    "file": "ee77c186c4d868edc8887422a733aab0.jpg",
+    "sha256": "193550137702b6aae4906516207bb11154baee622c0d4a176155ac2740b31d5c",
+    "bytes": 44655,
+    "references": [
+      "02",
+      "03",
+      "05",
+      "06",
+      "24",
+      "25",
+      "30",
+      "32",
+      "33",
+      "35",
+      "38",
+      "40",
+      "53",
+      "54",
+      "55",
+      "59",
+      "65",
+      "66"
+    ]
+  },
+  {
+    "file": "f651b91c8ef360202df783be6b03eeb5.svg",
+    "sha256": "76c5c2b5333aa1740c17217c0b98d380d65cb33be27e5ecb33369e81cb025ee6",
+    "bytes": 3648,
+    "references": [
+      "01",
+      "02",
+      "05",
+      "06",
+      "09",
+      "13",
+      "38",
+      "57",
+      "61"
+    ]
+  },
+  {
+    "file": "tire-illustration.svg",
+    "sha256": "83995f61df497374c647754956dbc134bbfc20537c7cd08c748c11455873dc44",
+    "bytes": 1704,
+    "references": [
+      "73"
+    ],
+    "origin": "Inline main product SVG from KatalogGuma.dc.html; export editor metadata removed."
+  },
+  {
+    "file": "headlight-illustration.svg",
+    "sha256": "78e81c33533dac18d931e267d03ab62787692dd84d8ada11a770e0160f1be92a",
+    "bytes": 1849,
+    "references": [
+      "74"
+    ],
+    "origin": "Inline main product SVG from KatalogDel.dc.html; export editor metadata removed."
+  }
+]

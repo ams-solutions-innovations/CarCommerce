@@ -7,6 +7,7 @@
 import { escHtml } from '../utils/escHtml.js';
 import { t } from '../core/i18n.js';
 import { getCatalogProductById, getLowestPrice } from '../services/catalogService.js';
+import { PLATFORM } from '../config/platform.js';
 
 function getParam(name) {
     const qs = window.location.search.slice(1);
@@ -14,6 +15,10 @@ function getParam(name) {
 }
 
 export async function initCatalogProductPage() {
+    if (PLATFORM.id === 'avto') {
+        const { initAutoHubCatalogPage } = await import('./catalog.autohub.js');
+        return initAutoHubCatalogPage();
+    }
     const root = document.getElementById('catalog-root');
     if (!root) return;
 

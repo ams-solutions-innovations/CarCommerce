@@ -5,9 +5,9 @@
 
 /* ── Page Wrapper ────────────────────────────────────────── */
 .biz-profile-page {
-    max-width: 1000px;
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1rem 3rem;
+    padding: 0 clamp(1rem, 3vw, 2.5rem) 3rem;
 }
 
 /* ── Hero / Cover ────────────────────────────────────────── */
@@ -299,10 +299,20 @@
 }
 
 /* ── Listings Tab (Oglasi) ───────────────────────────────── */
-/* Listing cards themselves reuse the main /oglasi board's renderCarCard
-   markup and .grid-layout CSS (see styles.css) so a dealer's inventory
-   here looks identical to the platform-wide listings grid. This block
-   only styles the toolbar wrapper (count + sort/filter selects). */
+/* Reuses the full /oglasi sidebar + main search layout and card rendering */
+#tab-oglasi .ah-search-top {
+    max-width: none !important;
+    padding: 0 0 8px 0 !important;
+    margin: 0 !important;
+}
+
+#tab-oglasi .ah-search-layout,
+#tab-oglasi .oglasi-layout {
+    max-width: none !important;
+    padding: 14px 0 40px 0 !important;
+    margin: 0 !important;
+}
+
 .biz-listings-toolbar {
     margin-bottom: 1.25rem;
 }
@@ -656,3 +666,4 @@ body.dark-mode .biz-brand-tag.authorized {
     .biz-booking-banner { flex-direction: column; }
     .biz-info-bar { flex-direction: column; align-items: flex-start; }
 }
+

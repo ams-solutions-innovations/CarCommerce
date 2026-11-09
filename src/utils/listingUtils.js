@@ -1,3 +1,4 @@
+import { PLATFORM } from '../config/platform.js';
 // Shared utilities for vehicle listing cards (US-localized)
 import { getCurrentLang, t } from '../core/i18n.js';
 import { key as lsKey } from '../config/storageKeys.js';
@@ -109,12 +110,40 @@ export function getPowerPill(powerKw) {
     </div>`;
 }
 
-export function getConsumptionPill(car) {
-    const fuelKey = (car.fuel || '').toLowerCase().trim();
+export function isElectricVehicle(car = {}) {
+    const fuel = String(car.fuel || '').toLowerCase().trim();
+    return ['elektrika', 'električno', 'electric', 'ev', 'e'].includes(fuel);
+}
 
-    if (fuelKey === 'elektrika' || fuelKey === 'električno' || fuelKey === 'electric' || fuelKey === 'e') {
-        if (!car.electricRangeKm) return '';
-        const rangeKm = car.electricRangeKm;
+export function isPlugInHybrid(car = {}) {
+    const fuel = String(car.fuel || '').toLowerCase().trim();
+    const hybridType = String(car.hybridType || '').toLowerCase().replace(/[\s-]/g, '');
+    return ['priključni hibrid', 'plug-in hybrid', 'plugin hybrid', 'phev', 'ph'].includes(fuel)
+        || (['hibrid', 'hybrid'].includes(fuel) && ['plugin', 'pluginhybrid', 'phev'].includes(hybridType));
+}
+
+export function isElectrifiedVehicle(car = {}) {
+    return isElectricVehicle(car) || isPlugInHybrid(car);
+}
+
+export function getChargingDetails(car = {}) {
+    const toNumber = value => value === '' || value === null || value === undefined ? null : Number(value);
+    const rawConnectors = car.connectors ?? car.connector;
+    const connectors = (Array.isArray(rawConnectors) ? rawConnectors : String(rawConnectors || '').split(','))
+        .map(value => String(value).trim()).filter(Boolean);
+    return {
+        rangeKm: toNumber(car.rangeKm ?? car.electricRangeKm),
+        acKw: toNumber(car.chargeAcKw),
+        dcKw: toNumber(car.chargeDcKw),
+        timeMinutes: toNumber(car.chargeTimeMinutes),
+        connectors: [...new Set(connectors)],
+    };
+}
+
+export function getConsumptionPill(car) {
+    if (isElectricVehicle(car)) {
+        const rangeKm = getChargingDetails(car).rangeKm;
+        if (!rangeKm) return '';
         let statusCls = 'status-low';
         if (rangeKm <= 250) statusCls = 'status-high';
         else if (rangeKm <= 400) statusCls = 'status-medium';
@@ -132,10 +161,11 @@ export function getConsumptionPill(car) {
     if (cons <= 5.0) statusCls = 'status-low';
     else if (cons >= 7.0) statusCls = 'status-high';
 
-    if (car.electricRangeKm && cons) {
+    const electricRange = getChargingDetails(car).rangeKm;
+    if (isPlugInHybrid(car) && electricRange && cons) {
         return `<div class="spec-pill consumption-pill ${statusCls}" title="${t('consumption_ev_range', 'Poraba / doseg EV')}">
             <i data-lucide="droplets"></i>
-            ${cons.toFixed(1)} L/100km · ${car.electricRangeKm} km E
+            ${cons.toFixed(1)} L/100km · ${electricRange} km E
         </div>`;
     }
 
@@ -149,13 +179,8 @@ export function getTransmissionPill(car) {
     if (!car) return '';
     
     const transStr = typeof car === 'object' ? car.transmission : car;
-    const fuelStr = typeof car === 'object' ? car.fuel : '';
-    
-    const fuelKey = (fuelStr || '').toLowerCase().trim();
-    const isElectric = fuelKey === 'elektrika' || fuelKey === 'električno' || fuelKey === 'electric' || fuelKey === 'e';
-
-    // If it's an electric vehicle, there should be no transmission pill at all (since they are all automatic)
-    if (isElectric) {
+    // Electric vehicles and plug-in hybrids do not need a gearbox as a key fact.
+    if (typeof car === 'object' && isElectrifiedVehicle(car)) {
         return '';
     }
 
@@ -213,15 +238,19 @@ export function getYearPill(year) {
 }
 
 export function getBatteryPill(car) {
-    const fuelKey = (car.fuel || '').toLowerCase().trim();
-    const isElectric = fuelKey === 'elektrika' || fuelKey === 'električno' || fuelKey === 'electric' || fuelKey === 'e';
-    const isPhev = fuelKey === 'hibrid' && car.hybridType === 'PlugIn';
-    if (!isElectric && !isPhev) return '';
+    if (!isElectrifiedVehicle(car)) return '';
     if (!car.batteryKwh) return '';
     return `<div class="spec-pill battery-pill" title="${t('battery_capacity_title', 'Kapaciteta baterije')}">
         <i data-lucide="battery"></i>
         <span>${car.batteryKwh} kWh</span>
     </div>`;
+}
+
+export function getChargingPills(car) {
+    if (!isElectrifiedVehicle(car)) return '';
+    const charging = getChargingDetails(car);
+    const power = charging.dcKw ? `DC ${charging.dcKw} kW` : (charging.acKw ? `AC ${charging.acKw} kW` : '');
+    return `${power ? `<div class="spec-pill battery-pill" title="Moč polnjenja"><i data-lucide="plug"></i><span>${power}</span></div>` : ''}${charging.timeMinutes ? `<div class="spec-pill battery-pill" title="Čas polnjenja"><i data-lucide="clock"></i><span>${charging.timeMinutes} min</span></div>` : ''}`;
 }
 
 export function getKmPill(km) {
@@ -260,6 +289,154 @@ export function getDisplacementPill(engineCc) {
     </div>`;
 }
 
+// ── Listing Card Display Preferences ─────────────────────────────────────────
+export const DEFAULT_CARD_DISPLAY_PREFS = Object.freeze({
+    fuel: true,
+    year: true,
+    mileage: true,
+    transmission: true,
+    power: true,
+    consumptionCombined: true,
+    consumptionCity: false,
+    consumptionHighway: false,
+    range: true,
+    phevRange: true,
+    batteryHealth: false,
+    owners: false,
+    engineType: false,
+    driveType: false,
+    displacement: false,
+    fairPrice: true,
+});
+
+export function getCardDisplayPrefs() {
+    try {
+        const raw = localStorage.getItem(lsKey('card_display_prefs'));
+        if (!raw) return { ...DEFAULT_CARD_DISPLAY_PREFS };
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== 'object') return { ...DEFAULT_CARD_DISPLAY_PREFS };
+        return { ...DEFAULT_CARD_DISPLAY_PREFS, ...parsed };
+    } catch {
+        return { ...DEFAULT_CARD_DISPLAY_PREFS };
+    }
+}
+
+export function setCardDisplayPrefs(nextPrefs) {
+    const merged = { ...DEFAULT_CARD_DISPLAY_PREFS, ...(nextPrefs || {}) };
+    try {
+        localStorage.setItem(lsKey('card_display_prefs'), JSON.stringify(merged));
+    } catch {}
+    applyCardDisplayPrefsToDOM(merged);
+    return merged;
+}
+
+export function resetCardDisplayPrefs() {
+    try {
+        localStorage.removeItem(lsKey('card_display_prefs'));
+    } catch {}
+    const defaults = { ...DEFAULT_CARD_DISPLAY_PREFS };
+    applyCardDisplayPrefsToDOM(defaults);
+    return defaults;
+}
+
+export function applyCardDisplayPrefsToDOM(prefs = getCardDisplayPrefs(), root = document) {
+    if (!root) return;
+    root.querySelectorAll('[data-card-field]').forEach(el => {
+        const key = el.getAttribute('data-card-field');
+        if (!key || !(key in DEFAULT_CARD_DISPLAY_PREFS)) return;
+        const visible = Boolean(prefs[key]);
+        el.hidden = !visible;
+        el.style.display = visible ? '' : 'none';
+    });
+}
+
+export function deriveCarEngineLayout(l = {}) {
+    if (l.engineLayout) return l.engineLayout;
+    if (l.cylinderLayout) return l.cylinderLayout;
+    if (l.engineConfig) return l.engineConfig;
+    if (l.engineType) return l.engineType;
+
+    const isElectric = isElectricVehicle(l);
+    const title = `${l.title || ''} ${l.subtitle || ''} ${l.variant || ''}`.toLowerCase();
+    const make = (l.make || '').toLowerCase();
+    const model = (l.model || '').toLowerCase();
+
+    if (isElectric) {
+        if (title.includes('tri-motor') || title.includes('tri motor')) return '3x Elektromotor';
+        if (title.includes('dual') || title.includes('4x4') || title.includes('awd') || (l.driveType && String(l.driveType).includes('4'))) return '2x Elektromotor';
+        return 'Elektromotor';
+    }
+
+    if (/\bv12\b/i.test(title)) return 'V12';
+    if (/\bv10\b/i.test(title)) return 'V10';
+    if (/\bv8\b/i.test(title)) return 'V8';
+    if (/\bv6\b/i.test(title)) return 'V6';
+    if (/\bboxer[- ]?6\b|\bb6\b/i.test(title)) return 'Boxer-6';
+    if (/\bboxer[- ]?4\b|\bb4\b/i.test(title)) return 'Boxer-4';
+    if (/\b(?:inline|vrstni)[- ]?6\b|\br6\b/i.test(title)) return 'Vrstni 6';
+    if (/\b(?:inline|vrstni)[- ]?5\b|\br5\b/i.test(title)) return 'Vrstni 5';
+    if (/\b(?:inline|vrstni)[- ]?4\b|\br4\b/i.test(title)) return 'Vrstni 4';
+    if (/\b(?:inline|vrstni)[- ]?3\b|\br3\b/i.test(title)) return 'Vrstni 3';
+
+    if (make === 'porsche') {
+        if (model.includes('911')) return 'Boxer-6';
+        if (model.includes('718') || model.includes('cayman') || model.includes('boxster')) return 'Boxer-4';
+        if (model.includes('cayenne') || model.includes('panamera')) {
+            return (l.powerKw && l.powerKw > 340) ? 'V8' : 'V6';
+        }
+    }
+    if (make === 'subaru') {
+        return (l.engineCc && l.engineCc > 2500) ? 'Boxer-6' : 'Boxer-4';
+    }
+
+    const cyl = parseInt(l.cylinders, 10);
+    if (cyl === 12) return 'V12';
+    if (cyl === 10) return 'V10';
+    if (cyl === 8) return 'V8';
+    if (cyl === 6) return make === 'bmw' ? 'Vrstni 6' : 'V6';
+    if (cyl === 5) return 'Vrstni 5';
+    if (cyl === 4) return 'Vrstni 4';
+    if (cyl === 3) return 'Vrstni 3';
+
+    const cc = Number(l.engineCc) || 0;
+    if (cc >= 4000) return 'V8';
+    if (cc >= 2800) {
+        if (make === 'bmw') return 'Vrstni 6';
+        if (make === 'porsche') return 'Boxer-6';
+        return 'V6';
+    }
+    if (cc >= 1300) return 'Vrstni 4';
+    if (cc > 0 && cc < 1300) return 'Vrstni 3';
+
+    return '';
+}
+
+export function deriveCarOwnersLabel(l = {}) {
+    if (l.condition === 'Novo vozilo' || (l.isNew && !l.previousOwnersCount && !l.previousOwners)) {
+        return 'Novo (0 last.)';
+    }
+    if (l.previousOwnersCount) {
+        return `${l.previousOwnersCount}. lastnik`;
+    }
+    if (l.previousOwners) {
+        return String(l.previousOwners);
+    }
+    return '1. lastnik';
+}
+
+export function deriveCarBatteryHealth(l = {}) {
+    if (l.batteryHealth !== undefined && l.batteryHealth !== null && l.batteryHealth !== '') {
+        return `${Number(l.batteryHealth)} %`;
+    }
+    if (!isElectrifiedVehicle(l)) return '';
+    // Deterministic realistic SoH fallback for electrified sample vehicles without explicit batteryHealth
+    const yr = parseInt(l.year, 10) || 2022;
+    const km = Number(l.mileageKm) || 20000;
+    const age = Math.max(0, 2025 - yr);
+    const soh = Math.max(86, Math.min(100, Math.round(100 - age * 1.2 - (km / 35000) * 1.1)));
+    return `${soh} %`;
+}
+
 export function showCompareLimitToast() {
     const existing = document.getElementById('compare-limit-toast');
     if (existing) existing.remove();
@@ -275,7 +452,7 @@ export function showCompareLimitToast() {
     ].join(';');
     toast.innerHTML = `
         <span style="font-size:1.1rem;flex-shrink:0">⚖️</span>
-        <span>${t('compare_limit_toast_msg', 'Primerjaš lahko največ 3 vozila naenkrat.')}</span>
+        <span>${PLATFORM.id==='avto'?t('vc_limit','Primerjate lahko do 4 vozila.'):t('compare_limit_toast_msg', 'Primerjaš lahko največ 3 vozila naenkrat.') }</span>
         <a href="#/primerjava" style="background:#2563eb;color:#fff;border-radius:8px;padding:6px 12px;font-size:0.82rem;font-weight:600;text-decoration:none;white-space:nowrap;flex-shrink:0;">${t('compare_nav', 'Primerjalni kotiček')} →</a>
         <button onclick="this.closest('#compare-limit-toast').remove()" style="background:none;border:none;color:#94a3b8;cursor:pointer;padding:2px;flex-shrink:0;font-size:1rem;line-height:1;">✕</button>
     `;

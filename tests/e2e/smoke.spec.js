@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 
 test('homepage renders search form', async ({ page }) => {
     // Already at '/' after beforeEach
-    await expect(page.locator('.home-container')).toBeVisible();
+    await expect(page.locator('.ah-home')).toBeVisible();
     await expect(page.locator('#homeSearchForm')).toBeVisible();
 });
 

@@ -1,7 +1,7 @@
 // b2b-dashboard.js — Overview page for B2B users
 import { mountB2BShell } from '../layouts/b2b-layout.js';
 import { getB2BProfile, getRoles } from '../core/b2bContext.js';
-import { getDashboardStats } from '../services/b2bService.js';
+import { getDashboardStats, getMyBusiness, listServices, profileChecklist, profileCompleteness } from '../services/b2bService.js';
 
 export async function initB2bDashboardPage() {
     const main = mountB2BShell({ activeRoute: '/b2b', title: 'Pregled' });
@@ -12,6 +12,7 @@ export async function initB2bDashboardPage() {
 
     main.innerHTML = `
         <div class="b2b-grid">
+            <div id="profileBanner"></div>
             <div class="b2b-kpi-row">
                 ${kpiCard('Rezervacije', '—', 'pending', 'calendar-check', '#2563eb')}
                 ${kpiCard('Storitve', '—', 'services', 'tags', '#16a34a')}
@@ -23,14 +24,14 @@ export async function initB2bDashboardPage() {
             <section class="b2b-card">
                 <h2 class="b2b-card-title"><i data-lucide="zap"></i> Hitra dejanja</h2>
                 <div class="b2b-quick-actions">
-                    <a href="#/b2b/storitve" class="b2b-quick-btn"><i data-lucide="plus"></i> Dodaj storitev</a>
-                    <a href="#/novi-oglas" class="b2b-quick-btn"><i data-lucide="car"></i> Dodaj oglas</a>
-                    ${roles.includes('dealer') && profile?.businessTier === 'verified' ? `<a href="#/b2b/bulk-import" class="b2b-quick-btn"><i data-lucide="file-json"></i> Skupinski uvoz</a>` : ''}
-                    <a href="#/b2b/rezervacije?status=pending" class="b2b-quick-btn"><i data-lucide="calendar-check"></i> Odpri rezervacije</a>
-                    <a href="#/b2b/profil" class="b2b-quick-btn"><i data-lucide="edit"></i> Uredi javni profil</a>
-                    ${roles.includes('dealer') ? `<a href="#/b2b/zaloga" class="b2b-quick-btn"><i data-lucide="warehouse"></i> Upravljaj zalogo</a>` : ''}
-                    ${roles.includes('vulcanizer') ? `<a href="#/b2b/hotel-gum" class="b2b-quick-btn"><i data-lucide="circle-dot"></i> Hotel za gume</a>` : ''}
-                    ${roles.includes('mechanic') ? `<a href="#/b2b/servis-vnos" class="b2b-quick-btn"><i data-lucide="clipboard-list"></i> VIN servis vnos</a>` : ''}
+                    <a href="/b2b/storitve" class="b2b-quick-btn"><i data-lucide="plus"></i> Dodaj storitev</a>
+                    <a href="/novi-oglas" class="b2b-quick-btn"><i data-lucide="car"></i> Dodaj oglas</a>
+                    ${roles.includes('dealer') && profile?.businessTier === 'verified' ? `<a href="/b2b/bulk-import" class="b2b-quick-btn"><i data-lucide="file-json"></i> Skupinski uvoz</a>` : ''}
+                    <a href="/b2b/rezervacije?status=pending" class="b2b-quick-btn"><i data-lucide="calendar-check"></i> Odpri rezervacije</a>
+                    <a href="/b2b/profil" class="b2b-quick-btn"><i data-lucide="edit"></i> Uredi javni profil</a>
+                    ${roles.includes('dealer') ? `<a href="/b2b/zaloga" class="b2b-quick-btn"><i data-lucide="warehouse"></i> Upravljaj zalogo</a>` : ''}
+                    ${roles.includes('vulcanizer') ? `<a href="/b2b/hotel-gum" class="b2b-quick-btn"><i data-lucide="circle-dot"></i> Hotel za gume</a>` : ''}
+                    ${roles.includes('mechanic') ? `<a href="/b2b/servis-vnos" class="b2b-quick-btn"><i data-lucide="clipboard-list"></i> VIN servis vnos</a>` : ''}
                 </div>
             </section>
 
@@ -60,6 +61,29 @@ export async function initB2bDashboardPage() {
     } catch (err) {
         console.warn('[b2b-dashboard] stats failed', err);
         ['pending','services','revenue','inventory','leads'].forEach(k => setKpi(k, '0', 'ni podatkov'));
+    }
+
+    // Nudge unfinished profiles towards the guided setup (/b2b/zacetek).
+    try {
+        const [biz, services] = await Promise.all([getMyBusiness(), listServices()]);
+        const checklist = profileChecklist(biz, services.length);
+        const pct = profileCompleteness(biz, services.length);
+        const banner = document.getElementById('profileBanner');
+        if (banner && pct < 100) {
+            const missing = checklist.filter(i => !i.ok).map(i => i.label.replace(/ \(.*\)$/, '')).slice(0, 4).join(', ');
+            banner.innerHTML = `
+                <section class="b2b-card b2b-onboarding-banner">
+                    <div class="b2b-onboarding-banner-body">
+                        <h2 class="b2b-card-title"><i data-lucide="rocket"></i> Dokončajte javni profil — ${pct} %</h2>
+                        <div class="b2b-progress"><div class="b2b-progress-fill" style="width:${pct}%"></div></div>
+                        <p class="b2b-hint">Manjka še: ${esc(missing)}.</p>
+                    </div>
+                    <a href="/b2b/zacetek" class="btn b2b-btn-primary">${biz ? 'Nadaljuj nastavitev' : 'Začni nastavitev'}</a>
+                </section>`;
+            if (window.lucide) window.lucide.createIcons();
+        }
+    } catch (err) {
+        console.warn('[b2b-dashboard] profile banner failed', err);
     }
 }
 

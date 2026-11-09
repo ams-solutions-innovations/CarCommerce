@@ -1,7 +1,8 @@
 // b2b-profile-editor.js — CMS for public business profile
 import { mountB2BShell } from '../layouts/b2b-layout.js';
-import { getMyBusiness, saveMyBusiness, uploadBusinessAsset, listServices } from '../services/b2bService.js';
+import { getMyBusiness, saveMyBusiness, uploadBusinessAsset, listServices, profileChecklist, profileCompleteness } from '../services/b2bService.js';
 import { getB2BProfile, getRoles } from '../core/b2bContext.js';
+import { navigateTo } from '../router.js';
 
 const WEEK_DAYS = [
     { key: 'monday',    label: 'Ponedeljek' },
@@ -14,7 +15,9 @@ const WEEK_DAYS = [
 ];
 
 export async function initB2bProfileEditorPage() {
-    const main = mountB2BShell({ activeRoute: '/b2b/profil', title: 'Javni profil podjetja' });
+    // /b2b/zacetek = same editor, but walked through one step at a time (onboarding).
+    const GUIDED = /\/b2b\/zacetek\/?$/.test(window.location.pathname);
+    const main = mountB2BShell({ activeRoute: '/b2b/profil', title: GUIDED ? 'Nastavitev javnega profila' : 'Javni profil podjetja' });
     if (!main) return;
 
     const userProfile = getB2BProfile();
@@ -49,6 +52,7 @@ export async function initB2bProfileEditorPage() {
     };
 
     main.innerHTML = `
+        ${GUIDED ? '<div id="guidedStepper" class="b2b-guided-header"></div>' : ''}
         <div class="b2b-profile-editor-toolbar">
             <p class="b2b-hint">Javni profil je stran, ki jo vidijo stranke na MojAvto.si. Uredite podatke in kliknite <strong>Predogled</strong>, da vidite končni videz.</p>
             <div style="display:flex;gap:0.5rem;">
@@ -61,7 +65,7 @@ export async function initB2bProfileEditorPage() {
             <!-- ── LEFT: FORM ─────────────────────────────────────── -->
             <form id="profileForm" class="b2b-form-stack">
                 <!-- 1. BRANDING -->
-                <section class="b2b-card">
+                <section class="b2b-card" data-step="4">
                     <h2 class="b2b-card-title"><i data-lucide="image"></i> Grafična podoba</h2>
                     <div class="b2b-asset-row">
                         <div class="b2b-asset">
@@ -110,7 +114,7 @@ export async function initB2bProfileEditorPage() {
                 </section>
 
                 <!-- 2. OSNOVNI PODATKI -->
-                <section class="b2b-card">
+                <section class="b2b-card" data-step="1">
                     <h2 class="b2b-card-title"><i data-lucide="info"></i> Osnovni podatki</h2>
                     <label>Ime podjetja<input name="name" required value="${esc(biz.name)}"/></label>
                     <label>Slogan <span class="b2b-field-hint">(kratka oznaka pod imenom)</span><input name="tagline" maxlength="80" placeholder="Vaš zanesljiv servis že od 1985" value="${esc(biz.tagline)}"/></label>
@@ -122,7 +126,7 @@ export async function initB2bProfileEditorPage() {
                 </section>
 
                 <!-- 3. KONTAKT -->
-                <section class="b2b-card">
+                <section class="b2b-card" data-step="2">
                     <h2 class="b2b-card-title"><i data-lucide="phone"></i> Kontaktni podatki</h2>
                     <div class="b2b-form-row">
                         <label>Telefon<input name="phone" value="${esc(biz.contact?.phone)}"/></label>
@@ -133,7 +137,7 @@ export async function initB2bProfileEditorPage() {
                 </section>
 
                 <!-- 4. DRUŽBENA OMREŽJA -->
-                <section class="b2b-card">
+                <section class="b2b-card" data-step="2">
                     <h2 class="b2b-card-title"><i data-lucide="share-2"></i> Družbena omrežja</h2>
                     <div class="b2b-form-row">
                         <label>Facebook<input name="facebook" placeholder="https://facebook.com/…" value="${esc(biz.social?.facebook)}"/></label>
@@ -143,7 +147,7 @@ export async function initB2bProfileEditorPage() {
                 </section>
 
                 <!-- 5. DELOVNI ČAS -->
-                <section class="b2b-card">
+                <section class="b2b-card" data-step="3">
                     <h2 class="b2b-card-title"><i data-lucide="clock"></i> Delovni čas</h2>
                     <div class="b2b-hours">
                         ${WEEK_DAYS.map(d => `
@@ -154,6 +158,27 @@ export async function initB2bProfileEditorPage() {
                         `).join('')}
                     </div>
                 </section>
+
+                ${GUIDED ? `
+                <!-- 6. ZAKLJUČEK (samo vodeni način) -->
+                <section class="b2b-card" data-step="5" id="guidedFinish">
+                    <h2 class="b2b-card-title"><i data-lucide="rocket"></i> Skoraj pripravljeno</h2>
+                    <p class="b2b-hint">Tako dobro je izpolnjen vaš javni profil:</p>
+                    <div class="b2b-progress"><div class="b2b-progress-fill" id="guidedFill"></div></div>
+                    <p class="b2b-progress-label" id="guidedPct"></p>
+                    <ul class="b2b-checklist" id="guidedChecklist"></ul>
+                    <div class="b2b-guided-links">
+                        <a href="/b2b/storitve" class="btn b2b-btn-secondary"><i data-lucide="tags"></i> Dodaj storitve in cenik</a>
+                        <button type="button" class="btn b2b-btn-secondary" id="guidedPreview"><i data-lucide="eye"></i> Predogled</button>
+                    </div>
+                </section>
+
+                <div class="b2b-guided-nav" id="guidedNav">
+                    <button type="button" class="btn b2b-btn-secondary" id="guidedBack"><i data-lucide="arrow-left"></i> Nazaj</button>
+                    <span style="flex:1"></span>
+                    <button type="button" class="btn b2b-btn-secondary" id="guidedSkip">Preskoči</button>
+                    <button type="button" class="btn b2b-btn-primary" id="guidedNext">Shrani in nadaljuj</button>
+                </div>` : ''}
 
                 <p id="profileStatus" class="b2b-status-line"></p>
             </form>
@@ -289,7 +314,7 @@ export async function initB2bProfileEditorPage() {
                             </div>`).join('')}
                     </div>
                 </div>`).join('')
-            : `<div class="fp-empty"><p>Ni dodanih storitev. <a href="#/b2b/storitve">Dodaj storitve →</a></p></div>`;
+            : `<div class="fp-empty"><p>Ni dodanih storitev. <a href="/b2b/storitve">Dodaj storitve →</a></p></div>`;
 
         const galleryHtml = data.gallery.length ? `
             <section class="fp-section">
@@ -469,22 +494,95 @@ export async function initB2bProfileEditorPage() {
     reRenderGallery();
 
     // ── Save ──
-    document.getElementById('profileForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const data = collectForm();
+    // Saves the whole form (the service merges it into what is already stored).
+    async function persist(extra = {}) {
         const btn = document.getElementById('saveProfileBtn');
+        const status = document.getElementById('profileStatus');
         btn.disabled = true;
-        document.getElementById('profileStatus').textContent = 'Shranjujem…';
+        status.textContent = 'Shranjujem…';
         try {
-            await saveMyBusiness(data);
-            document.getElementById('profileStatus').textContent = '✓ Shranjeno — vaš profil je posodobljen.';
-            setTimeout(() => { document.getElementById('profileStatus').textContent = ''; }, 3000);
+            await saveMyBusiness({ ...collectForm(), ...extra });
+            status.textContent = '✓ Shranjeno — vaš profil je posodobljen.';
+            setTimeout(() => { status.textContent = ''; }, 3000);
+            return true;
         } catch (err) {
-            document.getElementById('profileStatus').textContent = 'Napaka: ' + err.message;
+            status.textContent = 'Napaka: ' + err.message;
+            return false;
         } finally {
             btn.disabled = false;
         }
+    }
+
+    document.getElementById('profileForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        await persist();
     });
+
+    // ── Guided onboarding (/b2b/zacetek) ──
+    if (GUIDED) {
+        const STEPS = [
+            { n: 1, title: 'Osnovni podatki',   hint: 'Povejte, kdo ste: ime, opis in blagovne znamke, ki jih zastopate.' },
+            { n: 2, title: 'Kontakt',           hint: 'Kje vas stranke najdejo in kako vas dosežejo.' },
+            { n: 3, title: 'Delovni čas',       hint: 'Vpišite čas po dnevih ali „zaprto“.' },
+            { n: 4, title: 'Slike',             hint: 'Logotip, naslovna slika in do 8 slik galerije.' },
+            { n: 5, title: 'Storitve in objava', hint: 'Še zadnji pregled pred objavo.' },
+        ];
+        let step = Math.min(Math.max(parseInt(new URLSearchParams(window.location.search).get('step'), 10) || 1, 1), STEPS.length);
+
+        const stepperEl = document.getElementById('guidedStepper');
+        const backBtn = document.getElementById('guidedBack');
+        const skipBtn = document.getElementById('guidedSkip');
+        const nextBtn = document.getElementById('guidedNext');
+
+        function renderChecklist() {
+            const items = profileChecklist(collectForm(), services.length);
+            const pct = profileCompleteness(collectForm(), services.length);
+            document.getElementById('guidedFill').style.width = pct + '%';
+            document.getElementById('guidedPct').textContent = pct + ' % izpolnjeno';
+            document.getElementById('guidedChecklist').innerHTML = items.map(i =>
+                `<li class="${i.ok ? 'ok' : 'todo'}"><i data-lucide="${i.ok ? 'check-circle-2' : 'circle'}"></i> ${esc(i.label)}</li>`
+            ).join('');
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        function showStep() {
+            document.querySelectorAll('#profileForm > section[data-step]').forEach(sec => {
+                sec.style.display = Number(sec.dataset.step) === step ? '' : 'none';
+            });
+            stepperEl.innerHTML = `
+                <ol class="b2b-steps">
+                    ${STEPS.map(x => `
+                        <li class="b2b-step ${x.n === step ? 'active' : ''} ${x.n < step ? 'done' : ''}">
+                            <span class="b2b-step-dot">${x.n < step ? '✓' : x.n}</span>
+                            <span class="b2b-step-label">${x.title}</span>
+                        </li>`).join('')}
+                </ol>
+                <p class="b2b-hint">Korak ${step} od ${STEPS.length} — ${STEPS[step - 1].hint}</p>`;
+            backBtn.style.visibility = step === 1 ? 'hidden' : 'visible';
+            skipBtn.style.display = step === STEPS.length ? 'none' : '';
+            nextBtn.textContent = step === STEPS.length ? 'Dokončaj nastavitev' : 'Shrani in nadaljuj';
+            if (step === STEPS.length) renderChecklist();
+            history.replaceState({}, '', `${window.location.pathname}?step=${step}`);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (window.lucide) window.lucide.createIcons();
+        }
+
+        backBtn.addEventListener('click', () => { if (step > 1) { step -= 1; showStep(); } });
+        skipBtn.addEventListener('click', () => { if (step < STEPS.length) { step += 1; showStep(); } });
+        nextBtn.addEventListener('click', async () => {
+            const last = step === STEPS.length;
+            nextBtn.disabled = true;
+            const ok = await persist(last ? { onboardingCompleted: true } : {});
+            nextBtn.disabled = false;
+            if (!ok) return;
+            if (last) { navigateTo('/b2b'); return; }
+            step += 1;
+            showStep();
+        });
+        document.getElementById('guidedPreview')?.addEventListener('click', openFullPreview);
+
+        showStep();
+    }
 }
 
 function priceLabel(s) {

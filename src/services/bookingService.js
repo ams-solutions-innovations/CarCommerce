@@ -141,70 +141,103 @@ export function saveVehicle(userId, vehicleData) {
 }
 
 import { supabase } from '../lib/supabase.js';
+import { bookingFromRow } from './b2bService.js';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 // ── Booking persistence ───────────────────────────────────────
 /**
- * Returns all bookings for a user. Falls back to mockBookings for demo user.
+ * Returns all bookings for a user (flat objects, same shape the provider sees).
+ * Falls back to mockBookings for the demo user.
  * @param {string} userId
- * @returns {Object[]}
+ * @returns {Promise<Object[]>}
  */
-export async function getBookingsForUser(userId) {
+export async function getBookingsForUser(userId,{strict=false}={}) {
     if (!userId || userId === 'mock-user') {
         return mockBookings;
     }
     try {
-        const { data, error } = await supabase.from('bookings').select('*').eq('customer_id', userId);
+        const { data, error } = await supabase
+            .from('bookings')
+            .select('*')
+            .eq('customer_id', userId)
+            .neq('status', 'blocked')
+            .order('date', { ascending: false });
         if (error) throw error;
-        return data || [];
+        return [...(data || []).map(bookingFromRow), ...(strict?[]:localBookings(userId))];
     } catch (err) {
         console.error('[BookingService] Failed to fetch bookings from Supabase', err);
+        if(strict)throw err;
+        return localBookings(userId);
+    }
+}
+
+// Bookings kept in localStorage (demo user / mock business directory).
+function localBookings(userId) {
+    try {
+        const stored = localStorage.getItem(lsKey('bookings', userId));
+        return stored ? JSON.parse(stored) : [];
+    } catch (e) {
         return [];
     }
 }
 
 /**
- * Saves a booking to Supabase. Returns saved booking.
+ * Saves a booking to Supabase. Returns the saved booking (flat object).
+ * Columns: provider_id, customer_id, date, time, status, total_price, notes.
+ * Everything else (services, vehicle, proposed slots, …) goes into `data`.
  * @param {Object} bookingData
- * @returns {Object}
+ * @returns {Promise<Object>}
  */
 export async function saveBooking(bookingData) {
     const userId = bookingData.userId || 'mock-user';
+    const { businessId, date, time, notes, totalPrice, ...rest } = bookingData;
+    // Identity / column fields are stored in real columns, not in the data blob.
+    delete rest.userId;
+    delete rest.total_price;
+
     const booking = {
-        ...bookingData,
+        ...rest,
         id: generateId('bk'),
+        businessId,
+        userId,
         status: 'pending',
-        created_at: new Date().toISOString(),
-        provider_id: bookingData.businessId,
-        customer_id: userId,
-        // Ensure camelCase fields are mapped to snake_case if your DB uses them, but if we keep it as JSON blob or mixed:
-        // Actually, we'll just store the object. If Supabase table has specific columns like provider_id, date, time, status:
-        date: bookingData.date,
-        time: bookingData.time,
-        notes: bookingData.notes,
-        total_price: bookingData.totalPrice,
-        services: bookingData.services,
-        proposed_slots: bookingData.proposedSlots,
-        customer_name: window.__currentUser?.user_metadata?.full_name || 'Anonimno',
+        date: date || null,
+        time: time || null,
+        notes: notes || '',
+        totalPrice: totalPrice ?? null,
+        customerId: userId,
+        providerId: businessId,
+        createdAt: new Date().toISOString(),
     };
-    
-    // Cleanup fields that don't belong to DB schema if needed, but Supabase will ignore extra if not in schema, 
-    // or fail if strictly typed. Let's just pass booking object if we assume a flexible schema, 
-    // but looking at b2bService.js, it expects provider_id, status, notes, date, time, total_price, customerName, services.
-    
-    if (userId !== 'mock-user') {
-        try {
-            const { error } = await supabase.from('bookings').insert(booking);
-            if (error) throw error;
-        } catch (err) {
-            console.error('[BookingService] Failed to save booking to Supabase', err);
-            // Fallback to localStorage just in case
-            try {
-                const stored = localStorage.getItem(lsKey('bookings', userId));
-                const existing = stored ? JSON.parse(stored) : [];
-                localStorage.setItem(lsKey('bookings', userId), JSON.stringify([...existing, booking]));
-            } catch (e) {}
+
+    // Only real accounts booking with a real (uuid) provider can be persisted;
+    // demo users and the mock business directory stay local.
+    if (userId !== 'mock-user' && UUID_RE.test(userId) && UUID_RE.test(String(businessId || ''))) {
+        const { data: row, error } = await supabase.from('bookings').insert({
+            provider_id: businessId,
+            customer_id: userId,
+            date: date || null,
+            time: time || null,
+            status: 'pending',
+            total_price: totalPrice ?? null,
+            notes: notes || null,
+            data: { ...rest, customerName: rest.customerName || '' },
+        }).select('id').single();
+        if (error) {
+            console.error('[BookingService] Failed to save booking to Supabase', error);
+            throw new Error(error.message);
         }
+        booking.id = row.id;
+        return booking;
     }
+
+    // Local-only fallback (demo user / mock business)
+    try {
+        const stored = localStorage.getItem(lsKey('bookings', userId));
+        const existing = stored ? JSON.parse(stored) : [];
+        localStorage.setItem(lsKey('bookings', userId), JSON.stringify([...existing, booking]));
+    } catch { /* storage unavailable — booking is returned but not persisted */ }
     return booking;
 }
 
@@ -212,14 +245,19 @@ export async function saveBooking(bookingData) {
  * Cancels a booking by id for a user.
  * @param {string} userId
  * @param {string} bookingId
- * @returns {boolean} success
+ * @returns {Promise<boolean>} success
  */
 export async function cancelBooking(userId, bookingId) {
     if (userId === 'mock-user') return true;
     try {
-        const { error } = await supabase.from('bookings').update({ status: 'cancelled' }).eq('id', bookingId).eq('customer_id', userId);
+        const { data, error } = await supabase
+            .from('bookings')
+            .update({ status: 'cancelled' })
+            .eq('id', bookingId)
+            .eq('customer_id', userId)
+            .select('id');
         if (error) throw error;
-        return true;
+        return (data || []).length > 0;
     } catch (err) {
         console.error('[BookingService] Failed to cancel booking', err);
         return false;

@@ -1,0 +1,12 @@
+import { escHtml } from '../../utils/escHtml.js';
+import { text,money } from './partsUi.js';
+import { icon } from './icons.js';
+export { text,money,icon,escHtml };
+export const vehiclePrice=car=>Number(car.salePriceEur||car.priceEur||car.priceRaw||(typeof car.price==='number'?car.price:0))||null;
+export const vehicleTitle=car=>car.title||[car.make,car.model].filter(Boolean).join(' ');
+export const vehiclePhoto=car=>car.images?.exterior?.[0]||car.image||'';
+export const vehicleHref=car=>`/${car.entryType==='auction'?'drazba':'oglas'}?id=${encodeURIComponent(car.id)}`;
+export const count=value=>new Intl.NumberFormat(document.documentElement.lang==='en'?'en-GB':'sl-SI').format(value);
+export function vehicleImage(car){return vehiclePhoto(car)?`<img src="${escHtml(vehiclePhoto(car))}" alt="${escHtml(vehicleTitle(car))}" loading="lazy">`:`<div class="ah-photo-placeholder">${icon('car')}</div>`;}
+export function compactVehicleCard(car,{actions='',selected=false}={}){return `<article class="ah-profile-listing ${selected?'is-selected':''} ${car.status==='sold'?'is-sold':''}" data-vehicle-id="${escHtml(car.id)}"><a class="ah-profile-listing-photo" href="${vehicleHref(car)}">${vehicleImage(car)}${car.savedPrice>0&&vehiclePrice(car)!=null&&vehiclePrice(car)<car.savedPrice?`<span class="ah-price-drop">${text('ah_price_drop','Cena')} −${money(car.savedPrice-vehiclePrice(car))}</span>`:''}${car.status?`<span class="ah-tag">${text(car.status==='sold'?'vp_sold':car.status==='draft'?'vp_draft':car.entryType==='auction'?'vp_auction':'vp_active',car.status==='sold'?'Prodan':car.status==='draft'?'Osnutek':car.entryType==='auction'?'Dražba':'Aktiven')}</span>`:''}</a><div class="ah-profile-listing-body"><h3><a href="${vehicleHref(car)}">${escHtml(vehicleTitle(car))}</a></h3><p>${[car.year,(car.mileageKm??car.mileage)!=null?`${typeof (car.mileageKm??car.mileage)==='number'?count(car.mileageKm??car.mileage):escHtml(car.mileage)} km`:'',car.fuel,car.transmission].filter(Boolean).map(escHtml).join(' · ')}</p><strong>${vehiclePrice(car)!=null?money(vehiclePrice(car)):text('ap_no_price','Cena ni objavljena')}</strong></div>${actions?`<div class="ah-profile-listing-actions">${actions}</div>`:''}</article>`;}
+export function emptyVehicles(title,copy,link='/oglasi',label=text('compare_go_listings','Pojdi na oglase')){return `<div class="ah-vehicle-empty">${icon('car')}<h2>${title}</h2><p>${copy}</p><a class="ah-blue-button" href="${link}">${label}</a></div>`;}

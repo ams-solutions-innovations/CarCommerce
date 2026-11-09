@@ -3,6 +3,7 @@
 import { mountB2BShell } from '../layouts/b2b-layout.js';
 import { listMyBookings, updateBookingStatus, listServices } from '../services/b2bService.js';
 import { hasRole } from '../core/b2bContext.js';
+import { serviceLabels } from '../data/businesses.js';
 
 export async function initB2bWorkshopPage() {
     const main = mountB2BShell({ activeRoute: '/b2b/delavnica', title: 'Delavnica' });
@@ -25,13 +26,13 @@ export async function initB2bWorkshopPage() {
             <aside class="b2b-card">
                 <header class="b2b-card-title"><i data-lucide="tags"></i> Storitve</header>
                 <div id="svcMini"></div>
-                <a href="#/b2b/storitve" class="btn b2b-btn-secondary btn-sm" style="margin-top:0.75rem;"><i data-lucide="edit"></i> Uredi cenik</a>
+                <a href="/b2b/storitve" class="btn b2b-btn-secondary btn-sm" style="margin-top:0.75rem;"><i data-lucide="edit"></i> Uredi cenik</a>
             </aside>
         </div>
 
         <div class="b2b-workshop-actions">
-            <a href="#/b2b/servis-vnos" class="btn b2b-btn-primary"><i data-lucide="clipboard-list"></i> Nov servisni vnos (VIN)</a>
-            <a href="#/b2b/rezervacije" class="btn b2b-btn-secondary"><i data-lucide="calendar"></i> Vse rezervacije</a>
+            <a href="/b2b/servis-vnos" class="btn b2b-btn-primary"><i data-lucide="clipboard-list"></i> Nov servisni vnos (VIN)</a>
+            <a href="/b2b/rezervacije" class="btn b2b-btn-secondary"><i data-lucide="calendar"></i> Vse rezervacije</a>
         </div>
     `;
     if (window.lucide) window.lucide.createIcons();
@@ -44,8 +45,9 @@ export async function initB2bWorkshopPage() {
 
             const [bookings, services] = await Promise.all([listMyBookings(), listServices()]);
             const t = today(), tmrw = offset(1);
-            renderDay('todayList', bookings.filter(b => b.date === t));
-            renderDay('tomorrowList', bookings.filter(b => b.date === tmrw));
+            const active = bookings.filter(b => b.status !== 'blocked' && b.status !== 'cancelled');
+            renderDay('todayList', active.filter(b => b.date === t));
+            renderDay('tomorrowList', active.filter(b => b.date === tmrw));
 
             document.getElementById('svcMini').innerHTML = services.length
                 ? `<ul class="b2b-info-list">${services.slice(0, 8).map(s => `<li>${esc(s.name)} <span class="b2b-cell-sub">· ${priceLabel(s)}</span></li>`).join('')}</ul>`
@@ -70,7 +72,7 @@ export async function initB2bWorkshopPage() {
                 <div class="b2b-workshop-info">
                     <strong>${esc(b.customerName || b.customer_name || 'Stranka')}</strong>
                     <span class="b2b-cell-sub">${esc(b.vehicleLabel || '')}</span>
-                    <span class="b2b-cell-sub">${esc(Array.isArray(b.services) ? b.services.join(', ') : b.serviceId || '—')}</span>
+                    <span class="b2b-cell-sub">${esc(Array.isArray(b.services) && b.services.length ? b.services.map(id => serviceLabels?.[id] || id).join(', ') : (serviceLabels?.[b.serviceId] || b.serviceId || '—'))}</span>
                 </div>
                 <div class="b2b-workshop-actions-cell">
                     ${b.status === 'confirmed' ? `<button class="btn b2b-btn-primary btn-sm" data-complete="${b.id}"><i data-lucide="check"></i> Zaključi</button>` : ''}
@@ -97,6 +99,8 @@ function priceLabel(s) {
     if (s.priceType === 'quote' || s.price == null) return 'Po ogledu';
     return (s.priceType === 'from' ? 'od ' : '') + s.price + ' €';
 }
-function today() { return new Date().toISOString().slice(0, 10); }
-function offset(days) { const d = new Date(); d.setDate(d.getDate() + days); return d.toISOString().slice(0, 10); }
+// Local calendar date (toISOString() is UTC and flips the day around midnight in SI).
+function ymd(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+function today() { return ymd(new Date()); }
+function offset(days) { const d = new Date(); d.setDate(d.getDate() + days); return ymd(d); }
 function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }

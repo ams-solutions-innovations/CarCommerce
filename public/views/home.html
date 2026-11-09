@@ -74,6 +74,10 @@
             <i data-lucide="gavel"></i>
             <span data-i18n-key="search_mode_auctions">Išči dražbe</span>
         </button>
+        <button type="button" class="home-search-mode-pill" data-search-mode="najem">
+            <i data-lucide="calendar"></i>
+            <span data-i18n-key="search_mode_rentals">Najem</span>
+        </button>
     </div>
 
     <div class="home-tabs-container">
@@ -131,7 +135,7 @@
                 </div>
 
                 <!-- Row 2 -->
-                <div class="form-group">
+                <div class="form-group" id="group-home-mileage">
                     <label for="home-mileage-to" data-i18n-key="form_mileage_to">Mileage (to)</label>
                     <div class="pill-select-wrapper">
                         <select id="home-mileage-to" name="mileageTo" class="pill-input">
@@ -139,12 +143,37 @@
                         </select>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="home-price-to" data-i18n-key="form_price_to">Price (up to)</label>
+                <div class="form-group" id="group-home-auction-type" style="display:none;">
+                    <label for="home-auction-type">Vrsta dražbe</label>
+                    <div class="pill-select-wrapper">
+                        <select id="home-auction-type" name="auctionType" class="pill-input">
+                            <option value="">Vse vrste dražb</option>
+                            <option value="live">🔴 Živa dražba</option>
+                            <option value="prebid">⏱ Pred-dražba</option>
+                            <option value="silent">🔒 Tiha dražba</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="group-home-rental-duration" style="display:none;">
+                    <label for="home-rental-duration">Koliko časa (trajanje)</label>
+                    <div class="pill-select-wrapper">
+                        <select id="home-rental-duration" name="rentalDuration" class="pill-input">
+                            <option value="">Katerokoli trajanje</option>
+                            <option value="1-3">1 - 3 dni</option>
+                            <option value="weekend">Konec tedna</option>
+                            <option value="week">1 teden</option>
+                            <option value="2-3weeks">2 - 3 tedne</option>
+                            <option value="month">1 mesec ali več</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group" id="group-home-price">
+                    <label for="home-price-to" id="home-price-to-label" data-i18n-key="form_price_to">Price (up to)</label>
                     <div class="pill-input-wrapper" style="width: 100%;">
                         <input type="text" id="home-price-to" name="priceTo" class="pill-input js-format-number" placeholder="Brez omejitve" data-i18n-key="no_limit" data-i18n-target="placeholder" inputmode="numeric">
                     </div>
                 </div>
+                
                 <div class="form-group">
                     <label for="home-reg-from" data-i18n-key="form_year_from">Year (from)</label>
                     <div class="pill-select-wrapper">

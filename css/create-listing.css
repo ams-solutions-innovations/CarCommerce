@@ -1620,3 +1620,42 @@ body.dark-mode .aii-btn--ghost { background: rgba(255,255,255,0.1); color: #e2e8
     .aii-modal { padding: 1.5rem 1.1rem 1.25rem; }
     .aii-title { font-size: 1.12rem; }
 }
+
+.aii-field-hint {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-top: 0.4rem;
+    line-height: 1.4;
+}
+body.dark-mode .aii-field-hint { color: #94a3b8; }
+.aii-spinner {
+    display: inline-block;
+    margin-right: 0.35rem;
+    animation: aii-pulse 1.2s infinite ease-in-out;
+}
+@keyframes aii-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.9); }
+}
+.aii-config-row {
+    margin-top: 0.6rem;
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.aii-input {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.6rem;
+    border: 1px solid rgba(0,0,0,0.18);
+    background: #fff;
+    color: #0f172a;
+    font-size: 0.82rem;
+}
+body.dark-mode .aii-input {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: rgba(255,255,255,0.18);
+}

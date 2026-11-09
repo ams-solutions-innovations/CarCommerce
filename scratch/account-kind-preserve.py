@@ -1,0 +1,10 @@
+from pathlib import Path
+p=Path('src/pages/accounts.autohub.js');s=p.read_text(encoding='utf-8')
+s=s.replace("const next=safeAccountReturn(query.get('next'));", "const next=safeAccountReturn(query.get('next'));const registration={fullname:'',password:'',region:'',terms:false,marketing:false};")
+s=s.replace("text('ac_fullname','Ime in priimek'),'text',''", "text('ac_fullname','Ime in priimek'),'text',registration.fullname")
+s=s.replace("REGIONS.SI.map(value=>`<option>${escHtml(value)}</option>`)","REGIONS.SI.map(value=>`<option ${registration.region===value?'selected':''}>${escHtml(value)}</option>`)")
+s=s.replace("text('ac_password','Geslo'),'password','','autocomplete=\"new-password\" minlength=\"8\" maxlength=\"128\"')", "text('ac_password','Geslo'),'password',mode==='register'?registration.password:'','autocomplete=\"new-password\" minlength=\"8\" maxlength=\"128\"')",1)
+s=s.replace('name="terms" type="checkbox" required>', 'name="terms" type="checkbox" required ${registration.terms?\'checked\':\'\'}>')
+s=s.replace('name="marketing" type="checkbox">', 'name="marketing" type="checkbox" ${registration.marketing?\'checked\':\'\'}>')
+s=s.replace("if(button.dataset.accountKind){kind=button.dataset.accountKind;draw();}", "if(button.dataset.accountKind){const values=new FormData(host.querySelector('#registerForm'));for(const name of ['fullname','password','region'])if(values.has(name))registration[name]=values.get(name);registration.terms=values.has('terms');registration.marketing=values.has('marketing');email=String(values.get('email')||'');kind=button.dataset.accountKind;draw();host.querySelector('#password')?.dispatchEvent(new Event('input',{bubbles:true}));}")
+p.write_text(s,encoding='utf-8')

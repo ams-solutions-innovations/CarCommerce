@@ -1,0 +1,201 @@
+<!-- ════ MOTORCYCLE ENGINE & DRIVETRAIN (1:1 with VecFiltrovMoto.dc.html) ════ -->
+                <div class="moto-only-field" style="display:none; width: 100%;">
+                    <div class="g2">
+                        <!-- Moč motorja -->
+                        <div class="fg">
+                            <div class="fl">
+                                Moč motorja
+                                <div class="seg sm unit-toggle-pill" id="advPowerUnitToggle" role="group">
+                                    <button type="button" class="unit-btn on active" data-unit="kw">kW</button>
+                                    <button type="button" class="unit-btn" data-unit="km">KM</button>
+                                </div>
+                                <small id="powerNote">od 35 kW (48 KM)</small>
+                            </div>
+                            <div class="sl">
+                                <div class="sl-t"></div>
+                                <div class="sl-f" id="powerSliderFill" style="left:17%;right:0%"></div>
+                                <button type="button" class="handle" id="powerSliderHandleMin" style="left:17%" aria-label="Najmanj"></button>
+                                <button type="button" class="handle" id="powerSliderHandleMax" style="left:100%" aria-label="Največ"></button>
+                            </div>
+                            <div class="tk"><span>0</span><span>50</span><span>100</span><span>150+ kW</span></div>
+                            <div style="display:flex;gap:10px;margin-top:6px">
+                                <div style="flex:1">
+                                    <div class="lbl">Od</div>
+                                    <div class="fld num sm" style="display:flex;align-items:center;padding:0 14px;height:44px;border-radius:9999px;border:1px solid #d5e0ee;background:#fff;">
+                                        <input type="number" name="powerFrom" id="powerFromInput" placeholder="0" class="adv-input" style="border:0;background:transparent;width:100%;font-size:14px;font-weight:600;outline:none;">
+                                        <span id="powerUnitSuffixFrom" style="margin-left:auto;color:#5a6b83;font-size:13px;font-weight:600;">kW</span>
+                                    </div>
+                                </div>
+                                <div style="flex:1">
+                                    <div class="lbl">Do</div>
+                                    <div class="fld num sm" style="display:flex;align-items:center;padding:0 14px;height:44px;border-radius:9999px;border:1px solid #d5e0ee;background:#fff;">
+                                        <input type="number" name="powerTo" id="powerToInput" placeholder="Brez omejitve" class="adv-input" style="border:0;background:transparent;width:100%;font-size:14px;font-weight:600;outline:none;">
+                                        <span id="powerUnitSuffixTo" style="margin-left:auto;color:#5a6b83;font-size:13px;font-weight:600;">kW</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Prostornina motorja -->
+                        <div class="fg">
+                            <div class="fl tall">
+                                Prostornina motorja
+                                <small id="dispNote">600 – 1.300 ccm</small>
+                            </div>
+                            <div class="sl">
+                                <div class="sl-t"></div>
+                                <div class="sl-f" id="dispSliderFill" style="left:28%;right:40%"></div>
+                                <button type="button" class="handle" id="dispSliderHandleMin" style="left:28%" aria-label="Najmanj"></button>
+                                <button type="button" class="handle" id="dispSliderHandleMax" style="left:60%" aria-label="Največ"></button>
+                            </div>
+                            <div class="tk"><span>50</span><span>250</span><span>600</span><span>1.000</span><span>1.800+ ccm</span></div>
+                            <div style="display:flex;gap:10px;margin-top:6px">
+                                <div style="flex:1">
+                                    <div class="lbl">Od</div>
+                                    <div class="fld num sm" style="display:flex;align-items:center;padding:0 14px;height:44px;border-radius:9999px;border:1px solid #d5e0ee;background:#fff;">
+                                        <input type="number" name="displacementFrom" id="dispFromInput" placeholder="600" class="adv-input" style="border:0;background:transparent;width:100%;font-size:14px;font-weight:600;outline:none;">
+                                        <span style="margin-left:auto;color:#5a6b83;font-size:13px;font-weight:600;">ccm</span>
+                                    </div>
+                                </div>
+                                <div style="flex:1">
+                                    <div class="lbl">Do</div>
+                                    <div class="fld num sm" style="display:flex;align-items:center;padding:0 14px;height:44px;border-radius:9999px;border:1px solid #d5e0ee;background:#fff;">
+                                        <input type="number" name="displacementTo" id="dispToInput" placeholder="1.300" class="adv-input" style="border:0;background:transparent;width:100%;font-size:14px;font-weight:600;outline:none;">
+                                        <span style="margin-left:auto;color:#5a6b83;font-size:13px;font-weight:600;">ccm</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Menjalnik -->
+                        <div class="fg">
+                            <div class="fl">Menjalnik</div>
+                            <div class="seg" id="advTransmissionSeg" role="group">
+                                <button type="button" class="on active" data-val="">Vsi</button>
+                                <button type="button" data-val="Ročni">Ročni</button>
+                                <button type="button" data-val="Avtomatski">Avtomatski</button>
+                                <button type="button" data-val="Polavtomatski">Polavtomatski</button>
+                            </div>
+                            <select name="transmission" id="transmissionSelect" class="glass-select" style="display:none;" data-no-search="true">
+                                <option value="">Vsi menjalniki</option>
+                                <option value="Ročni">Ročni</option>
+                                <option value="Avtomatski">Avtomatski</option>
+                                <option value="Polavtomatski">Polavtomatski</option>
+                            </select>
+                        </div>
+
+                        <!-- A2 izpit -->
+                        <div class="fg adv-a2-cell">
+                            <div class="fl">A2 izpit</div>
+                            <div class="seg unit-toggle-pill" id="advA2Toggle" role="group">
+                                <button type="button" class="unit-btn on active" data-a2="all">Vse</button>
+                                <button type="button" class="unit-btn" data-a2="yes">Samo A2</button>
+                            </div>
+                            <input type="hidden" name="a2Eligible" id="a2EligibleInput" value="">
+                            <div style="font-size:12.5px;color:#5a6b83;display:flex;align-items:center;gap:6px;margin-top:2px;">
+                                <i data-lucide="info" style="width:14px;height:14px;flex-shrink:0;"></i>
+                                <span>Motorji do 35 kW, primerni za kategorijo A2.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dv" style="margin:20px 0;"></div>
+
+                    <div class="g2">
+                        <!-- Takt motorja -->
+                        <div class="fg">
+                            <div class="fl">Takt motorja</div>
+                            <div class="seg" id="advStrokeSeg" role="group">
+                                <button type="button" class="on active" data-stroke="">Vsi takti</button>
+                                <button type="button" data-stroke="2T">2-taktni</button>
+                                <button type="button" data-stroke="4T">4-taktni</button>
+                            </div>
+                            <select name="stroke" id="strokeSelect" style="display:none;" data-no-search="true">
+                                <option value="">Vsi takti</option>
+                                <option value="2T">2-taktni</option>
+                                <option value="4T">4-taktni</option>
+                            </select>
+                        </div>
+
+                        <!-- Število valjev -->
+                        <div class="fg">
+                            <div class="fl">Število valjev<small id="motoCylSummary">2 valja</small></div>
+                            <div class="chips" id="motoCylChips">
+                                <button type="button" class="chip" data-cyl="1">1</button>
+                                <button type="button" class="chip on active" data-cyl="2">2</button>
+                                <button type="button" class="chip" data-cyl="3">3</button>
+                                <button type="button" class="chip" data-cyl="4">4</button>
+                                <button type="button" class="chip" data-cyl="6">6</button>
+                                <button type="button" class="chip" data-cyl="Wankel">Wankel</button>
+                            </div>
+                            <select name="cylinders" id="moto-cylinders" style="display:none;" data-no-search="true">
+                                <option value="">Valji</option>
+                                <option value="1">1 valj</option>
+                                <option value="2" selected>2 valja</option>
+                                <option value="3">3 valji</option>
+                                <option value="4">4 valji</option>
+                                <option value="6">6 valjev</option>
+                                <option value="Wankel">Wankel</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Vrsta motorja · postavitev valjev -->
+                    <div class="sub" id="motoLayoutSub" style="margin-top:16px;">
+                        <div style="font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#6b7b93">
+                            Vrsta motorja · postavitev valjev (<span id="motoLayoutCylLabel">2 valja</span>)
+                            <b id="motoLayoutChosenBadge" style="color:#1d4ed8;letter-spacing:0;text-transform:none;font-size:12.5px;margin-left:6px">2 izbrani</b>
+                        </div>
+                        <div class="chips" id="motoLayoutChips">
+                            <button type="button" class="chip sm" data-layout="I2">I2 (vsi)</button>
+                            <button type="button" class="chip sm" data-layout="I2 270°">I2 270°</button>
+                            <button type="button" class="chip sm" data-layout="I2 450°">I2 450°</button>
+                            <button type="button" class="chip sm" data-layout="I2 180°">I2 180°</button>
+                            <button type="button" class="chip sm" data-layout="V2">V2 (vsi)</button>
+                            <button type="button" class="chip on active sm" data-layout="V2 90°"><i data-lucide="check" style="width:14px;height:14px;"></i> V2 90° L-twin</button>
+                            <button type="button" class="chip sm" data-layout="V2 60°">V2 60°</button>
+                            <button type="button" class="chip sm" data-layout="V2 45°">V2 45°</button>
+                            <button type="button" class="chip sm" data-layout="V2 75°">V2 75°</button>
+                            <button type="button" class="chip on active sm" data-layout="B2"><i data-lucide="check" style="width:14px;height:14px;"></i> B2 Bokser</button>
+                        </div>
+                        <div id="cylinder-layout-group" style="display:none;">
+                            <select name="cylinderLayout" id="moto-cylinder-layout" data-no-search="true"></select>
+                        </div>
+                        <div id="cylFilterChips" class="cyl-chips-container" style="display:none;"></div>
+                    </div>
+
+                    <div class="dv" style="margin:20px 0;"></div>
+
+                    <!-- Prenos moči -->
+                    <div class="fg">
+                        <div class="fl">Prenos moči</div>
+                        <div class="chips" id="motoDrivetrainGroup">
+                            <label class="chip on active">
+                                <input type="checkbox" name="motoDrivetrain" value="veriga" checked>
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;"></i>
+                                <span>Veriga</span>
+                            </label>
+                            <label class="chip">
+                                <input type="checkbox" name="motoDrivetrain" value="zobati jermen">
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;display:none;"></i>
+                                <span>Zobati jermen</span>
+                            </label>
+                            <label class="chip">
+                                <input type="checkbox" name="motoDrivetrain" value="jekleni jermen">
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;display:none;"></i>
+                                <span>Jekleni jermen</span>
+                            </label>
+                            <label class="chip on active">
+                                <input type="checkbox" name="motoDrivetrain" value="kardan" checked>
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;"></i>
+                                <span>Kardan</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+        

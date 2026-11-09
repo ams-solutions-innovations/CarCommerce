@@ -528,6 +528,7 @@ function patchMapUIForPlatform() {
 
 // ── Map Page Init ─────────────────────────────────────────────
 export function initMapPage() {
+    if(PLATFORM.id==='avto')return import('./business-directory.js').then(module=>module.initBusinessDirectoryPage({mapPage:true}));
     console.log('[MapPage] init');
 
     // Make sure Leaflet is available

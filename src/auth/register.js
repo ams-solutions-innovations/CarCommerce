@@ -2,8 +2,10 @@
 import { registerWithEmail, loginWithGoogle } from '../auth/auth.js';
 import { navigateTo } from '../router.js';
 import { t } from '../core/i18n.js';
+import { PLATFORM } from '../config/platform.js';
 
 export function initRegisterPage() {
+    if (PLATFORM.id === 'avto') return import('../pages/accounts.autohub.js').then(m => m.initAutoHubAccountsPage('register'));
     // ── Private form elements ─────────────────────────────────────────────────
     const form = document.getElementById('registerForm');
     const errorEl = document.getElementById('error-message');

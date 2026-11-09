@@ -1,27 +1,34 @@
 // Oglasi (Listings Board) page — MojAvto.si
 // Renders car listing cards + comparison tray logic
 
-const MAX_COMPARE = 3;
-
+import { PLATFORM } from '../config/platform.js';
+import { vehicleSnapshot, readVehicleComparison } from '../services/vehicleWorkspaceService.js';
 import { escHtml } from '../utils/escHtml.js';
 import { SAMPLE_LISTINGS } from '../data/sampleListings.js';
-import { PLATFORM } from '../config/platform.js';
+import { renderAutoHubListingCard, listingDisplayPrice } from '../components/autohub/listingCard.js';
+import { enhanceSearchLayout, updateSearchPriceDistribution } from '../components/autohub/searchLayout.js';
+import { initMobileSheets } from '../components/autohub/mobileSheets.js';
 import { currentUser } from '../lib/currentUser.js';
 import { navigateTo } from '../router.js';
 import { COUNTRIES, getRegions } from '../data/locationData.js';
-
-// itemTypes shown on the main listings board for the active platform.
-const PRIMARY_ITEM_TYPES = PLATFORM.id === 'navtika' ? ['plovilo', 'motor'] : ['vehicle'];
-const isPrimaryItem = l => PRIMARY_ITEM_TYPES.includes(l.itemType) || (PLATFORM.id !== 'navtika' && !l.itemType);
 import { showAuthGate } from '../utils/authGate.js';
 import { addToFavourites, removeFromFavourites, isFavourite, getFavourites } from '../services/garageService.js';
 import { getListings, getListingsPaged } from '../services/listingService.js';
+import { matchesAdvancedSearch } from '../services/advancedSearchFilters.js';
 import { renderLoading } from '../utils/uiState.js';
 import { initCustomSelects } from '../utils/customSelect.js';
 import { getCurrentLang, t } from '../core/i18n.js';
 import { showCompareLimitToast } from '../utils/listingUtils.js';
 import { key as lsKey } from '../config/storageKeys.js';
 import { brandsFileFor } from '../data/brandFiles.js';
+import { popularBrandsFor } from '../data/popularBrands.js';
+
+const MAX_COMPARE = PLATFORM.id === 'avto' ? 4 : 3;
+
+// itemTypes shown on the main listings board for the active platform.
+const PRIMARY_ITEM_TYPES = PLATFORM.id === 'navtika' ? ['plovilo', 'motor'] : ['vehicle'];
+const isPrimaryItem = l => PRIMARY_ITEM_TYPES.includes(l.itemType) || (PLATFORM.id !== 'navtika' && !l.itemType);
+import { getBrandLogo } from '../data/brandLogos.js';
 import { COMMERCIAL_BY_KEY } from '../data/commercialTaxonomy.js';
 import { showToast } from '../utils/toast.js';
 
@@ -34,12 +41,17 @@ import {
     getKmPill,
     getDisplacementPill,
     getBatteryPill,
-    formatDisplacement
+    getChargingPills,
+    formatDisplacement,
+    getCardDisplayPrefs,
+    setCardDisplayPrefs,
+    resetCardDisplayPrefs,
+    applyCardDisplayPrefsToDOM
 } from '../utils/listingUtils.js';
 
 import { getVehicleRating } from '../utils/valuationScore.js';
 import { renderRatingBadgeCard, ratingFallbackStars } from '../utils/priceRatingUi.js';
-import { getModelVariants } from '../utils/bodyType.js';
+import { getModelVariants, getModelBodyTypes } from '../utils/bodyType.js';
 import { setupNumericFormatter, parseFormattedNumber } from '../utils/inputFormatters.js';
 
 // ── Power unit toggle ────────────────────────────────────────
@@ -52,7 +64,7 @@ function applyPowerUnit(unit) {
         if (!val) return;
         val.textContent = unit === 'kw'
             ? pill.dataset.kw + ' kW'
-            : pill.dataset.hp + ' HP';
+            : pill.dataset.hp + (getCurrentLang() === 'sl' ? ' KM' : ' HP');
     });
     // Sync toggle buttons in legend popup
     document.querySelectorAll('.power-unit-btn').forEach(btn => {
@@ -64,20 +76,21 @@ function applyPowerUnit(unit) {
 
 // ── Price Rating Logic ───────────────────────────────────────
 function getPriceRating(car, allCars) {
-    const yearNum = parseInt(car.year?.split('/').pop(), 10);
+    const yearNum = parseInt(String(car.year || '').split('/').pop(), 10);
+    const priceOf = listing => Number(listing.salePriceEur || listing.priceRaw || listing.priceEur || (typeof listing.price === 'number' ? listing.price : 0));
     const comps = allCars.filter(c => {
         if (c.id === car.id) return false;
         if (c.segment !== car.segment) return false;
-        const cYear = parseInt(c.year?.split('/').pop(), 10);
-        return Math.abs(cYear - yearNum) <= 2;
+        const cYear = parseInt(String(c.year || '').split('/').pop(), 10);
+        return priceOf(c) > 0 && Math.abs(cYear - yearNum) <= 2;
     });
 
     if (comps.length === 0) {
         return { score: 2, label: t('rating_fair_val', 'Poštena cena'), color: 'amber' };
     }
 
-    const avgPrice = comps.reduce((s, c) => s + c.priceRaw, 0) / comps.length;
-    const ratio = car.priceRaw / avgPrice;
+    const avgPrice = comps.reduce((s, c) => s + priceOf(c), 0) / comps.length;
+    const ratio = priceOf(car) / avgPrice;
 
     if (ratio <= 0.88) return { score: 3, label: t('rating_excellent_val', 'Odlična vrednost'), color: 'green' };
     if (ratio <= 1.08) return { score: 2, label: t('rating_fair_val', 'Poštena cena'), color: 'amber' };
@@ -114,6 +127,7 @@ function addToCompare(car) {
     if (isInCompare(car.id)) return false;
     const rating = getPriceRating(car, SAMPLE_LISTINGS);
     compareList.push({
+        ...(PLATFORM.id==='avto'?vehicleSnapshot(car):{}),
         id: car.id,
         title: car.title,
         subtitle: car.subtitle,
@@ -169,7 +183,13 @@ async function toggleFavourite(btn, carId, car) {
         btn.classList.add('active');
         btn.classList.add('heart-bump');
         userFavouritesCache.add(carId);
-        showToast('Oglas uspešno shranjen!', 'heart');
+        showToast('Oglas uspešno shranjen!', 'heart', {
+            label: 'Dodaj v mapo',
+            onClick: async () => {
+                const { openFolderPickerForListing } = await import('../components/autohub/collectionUi.js');
+                openFolderPickerForListing(car || { id: carId });
+            }
+        });
     }
 
     btn.disabled = true;
@@ -260,7 +280,7 @@ export function renderCarCard(car, auction = null) {
             make: car.make,
             model: car.model,
             year: parseInt(car.year, 10) || 0,
-            priceEur: car.priceRaw,
+            priceEur: car.salePriceEur || car.priceRaw || car.priceEur || car.price,
             equipment: car.equipment || [],
         };
         const allListingsShape = (SAMPLE_LISTINGS || []).map(c => ({
@@ -278,6 +298,13 @@ export function renderCarCard(car, auction = null) {
         const ratingTitle = vRating && vRating.confidence !== 'low'
             ? `${vRating.label} · ${vRating.priceSignal}`
             : starRating.label;
+
+        if (PLATFORM.id === 'avto') {
+            return renderAutoHubListingCard(car, {
+                images, inCompare, favourite: userFavouritesCache.has(car.id),
+                rating: starRating, auctionBadges: auctionCardBadges(car, auction), auction,
+            });
+        }
 
         return `
     <div class="listing-card" data-car-id="${car.id}">
@@ -364,6 +391,7 @@ export function renderCarCard(car, auction = null) {
                         ${getTransmissionPill(car)}
                         ${getConsumptionPill(car)}
                         ${getBatteryPill(car)}
+                        ${getChargingPills(car)}
                     </div>
                 </div>
             </div>
@@ -405,21 +433,29 @@ export function renderCarCard(car, auction = null) {
 }
 
 // ── Contact Popup ────────────────────────────────────────────
-window.showContactPopup = function (carId) {
-    const car = SAMPLE_LISTINGS.find(c => c.id === carId);
+window.showContactPopup = function (carId, sourceCar = null) {
+    const car = sourceCar || SAMPLE_LISTINGS.find(c => c.id === carId);
     if (!car) return;
+    if (PLATFORM.id === 'avto') {
+        import('../components/autohub/contact.js').then(({openSellerContact}) => openSellerContact(car));
+        return;
+    }
+
+    const phone = car.contact?.phone || car.dealerDetails?.phone || car.phone;
+    const email = car.contact?.email || car.dealerDetails?.email || car.email;
+    const sellerName = car.authorName || car.contact?.name || (typeof car.seller === 'string' ? car.seller : car.seller?.name) || car.dealerDetails?.companyName || t('private_seller','Zasebni prodajalec');
 
     const overlay = document.createElement('div');
     overlay.className = 'contact-popup-overlay active';
     overlay.innerHTML = `
         <div class="contact-popup-card">
-            <button class="close-btn">
+            <button class="close-btn" aria-label="${t('close','Zapri')}">
                 <i data-lucide="x"></i>
             </button>
             <div class="contact-popup-header">
-                <img src="${escHtml(car.sellerImage)}" class="seller-avatar">
-                <h3 class="seller-name">${escHtml(car.seller)}</h3>
-                <p class="seller-type-label">${car.sellerType === 'dealer' ? t('seller_authorized_dealer', 'Pooblaščeni prodajalec') : t('seller_private', 'Zasebni prodajalec')}</p>
+                ${car.sellerImage ? `<img src="${escHtml(car.sellerImage)}" class="seller-avatar" alt="">` : ''}
+                <h3 class="seller-name">${escHtml(sellerName)}</h3>
+                <p class="seller-type-label">${car.sellerType === 'dealer' ? t('nav_dealers', 'Avtohiša') : t('seller_private', 'Zasebni prodajalec')}</p>
             </div>
             <div class="contact-popup-info-box">
                 <div class="contact-row">
@@ -428,11 +464,11 @@ window.showContactPopup = function (carId) {
                 </div>
                 <div class="contact-row">
                     <i data-lucide="phone" class="row-icon"></i>
-                    <span class="row-text">+386 1 234 5678</span>
+                    <span class="row-text">${escHtml(phone || t('not_available','Ni podatka'))}</span>
                 </div>
                 <div class="contact-row">
                     <i data-lucide="mail" class="row-icon"></i>
-                    <span class="row-text">info@mojavto.si</span>
+                    <span class="row-text">${escHtml(email || t('not_available','Ni podatka'))}</span>
                 </div>
 
                 ${car.sellerType === 'dealer' && car.openingHours ? `
@@ -453,7 +489,7 @@ window.showContactPopup = function (carId) {
                     </div>
                 </div>` : ''}
             </div>
-            <button class="pill-btn primary w-full">${t('send_message', 'Pošlji sporočilo')}</button>
+            <a href="/oglas?id=${encodeURIComponent(carId)}" class="${PLATFORM.id === 'avto' ? 'ah-cta' : 'pill-btn primary w-full'}">${t('ah_view_listing', 'Oglej si oglas')}</a>
         </div>
     `;
 
@@ -471,6 +507,7 @@ window.showContactPopup = function (carId) {
 
 // ── Render All Listings ──────────────────────────────────────
 function renderListings(cars) {
+    if(PLATFORM.id==='avto')updateSearchPriceDistribution(_allActiveListings);
     if (_drazbeRenderOverride) {
         _drazbeRenderOverride(cars);
         return;
@@ -485,6 +522,30 @@ function renderListings(cars) {
 const _containerCarsMap = new WeakMap();
 
 // UX Enhancement: Active Filter Chips
+function formatFilterChipLabel(key, val) {
+    if (key === 'priceFrom') {
+        const num = Number(val);
+        return !isNaN(num) && num > 0 ? `Od ${num.toLocaleString('sl-SI')} €` : `Od ${val} €`;
+    }
+    if (key === 'priceTo') {
+        const num = Number(val);
+        return !isNaN(num) && num > 0 ? `Do ${num.toLocaleString('sl-SI')} €` : `Do ${val} €`;
+    }
+    if (key === 'mileageTo') {
+        const num = Number(val);
+        return !isNaN(num) && num > 0 ? `Do ${num.toLocaleString('sl-SI')} km` : `Do ${val} km`;
+    }
+    if (key === 'yearFrom') return `Letnik od ${val}`;
+    if (key === 'yearTo') return `Letnik do ${val}`;
+    if (key === 'powerFrom') return `Od ${val} kW`;
+    if (key === 'powerTo') return `Do ${val} kW`;
+    if (key === 'onlySale') return 'Akcijska ponudba';
+    if (key === 'sellerType') return val === 'private' ? 'Fizična oseba' : 'Trgovec';
+    if (key === 'country') return COUNTRIES.find(c => c.code === val)?.label || val;
+    if (key === 'bodyType' && val === 'Terensko') return 'SUV / Terensko';
+    return val;
+}
+
 function renderActiveFilterChips() {
     const container = document.getElementById('activeFiltersTopbar');
     if (!container) return;
@@ -492,16 +553,49 @@ function renderActiveFilterChips() {
     let chipsHtml = '';
     
     // We can show chips for interesting parameters
-    const ignoreParams = ['cat', 'sort', 'mode'];
+    const ignoreParams = ['id', 'cat', 'sort', 'mode', 'showNoPrice', 'advanced', 'vehicles', 'excludedVehicles'];
     let activeFilterCount = 0;
+
+    // Render chips for pinned vehicles (+ Dodaj) and excluded vehicles (Izloči)
+    const addedVehicles = getSidebarVehicles();
+    addedVehicles.forEach((v, idx) => {
+        activeFilterCount++;
+        const parts = [v.make, v.model, v.variant, v.linija].filter(Boolean);
+        const logo = v.make ? getBrandLogo(v.make) : null;
+        const logoHtml = logo ? `<span class="active-chip-logo-wrap"><img class="active-chip-logo" src="${escHtml(logo)}" alt="${escHtml(v.make)}" onerror="this.parentElement.style.display='none'"></span>` : '';
+        chipsHtml += `<span class="active-filter-chip" data-key="vehicles" data-val="${idx}">
+            ${logoHtml}<span>${escHtml(parts.join(' › '))}</span> <i class="close" title="Odstrani"></i>
+        </span>`;
+    });
+
+    const excludedVehicles = getSidebarExcludedVehicles();
+    excludedVehicles.forEach((v, idx) => {
+        activeFilterCount++;
+        const parts = [v.make, v.model, v.variant, v.linija].filter(Boolean);
+        const logo = v.make ? getBrandLogo(v.make) : null;
+        const logoHtml = logo ? `<span class="active-chip-logo-wrap"><img class="active-chip-logo" src="${escHtml(logo)}" alt="${escHtml(v.make)}" onerror="this.parentElement.style.display='none'"></span>` : '';
+        chipsHtml += `<span class="active-filter-chip active-filter-chip--excluded" data-key="excludedVehicles" data-val="${idx}">
+            ⊘ ${logoHtml}<span>${escHtml(parts.join(' › '))}</span> <i class="close" title="Odstrani"></i>
+        </span>`;
+    });
+
     for (const [key, value] of params.entries()) {
         if (!ignoreParams.includes(key) && value) {
             // Split comma values
             value.split(',').forEach(val => {
-                if (val.trim()) {
+                const trimmed = val.trim();
+                if (trimmed) {
                     activeFilterCount++;
-                    chipsHtml += `<span class="active-filter-chip" data-key="${key}" data-val="${val}">
-                        ${escHtml(val)} <i class="close" title="Odstrani"></i>
+                    const label = formatFilterChipLabel(key, trimmed);
+                    let logoHtml = '';
+                    if (key === 'make') {
+                        const logo = getBrandLogo(trimmed);
+                        if (logo) {
+                            logoHtml = `<span class="active-chip-logo-wrap"><img class="active-chip-logo" src="${escHtml(logo)}" alt="${escHtml(trimmed)}" onerror="this.parentElement.style.display='none'"></span>`;
+                        }
+                    }
+                    chipsHtml += `<span class="active-filter-chip" data-key="${escHtml(key)}" data-val="${escHtml(trimmed)}">
+                        ${logoHtml}<span>${escHtml(label)}</span> <i class="close" title="Odstrani"></i>
                     </span>`;
                 }
             });
@@ -546,31 +640,117 @@ function renderActiveFilterChips() {
 }
 
 function removeSidebarFilter(key, val) {
+    if (key === 'vehicles') {
+        const idx = parseInt(val, 10);
+        window._sidebarVehicles = getSidebarVehicles().filter((_, i) => i !== idx);
+        renderSidebarVehicleCards();
+        updateUrlParamsFromInputs();
+        updateFiltersUI();
+        applySidebarFilters();
+        return;
+    }
+    if (key === 'excludedVehicles') {
+        const idx = parseInt(val, 10);
+        window._sidebarExcludedVehicles = getSidebarExcludedVehicles().filter((_, i) => i !== idx);
+        renderSidebarVehicleCards();
+        updateUrlParamsFromInputs();
+        updateFiltersUI();
+        applySidebarFilters();
+        return;
+    }
+    if (key === 'bodyType') {
+        const nextTypes = getSelectedBodyTypes().filter(t => t !== val);
+        setSelectedBodyTypes(nextTypes, true);
+        return;
+    }
+
     const params = parseHashParams();
-    let current = params.get(key) ? params.get(key).split(',') : [];
+    let current = params.get(key) ? params.get(key).split(',').map(s => s.trim()).filter(Boolean) : [];
     current = current.filter(c => c !== val);
     if (current.length) {
         params.set(key, current.join(','));
     } else {
         params.delete(key);
     }
-    window.history.replaceState(null, '', `#/oglasi${params.toString() ? '?' + params.toString() : ''}`);
-    
+
+    if (key === 'make' && current.length === 0) {
+        params.delete('model');
+        params.delete('variant');
+        params.delete('line');
+    } else if (key === 'model' && current.length === 0) {
+        params.delete('variant');
+    }
+
+    const paramStr = params.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${paramStr ? '?' + paramStr : ''}`);
+
     // Update Sidebar UI fields
-    const el = document.querySelector(`[name="${key}"]`);
-    if (el) el.value = '';
-    // Let's just reload the page hash to make things simple and consistent
-    window.dispatchEvent(new HashChangeEvent('hashchange'));
+    const form = document.getElementById('sidebarFiltersForm');
+    if (key === 'fuel' || key === 'transmission' || key === 'condition') {
+        form?.querySelectorAll(`input[name="${key}"]`).forEach(cb => {
+            if (cb.value === val) cb.checked = false;
+        });
+        if (key === 'fuel') updateSidebarHybridGroup();
+    } else if (key === 'onlySale') {
+        const saleEl = document.getElementById('sidebarOnlySale');
+        if (saleEl) saleEl.checked = false;
+    } else if (key === 'country') {
+        const countryEl = document.getElementById('sidebarCountry');
+        const regionEl = document.getElementById('sidebarRegion');
+        if (countryEl) {
+            countryEl.value = '';
+            countryEl._syncCustomSelect?.();
+        }
+        if (regionEl) {
+            regionEl.value = '';
+            regionEl.disabled = true;
+            regionEl.innerHTML = '<option value="">Vse regije</option>';
+            regionEl._syncCustomSelect?.();
+        }
+        localStorage.removeItem(lsKey('filterCountry'));
+        localStorage.removeItem(lsKey('filterRegion'));
+    } else if (key === 'region') {
+        const regionEl = document.getElementById('sidebarRegion');
+        if (regionEl) {
+            regionEl.value = '';
+            regionEl._syncCustomSelect?.();
+        }
+        localStorage.removeItem(lsKey('filterRegion'));
+    } else if (!['make', 'model', 'variant', 'line'].includes(key)) {
+        const fieldId = `sidebar${key.charAt(0).toUpperCase() + key.slice(1)}`;
+        const el = document.getElementById(fieldId) || document.querySelector(`[name="${key}"]`);
+        if (el) {
+            el.value = '';
+            el._syncCustomSelect?.();
+            el.dispatchEvent(new Event('change'));
+        }
+    }
+
+    updateFiltersUI();
+    applySidebarFilters();
 }
 
 function clearAllSidebarFilters() {
-    window.location.hash = '#/oglasi';
+    const resetBtn = document.getElementById('sidebarResetBtn');
+    if (resetBtn) {
+        resetBtn.click();
+        return;
+    }
+    const params = parseHashParams();
+    const kept = new URLSearchParams();
+    if (params.get('id')) kept.set('id', params.get('id'));
+    if (params.get('cat')) kept.set('cat', params.get('cat'));
+    const qs = kept.toString();
+    window.history.replaceState(null, '', `${window.location.pathname}${qs ? '?' + qs : ''}`);
+    updateFiltersUI();
+    applySidebarFilters();
 }
 export function bindCardEvents(container, cars) {
     _containerCarsMap.set(container, cars);
 
     if (window.lucide) window.lucide.createIcons({ root: container });
     applyPowerUnit(currentPowerUnit);
+    applyCardDisplayPrefsToDOM(getCardDisplayPrefs(), container);
     checkFavouriteStates();
 
     if (container.dataset.eventsBound) return;
@@ -603,7 +783,7 @@ export function bindCardEvents(container, cars) {
         const contactBtn = e.target.closest('.contact-btn');
         if (contactBtn) {
             e.stopPropagation();
-            window.showContactPopup(carId);
+            window.showContactPopup(carId, car);
             return;
         }
 
@@ -690,6 +870,8 @@ export function bindCardEvents(container, cars) {
         }
 
         // Handle Card Click (Navigation)
+        // Native title links are handled once by the global SPA interceptor.
+        if (e.target.closest('a[href]')) return;
         if (e.target.closest('.pill-btn') || e.target.closest('.action-pill-btn') ||
             e.target.closest('.action-circle-btn') ||
             e.target.closest('.card-gallery-dots') ||
@@ -707,13 +889,34 @@ export function bindCardEvents(container, cars) {
 }
 
 // ── Legend popup ─────────────────────────────────────────────
-function initLegendPopup() {
+export function initLegendPopup() {
     const btn = document.getElementById('legendBtn');
     const overlay = document.getElementById('legendOverlay');
     const closeBtn = document.getElementById('legendCloseBtn');
     if (!btn || !overlay) return;
 
+    const syncCheckboxesFromPrefs = (prefs = getCardDisplayPrefs()) => {
+        overlay.querySelectorAll('.legend-field-cb[data-legend-field]').forEach(cb => {
+            const field = cb.dataset.legendField;
+            if (!field) return;
+            const isChecked = Boolean(prefs[field]);
+            cb.checked = isChecked;
+            const row = cb.closest('.legend-item-checkable, .legend-section-toggle');
+            if (row) row.classList.toggle('is-unchecked', !isChecked);
+        });
+    };
+
+    syncCheckboxesFromPrefs();
+    applyCardDisplayPrefsToDOM(getCardDisplayPrefs());
+
+    if (overlay.dataset.legendBound === 'true') {
+        overlay.style.display = 'none';
+        return;
+    }
+    overlay.dataset.legendBound = 'true';
+
     const openLegend = () => {
+        syncCheckboxesFromPrefs();
         overlay.style.display = 'flex';
         requestAnimationFrame(() => overlay.classList.add('active'));
         if (window.lucide) window.lucide.createIcons({ context: overlay });
@@ -727,6 +930,20 @@ function initLegendPopup() {
     btn.addEventListener('click', openLegend);
     closeBtn?.addEventListener('click', closeLegend);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeLegend(); });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeLegend();
+    });
+
+    // Card display field checkboxes
+    overlay.querySelectorAll('.legend-field-cb[data-legend-field]').forEach(cb => {
+        cb.addEventListener('change', () => {
+            const field = cb.dataset.legendField;
+            if (!field) return;
+            const current = getCardDisplayPrefs();
+            const next = setCardDisplayPrefs({ ...current, [field]: cb.checked });
+            syncCheckboxesFromPrefs(next);
+        });
+    });
 
     // Power unit buttons inside legend
     overlay.querySelectorAll('.power-unit-btn').forEach(puBtn => {
@@ -735,8 +952,11 @@ function initLegendPopup() {
         });
     });
 
-    // Clicking the power toggle label also toggles
-    document.getElementById('powerToggleLabel')?.addEventListener('click', () => {
+    // Clicking the power toggle label also toggles unit without toggling checkbox
+    const powerToggleEl = document.getElementById('powerToggleLabelPill') || document.getElementById('powerToggleLabel');
+    powerToggleEl?.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
         applyPowerUnit(currentPowerUnit === 'kw' ? 'km' : 'kw');
     });
 
@@ -766,6 +986,15 @@ function initLegendPopup() {
         duBtnCc.addEventListener('click', () => applyDisplacementUnit('cc'));
         duBtnL.addEventListener('click', () => applyDisplacementUnit('l'));
     }
+
+    // Reset to default button
+    const resetBtn = document.getElementById('legendResetDefaultsBtn');
+    resetBtn?.addEventListener('click', () => {
+        const defaults = resetCardDisplayPrefs();
+        syncCheckboxesFromPrefs(defaults);
+        applyPowerUnit('km');
+        applyDisplacementUnit('cc');
+    });
 
     overlay.style.display = 'none';
 }
@@ -853,6 +1082,8 @@ function initViewToggle() {
 
 // ── Page Init ────────────────────────────────────────────────
 export function initOglasiPage() {
+    if(PLATFORM.id==='avto')enhanceSearchLayout();
+    if(PLATFORM.id==='avto')compareList=readVehicleComparison();
     console.log('[OglasiPage] init, SAMPLE_LISTINGS count:', SAMPLE_LISTINGS?.length);
 
     const container = document.getElementById('carListingsContainer');
@@ -909,14 +1140,7 @@ export function initOglasiPage() {
     const sortSelect = document.getElementById('sortSelect');
     if (sortSelect) {
         sortSelect.addEventListener('change', () => {
-            const val = sortSelect.value;
-            if (!_allActiveListings.length) return;
-            const sorted = [..._allActiveListings];
-            if (val === 'price-asc') sorted.sort((a, b) => (a.priceRaw ?? Infinity) - (b.priceRaw ?? Infinity));
-            else if (val === 'price-desc') sorted.sort((a, b) => (b.priceRaw ?? 0) - (a.priceRaw ?? 0));
-            else if (val === 'year-desc') sorted.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
-            else if (val === 'km-asc') sorted.sort((a, b) => (a.mileageKm ?? Infinity) - (b.mileageKm ?? Infinity));
-            renderListings(sorted);
+            applySidebarFilters();
         });
     }
 
@@ -942,7 +1166,9 @@ export function initOglasiPage() {
     if (window.lucide) window.lucide.createIcons();
 }
 
+let mobileSheetsCleanup;
 function setupMobileSplitPillAndSheets() {
+    mobileSheetsCleanup?.();
     const splitPill = document.getElementById('mobileSplitPill');
     const filterBtn = document.getElementById('mobilePillFilterBtn');
     const sortBtn = document.getElementById('mobilePillSortBtn');
@@ -958,6 +1184,34 @@ function setupMobileSplitPillAndSheets() {
     const sortLabel = document.getElementById('mobilePillSortLabel');
 
     if (!splitPill) return;
+    // Keep the existing filter/sort actions, but place them above the results.
+    if (PLATFORM.id === 'avto') {
+        const top = document.querySelector('.ah-search-top') || document.querySelector('.results-header')?.parentElement;
+        const chips = document.getElementById('activeFiltersTopbar');
+        if (top) top.insertBefore(splitPill, chips?.parentElement === top ? chips : null);
+        splitPill.setAttribute('aria-label',t('ah_results_tools','Orodja rezultatov'));
+        import('../components/autohub/responsive.js').then(({addFilterSectionNavigation}) => {
+            if (!bindings.signal.aborted) addFilterSectionNavigation(document.getElementById('sidebarFiltersForm'));
+        });
+    }
+    const bindings = new AbortController();
+    const options = { signal: bindings.signal };
+    let sortCloseTimer;
+    const access = PLATFORM.id === 'avto' ? initMobileSheets({
+        sheets: [{sheet:sidebar,trigger:filterBtn,label:t('sidebar_filters_title','Filtri')},
+            {sheet:sortSheet,trigger:sortBtn,label:t('ah_sort','Razvrsti')}],
+        close: closeAllSheets,
+    }) : null;
+    mobileSheetsCleanup = () => {
+        clearTimeout(sortCloseTimer);
+        access?.destroy();
+        closeAllSheets(false);
+        bindings.abort();
+    };
+    document.addEventListener('beforeRouteChange', () => {
+        mobileSheetsCleanup?.();
+        mobileSheetsCleanup = null;
+    }, {...options,once:true});
 
     function openFilterSheet() {
         if (sortSheet) sortSheet.classList.remove('sheet-open');
@@ -965,6 +1219,7 @@ function setupMobileSplitPillAndSheets() {
         if (backdrop) backdrop.classList.add('active');
         document.body.classList.add('mobile-sheet-lock');
         splitPill.classList.add('pill-hidden');
+        access?.activate(sidebar,filterBtn);
     }
 
     function openSortSheet() {
@@ -973,30 +1228,32 @@ function setupMobileSplitPillAndSheets() {
         if (backdrop) backdrop.classList.add('active');
         document.body.classList.add('mobile-sheet-lock');
         splitPill.classList.add('pill-hidden');
+        access?.activate(sortSheet,sortBtn);
     }
 
-    function closeAllSheets() {
+    function closeAllSheets(restoreFocus = true) {
         if (sidebar) sidebar.classList.remove('sheet-open');
         if (sortSheet) sortSheet.classList.remove('sheet-open');
         if (backdrop) backdrop.classList.remove('active');
         document.body.classList.remove('mobile-sheet-lock');
         splitPill.classList.remove('pill-hidden');
+        access?.deactivate(restoreFocus !== false);
     }
 
-    filterBtn?.addEventListener('click', openFilterSheet);
-    sortBtn?.addEventListener('click', openSortSheet);
-    backdrop?.addEventListener('click', closeAllSheets);
-    filterCloseBtn?.addEventListener('click', closeAllSheets);
-    sortCloseBtn?.addEventListener('click', closeAllSheets);
-    filterApplyBtn?.addEventListener('click', closeAllSheets);
+    filterBtn?.addEventListener('click', openFilterSheet,options);
+    sortBtn?.addEventListener('click', openSortSheet,options);
+    backdrop?.addEventListener('click', closeAllSheets,options);
+    filterCloseBtn?.addEventListener('click', closeAllSheets,options);
+    sortCloseBtn?.addEventListener('click', closeAllSheets,options);
+    filterApplyBtn?.addEventListener('click', closeAllSheets,options);
     filterResetBtn?.addEventListener('click', () => {
         clearAllSidebarFilters();
         closeAllSheets();
-    });
+    },options);
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeAllSheets();
-    });
+    },options);
 
     // Handle sort options selection
     sortItems.forEach(item => {
@@ -1023,8 +1280,8 @@ function setupMobileSplitPillAndSheets() {
                 }
             }
 
-            setTimeout(closeAllSheets, 180);
-        });
+            sortCloseTimer = setTimeout(closeAllSheets, 180);
+        },options);
     });
 
     // Sync active state of sort options with current sortSelect value
@@ -1048,35 +1305,392 @@ let _loadingMore = false;
  * the make select. avto→global, motor/moto→moto, gospodarska→gospodarska — resolved
  * centrally via brandsFileFor() so the home search, create-listing and board agree.
  */
+// Canonical model alias equivalences between catalog (English) and listings (Slovenian)
+const MODEL_ALIAS_GROUPS = [
+    ['Series 1', 'Serija 1', '1 Series'],
+    ['Series 2', 'Serija 2', '2 Series'],
+    ['Series 3', 'Serija 3', '3 Series'],
+    ['Series 4', 'Serija 4', '4 Series'],
+    ['Series 5', 'Serija 5', '5 Series'],
+    ['Series 6', 'Serija 6', '6 Series'],
+    ['Series 7', 'Serija 7', '7 Series'],
+    ['Series 8', 'Serija 8', '8 Series'],
+    ['A-Class', 'A-Razred', 'Razred A'],
+    ['B-Class', 'B-Razred', 'Razred B'],
+    ['C-Class', 'C-Razred', 'Razred C'],
+    ['E-Class', 'E-Razred', 'Razred E'],
+    ['S-Class', 'S-Razred', 'Razred S'],
+    ['G-Class', 'G-Razred', 'Razred G'],
+    ['V-Class', 'V-Razred', 'Razred V'],
+    ['RS 3', 'RS3'],
+    ['RS 4', 'RS4'],
+    ['RS 5', 'RS5'],
+    ['RS 6', 'RS6'],
+    ['RS 7', 'RS7'],
+];
+
+function getEquivalentModels(modelName) {
+    if (!modelName) return [];
+    const norm = modelName.trim().toLowerCase();
+    for (const group of MODEL_ALIAS_GROUPS) {
+        if (group.some(m => m.toLowerCase() === norm)) {
+            return group;
+        }
+    }
+    return [modelName.trim()];
+}
+
+function modelsMatch(carModel, filterModel) {
+    if (!carModel || !filterModel) return false;
+    if (carModel === filterModel) return true;
+    const eq = getEquivalentModels(filterModel).map(m => m.toLowerCase());
+    return eq.includes(carModel.trim().toLowerCase());
+}
+
+function makesMatch(carMake, filterMake) {
+    if (!carMake || !filterMake) return false;
+    if (carMake === filterMake) return true;
+    const c = carMake.trim().toLowerCase();
+    const f = filterMake.trim().toLowerCase();
+    if (c === f) return true;
+    if ((c === 'bmw motorrad' && f === 'bmw') || (c === 'bmw' && f === 'bmw motorrad')) return true;
+    if ((c === 'vw' && f === 'volkswagen') || (c === 'volkswagen' && f === 'vw')) return true;
+    return false;
+}
+
+function variantsMatch(car, filterVariant) {
+    if (!filterVariant) return true;
+    const vLower = filterVariant.trim().toLowerCase();
+    const carVariant = (car.variant || '').toLowerCase();
+    const titleStr = (car.title || '').toLowerCase();
+    const subtitleStr = (car.subtitle || '').toLowerCase();
+    const bodyStr = (car.bodyType || '').toLowerCase();
+    const segStr = (car.segment || '').toLowerCase();
+
+    if (carVariant && (carVariant === vLower || carVariant.includes(vLower) || vLower.includes(carVariant))) {
+        return true;
+    }
+    if (titleStr.includes(vLower) || subtitleStr.includes(vLower)) {
+        return true;
+    }
+    // Check body-style variant synonyms (e.g. "Astra Karavan" <-> "Sports Tourer", "Hatchback" <-> "Kombilimuzina")
+    if (vLower.includes('karavan') || vLower.includes('sports tourer') || vLower.includes('touring') || vLower.includes('avant') || vLower.includes('variant') || vLower.includes('combi')) {
+        if (bodyStr === 'karavan' || segStr.includes('wagon') || segStr.includes('karavan') || titleStr.includes('sports tourer') || titleStr.includes('touring') || titleStr.includes('avant') || subtitleStr.includes('sports tourer') || subtitleStr.includes('touring') || subtitleStr.includes('avant')) {
+            return true;
+        }
+    }
+    if (vLower.includes('hatchback') || vLower.includes('kombilimuzina')) {
+        if (bodyStr === 'kombilimuzina' || segStr.includes('hatchback') || segStr.includes('kombilimuzina')) {
+            return true;
+        }
+    }
+    if (vLower.includes('limuzina') || vLower.includes('sedan') || vLower.includes('grand sport') || vLower.includes('limousine')) {
+        if (bodyStr === 'limuzina' || segStr.includes('sedan') || segStr.includes('limuzina') || titleStr.includes('grand sport') || subtitleStr.includes('grand sport')) {
+            return true;
+        }
+    }
+    if (vLower.includes('cabrio') || vLower.includes('kabriolet')) {
+        if (bodyStr === 'kabriolet' || segStr.includes('convertible') || segStr.includes('cabrio')) {
+            return true;
+        }
+    }
+    if (vLower.includes('coupe') || vLower.includes('gtc')) {
+        if (bodyStr === 'coupe' || segStr.includes('coupe')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function parseJsonVehicleList(raw) {
+    if (!raw) return [];
+    try {
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed.filter(v => v && v.make) : [];
+    } catch {
+        return [];
+    }
+}
+
+function getSidebarVehicles() {
+    if (Array.isArray(window._sidebarVehicles)) return window._sidebarVehicles;
+    const params = parseHashParams();
+    window._sidebarVehicles = parseJsonVehicleList(params.get('vehicles'));
+    return window._sidebarVehicles;
+}
+
+function getSidebarExcludedVehicles() {
+    if (Array.isArray(window._sidebarExcludedVehicles)) return window._sidebarExcludedVehicles;
+    const params = parseHashParams();
+    window._sidebarExcludedVehicles = parseJsonVehicleList(params.get('excludedVehicles'));
+    return window._sidebarExcludedVehicles;
+}
+
+function getSelectedBodyTypes() {
+    if (Array.isArray(window._sidebarBodyTypes)) {
+        return window._sidebarBodyTypes.filter(Boolean);
+    }
+    const params = parseHashParams();
+    const raw = params.get('bodyType') || params.get('bodyTypes') || '';
+    const parsed = raw.split(',').map(s => s.trim()).filter(Boolean);
+    window._sidebarBodyTypes = parsed;
+    return parsed;
+}
+
+function setSelectedBodyTypes(types, triggerFilter = true) {
+    const clean = [...new Set((types || []).map(s => String(s || '').trim()).filter(Boolean))];
+    window._sidebarBodyTypes = clean;
+    const bodySelect = document.getElementById('sidebarBodyType');
+    if (bodySelect) {
+        bodySelect.dataset.multiValue = clean.join(',');
+        window._syncingBodySelect = true;
+        bodySelect.value = clean[clean.length - 1] || '';
+        bodySelect._syncCustomSelect?.();
+        bodySelect._syncBodyTiles?.();
+        window._syncingBodySelect = false;
+    }
+    if (triggerFilter && !window._isPrefilling) {
+        updateUrlParamsFromInputs();
+        updateFiltersUI();
+        applySidebarFilters();
+    }
+}
+
+window._toggleSidebarBodyType = function(targetType) {
+    if (!targetType) {
+        setSelectedBodyTypes([], true);
+        return;
+    }
+    const current = getSelectedBodyTypes();
+    const isSuv = targetType === 'SUV' || targetType === 'Terensko';
+    const exists = current.some(x => x === targetType || (isSuv && (x === 'SUV' || x === 'Terensko')));
+    const next = exists
+        ? current.filter(x => x !== targetType && !(isSuv && (x === 'SUV' || x === 'Terensko')))
+        : [...current, targetType];
+    setSelectedBodyTypes(next, true);
+};
+
+function carMatchesVehicleEntry(car, entry) {
+    if (!entry || !entry.make) return true;
+    if (!makesMatch(car.make, entry.make)) return false;
+    if (entry.model && !modelsMatch(car.model, entry.model)) return false;
+    if (entry.variant && !variantsMatch(car, entry.variant)) return false;
+    if (entry.linija) {
+        const lineLower = entry.linija.toLowerCase();
+        const carLine = (car.line || car.linija || '').toLowerCase();
+        const titleStr = (car.title || '').toLowerCase();
+        const subtitleStr = (car.subtitle || '').toLowerCase();
+        const equipmentStr = (car.equipment || []).join(' ').toLowerCase();
+        if (!(carLine === lineLower || titleStr.includes(lineLower) || subtitleStr.includes(lineLower) || equipmentStr.includes(lineLower))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function renderSidebarVehicleCards() {
+    const cardsEl = document.getElementById('sidebarVehicleCards');
+    const excludedSection = document.getElementById('sidebarExcludedVehiclesSection');
+    const excludedCardsEl = document.getElementById('sidebarExcludedVehicleCards');
+    const vehicles = getSidebarVehicles();
+    const excludedVehicles = getSidebarExcludedVehicles();
+
+    if (cardsEl) {
+        cardsEl.innerHTML = '';
+        cardsEl.style.display = vehicles.length > 0 ? 'flex' : 'none';
+        vehicles.forEach((v, idx) => {
+            const card = document.createElement('div');
+            card.className = 'vehicle-entry-card ah-sidebar-vec';
+            const logo = v.make ? getBrandLogo(v.make) : null;
+            const logoHtml = logo ? `<span class="sidebar-vec-logo-wrap"><img class="sidebar-vec-logo" src="${escHtml(logo)}" alt="${escHtml(v.make)}" onerror="this.parentElement.style.display='none'"></span>` : '';
+            let parts = `${logoHtml}<span class="vec-make">${escHtml(v.make)}</span>`;
+            if (v.model) parts += `<span class="vec-sep">›</span><span class="vec-model">${escHtml(v.model)}</span>`;
+            if (v.variant) parts += `<span class="vec-sep">›</span><span class="vec-variant">${escHtml(v.variant)}</span>`;
+            if (v.linija) parts += `<span class="vec-sep">›</span><span class="vec-linija">${escHtml(v.linija)}</span>`;
+            card.innerHTML = `<div class="vec-info">${parts}</div><button type="button" class="vec-remove" aria-label="Odstrani">&times;</button>`;
+            card.querySelector('.vec-remove').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window._sidebarVehicles = getSidebarVehicles().filter((_, i) => i !== idx);
+                renderSidebarVehicleCards();
+                updateUrlParamsFromInputs();
+                updateFiltersUI();
+                applySidebarFilters();
+            });
+            cardsEl.appendChild(card);
+        });
+    }
+
+    if (excludedSection && excludedCardsEl) {
+        excludedCardsEl.innerHTML = '';
+        excludedSection.style.display = excludedVehicles.length > 0 ? 'flex' : 'none';
+        excludedVehicles.forEach((v, idx) => {
+            const card = document.createElement('div');
+            card.className = 'vehicle-entry-card vec-excluded ah-sidebar-vec';
+            const logo = v.make ? getBrandLogo(v.make) : null;
+            const logoHtml = logo ? `<span class="sidebar-vec-logo-wrap"><img class="sidebar-vec-logo" src="${escHtml(logo)}" alt="${escHtml(v.make)}" onerror="this.parentElement.style.display='none'"></span>` : '';
+            let parts = `${logoHtml}<span class="vec-make">${escHtml(v.make)}</span>`;
+            if (v.model) parts += `<span class="vec-sep">›</span><span class="vec-model">${escHtml(v.model)}</span>`;
+            if (v.variant) parts += `<span class="vec-sep">›</span><span class="vec-variant">${escHtml(v.variant)}</span>`;
+            if (v.linija) parts += `<span class="vec-sep">›</span><span class="vec-linija">${escHtml(v.linija)}</span>`;
+            card.innerHTML = `<div class="vec-info">${parts}</div><button type="button" class="vec-remove" aria-label="Odstrani">&times;</button>`;
+            card.querySelector('.vec-remove').addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                window._sidebarExcludedVehicles = getSidebarExcludedVehicles().filter((_, i) => i !== idx);
+                renderSidebarVehicleCards();
+                updateUrlParamsFromInputs();
+                updateFiltersUI();
+                applySidebarFilters();
+            });
+            excludedCardsEl.appendChild(card);
+        });
+    }
+}
+
+function readCurrentSidebarVehicleSelection() {
+    const makeEl = document.getElementById('sidebarMake');
+    const modelEl = document.getElementById('sidebarModel');
+    const variantEl = document.getElementById('sidebarVariant');
+    const lineEl = document.getElementById('sidebarLine');
+    let make = makeEl?.value || '';
+    let model = modelEl?.value || '';
+    let variant = variantEl?.value || '';
+    let linija = lineEl?.value || '';
+
+    if (!make && model.includes('::')) {
+        const [mMake, mModel] = model.split('::');
+        make = mMake;
+        model = mModel;
+    }
+    if (variant.includes('::')) {
+        const [vModel, vVariant] = variant.split('::');
+        if (!model) model = vModel;
+        variant = vVariant;
+    }
+    return {
+        make: make.trim(),
+        model: model.trim(),
+        variant: variant.trim(),
+        linija: linija.trim()
+    };
+}
+
+function enrichSidebarCatalog(rawCatalog) {
+    const data = { ...(rawCatalog || {}) };
+    (_allActiveListings || []).forEach(car => {
+        if (!car.make || !car.model) return;
+        let targetMake = car.make;
+        if (!data[targetMake]) {
+            const existingMake = Object.keys(data).find(k => makesMatch(k, targetMake));
+            if (existingMake) targetMake = existingMake;
+            else data[targetMake] = {};
+        } else {
+            data[targetMake] = { ...data[targetMake] };
+        }
+
+        const makeModels = data[targetMake];
+        // Find if an equivalent model exists in catalog
+        const existingModel = Object.keys(makeModels).find(m => modelsMatch(m, car.model));
+        const modelKey = existingModel || car.model;
+
+        const existingEntry = makeModels[modelKey];
+        const trimCandidate = (car.variant || car.subtitle || '').trim();
+        if (!existingEntry) {
+            makeModels[modelKey] = trimCandidate ? [trimCandidate] : [];
+        } else if (trimCandidate) {
+            const currentTrims = getModelVariants(existingEntry).map(x => typeof x === 'object' ? x.trim : x).filter(Boolean);
+            if (!currentTrims.some(t => t.toLowerCase() === trimCandidate.toLowerCase())) {
+                if (Array.isArray(existingEntry)) {
+                    makeModels[modelKey] = [...existingEntry, trimCandidate];
+                } else if (existingEntry && Array.isArray(existingEntry.trims)) {
+                    makeModels[modelKey] = {
+                        ...existingEntry,
+                        trims: [...existingEntry.trims, trimCandidate]
+                    };
+                }
+            }
+        }
+    });
+    return data;
+}
+
 function loadSidebarBrands(category, onReady) {
     const makeSelect = document.getElementById("sidebarMake");
-    const modelSelect = document.getElementById("sidebarModel");
     if (!makeSelect) return;
 
     const file = brandsFileFor(category);
 
-    const resetMake = (data) => {
+    const resetMake = (rawData) => {
+        const data = enrichSidebarCatalog(rawData);
+        window._sidebarRawBrandModelData = rawData;
         window._sidebarBrandModelData = data;
-        const prevBrand = makeSelect.value;
+        const params = parseHashParams();
+        const urlMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
+        const prevBrand = urlMakes[0] || makeSelect.value;
         makeSelect.innerHTML = '<option value="">Vse znamke</option>';
+
+        // Count active listings per brand for helpful badges
+        const brandCounts = {};
+        (_allActiveListings || []).forEach(car => {
+            if (!car.make) return;
+            const matchedKey = Object.keys(data).find(k => makesMatch(k, car.make)) || car.make;
+            brandCounts[matchedKey] = (brandCounts[matchedKey] || 0) + 1;
+        });
+
+        const formatBrandText = (brand) => {
+            const cnt = brandCounts[brand] || 0;
+            return cnt > 0 ? `${brand} (${cnt})` : brand;
+        };
+
+        const cat = category || (PLATFORM.id === 'navtika' ? 'plovila' : 'avto');
+        const popular = popularBrandsFor(cat).filter(b => data[b]);
+        if (popular.length) {
+            const heading = document.createElement("option");
+            heading.value = '';
+            heading.textContent = t('ah_popular_brands', 'Priljubljene znamke');
+            heading.disabled = true;
+            heading.dataset.popularLabel = 'true';
+            makeSelect.appendChild(heading);
+
+            popular.forEach(brand => {
+                const o = document.createElement("option");
+                o.value = brand;
+                o.textContent = formatBrandText(brand);
+                o.dataset.popular = 'true';
+                if (brand === prevBrand) o.selected = true;
+                makeSelect.appendChild(o);
+            });
+        }
+
+        const otherHeading = document.createElement("option");
+        otherHeading.value = '';
+        otherHeading.textContent = t('ah_all_brands', 'Vse znamke A–Ž');
+        otherHeading.disabled = true;
+        otherHeading.dataset.popularLabel = 'true';
+        makeSelect.appendChild(otherHeading);
+
         Object.keys(data).sort().forEach(brand => {
-            const o = document.createElement("option");
-            o.value = brand;
-            o.textContent = brand;
-            makeSelect.appendChild(o);
+            if (!popular.includes(brand)) {
+                const o = document.createElement("option");
+                o.value = brand;
+                o.textContent = formatBrandText(brand);
+                if (brand === prevBrand) o.selected = true;
+                makeSelect.appendChild(o);
+            }
         });
         if (prevBrand && data[prevBrand]) {
             makeSelect.value = prevBrand;
-        } else if (modelSelect) {
-            modelSelect.innerHTML = '<option value="">Vsi modeli</option>';
-            modelSelect.disabled = true;
+        } else {
+            makeSelect.value = '';
         }
         initCustomSelects();
+        makeSelect._syncCustomSelect?.();
         if (typeof onReady === 'function') onReady();
     };
 
-    if (file === _sidebarBrandFile && window._sidebarBrandModelData) {
-        resetMake(window._sidebarBrandModelData);
+    if (file === _sidebarBrandFile && window._sidebarRawBrandModelData) {
+        resetMake(window._sidebarRawBrandModelData);
         return;
     }
 
@@ -1089,7 +1703,10 @@ function loadSidebarBrands(category, onReady) {
     if (!window._vehicleLinesData) {
         fetch('/json/vehicle_lines.json')
             .then(res => res.json())
-            .then(data => { window._vehicleLinesData = data; })
+            .then(data => {
+                window._vehicleLinesData = data;
+                updateFiltersUI();
+            })
             .catch(() => {});
     }
 }
@@ -1148,6 +1765,9 @@ async function loadMoreListings() {
         _hasMore = page.hasMore;
         const newItems = page.listings.filter(isPrimaryItem);
         _allActiveListings = [..._allActiveListings, ...newItems];
+        if (window._sidebarRawBrandModelData) {
+            window._sidebarBrandModelData = enrichSidebarCatalog(window._sidebarRawBrandModelData);
+        }
         // Re-apply current filters to the expanded set
         applySidebarFilters();
     } catch (e) {
@@ -1163,6 +1783,8 @@ async function initSidebarFiltering() {
     const _feedContainer = document.getElementById('carListingsContainer');
     if (_feedContainer) renderLoading(_feedContainer, { skeleton: 'cards', rows: 8, viewMode: currentViewMode });
 
+    populateAndBindSidebarControls();
+
     // 1. Fetch first page of listings
     try {
         const page = await getListingsPaged({ lastDoc: null, pageSize: 24 });
@@ -1175,7 +1797,9 @@ async function initSidebarFiltering() {
         _allActiveListings = [...SAMPLE_LISTINGS].filter(isPrimaryItem);
     }
     setupLoadMore();
+}
 
+function populateAndBindSidebarControls() {
     // 2. Populate fields
     const makeSelect = document.getElementById("sidebarMake");
     const yearFromSelect = document.getElementById("sidebarYearFrom");
@@ -1184,12 +1808,17 @@ async function initSidebarFiltering() {
 
     // Years
     const currentYear = new Date().getFullYear();
-    yearFromSelect.innerHTML = '<option value="">Od</option>';
-    yearToSelect.innerHTML = '<option value="">Do</option>';
+    if (yearFromSelect) yearFromSelect.innerHTML = '<option value="">Od</option>';
+    if (yearToSelect) yearToSelect.innerHTML = '<option value="">Do</option>';
     for (let y = currentYear; y >= 1980; y--) {
-        const o1 = document.createElement("option"); o1.value = y; o1.textContent = y; yearFromSelect.appendChild(o1);
-        const o2 = document.createElement("option"); o2.value = y; o2.textContent = y; yearToSelect.appendChild(o2);
+        if (yearFromSelect) {
+            const o1 = document.createElement("option"); o1.value = y; o1.textContent = y; yearFromSelect.appendChild(o1);
+        }
+        if (yearToSelect) {
+            const o2 = document.createElement("option"); o2.value = y; o2.textContent = y; yearToSelect.appendChild(o2);
+        }
     }
+    initCustomSelects();
 
     // Country + Region selects (with localStorage persistence)
     const countrySelect = document.getElementById('sidebarCountry');
@@ -1220,6 +1849,7 @@ async function initSidebarFiltering() {
                 regionSelect.disabled = true;
             }
             if (selectValue) regionSelect.value = selectValue;
+            regionSelect._syncCustomSelect?.();
         };
 
         // Restore saved selection
@@ -1238,14 +1868,14 @@ async function initSidebarFiltering() {
             localStorage.setItem(lsKey('filterCountry'), code);
             localStorage.setItem(lsKey('filterRegion'), '');
             populateRegions(code, '');
-            applySidebarFilters();
             updateUrlParamsFromInputs();
+            applySidebarFilters();
         });
 
         regionSelect.addEventListener('change', () => {
             localStorage.setItem(lsKey('filterRegion'), regionSelect.value);
-            applySidebarFilters();
             updateUrlParamsFromInputs();
+            applySidebarFilters();
         });
     }
 
@@ -1266,55 +1896,80 @@ async function initSidebarFiltering() {
     makeSelect.addEventListener("change", () => {
         if (window._isPrefilling) return;
         const brand = makeSelect.value;
-        if (!brand) return;
+        if (!brand) {
+            updateUrlParams([], [], [], []);
+            return;
+        }
 
         const params = parseHashParams();
-        const selectedMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
-        const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
-        const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
-        const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
+        const prevMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
+        const prevModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
+        const prevVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
+        const prevLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
 
-        if (!selectedMakes.includes(brand)) {
-            selectedMakes.push(brand);
-            updateUrlParams(selectedMakes, selectedModels, selectedVariants, selectedLines);
-        }
+        // Switching brand replaces the active brand (or keeps compatible models if same brand)
+        const isSameBrand = prevMakes.length === 1 && prevMakes[0] === brand;
+        const data = window._sidebarBrandModelData || {};
+        const validModels = isSameBrand ? prevModels.filter(m => data[brand]?.[m]) : [];
+        const validVariants = isSameBrand ? prevVariants : [];
+        const linesData = window._vehicleLinesData || {};
+        const validLines = prevLines.filter(l => (linesData[brand] || []).includes(l));
+
+        updateUrlParams([brand], validModels, validVariants, validLines);
     });
 
     if (modelSelect) {
         modelSelect.addEventListener("change", () => {
             if (window._isPrefilling) return;
-            const model = modelSelect.value;
-            if (!model) return;
+            const rawModel = modelSelect.value;
 
             const params = parseHashParams();
             const selectedMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
-            const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
-            const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
             const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
 
-            if (!selectedModels.includes(model)) {
-                selectedModels.push(model);
-                updateUrlParams(selectedMakes, selectedModels, selectedVariants, selectedLines);
+            if (!rawModel) {
+                updateUrlParams(selectedMakes, [], [], selectedLines);
+                return;
             }
+
+            // Support selecting "Make::Model" directly when no brand was selected yet
+            if (rawModel.includes('::')) {
+                const [inferredMake, inferredModel] = rawModel.split('::');
+                if (makeSelect && inferredMake) {
+                    makeSelect.value = inferredMake;
+                    makeSelect._syncCustomSelect?.();
+                }
+                updateUrlParams([inferredMake], [inferredModel], [], selectedLines);
+                return;
+            }
+
+            updateUrlParams(selectedMakes, [rawModel], [], selectedLines);
         });
     }
 
     if (variantSelect) {
         variantSelect.addEventListener("change", () => {
             if (window._isPrefilling) return;
-            const variant = variantSelect.value;
-            if (!variant) return;
+            const rawVariant = variantSelect.value;
 
             const params = parseHashParams();
             const selectedMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
             const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
-            const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
             const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
 
-            if (!selectedVariants.includes(variant)) {
-                selectedVariants.push(variant);
-                updateUrlParams(selectedMakes, selectedModels, selectedVariants, selectedLines);
+            if (!rawVariant) {
+                updateUrlParams(selectedMakes, selectedModels, [], selectedLines);
+                return;
             }
+
+            // Support selecting "Model::Variant" directly when only a brand was selected
+            if (rawVariant.includes('::')) {
+                const [inferredModel, inferredVariant] = rawVariant.split('::');
+                updateUrlParams(selectedMakes, [inferredModel], [inferredVariant], selectedLines);
+                return;
+            }
+
+            updateUrlParams(selectedMakes, selectedModels, [rawVariant], selectedLines);
         });
     }
 
@@ -1322,17 +1977,88 @@ async function initSidebarFiltering() {
         lineSelect.addEventListener("change", () => {
             if (window._isPrefilling) return;
             const line = lineSelect.value;
-            if (!line) return;
 
             const params = parseHashParams();
             const selectedMakes = params.get('make') ? params.get('make').split(',').map(s => s.trim()).filter(Boolean) : [];
             const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
             const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
-            const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
 
-            if (!selectedLines.includes(line)) {
-                selectedLines.push(line);
-                updateUrlParams(selectedMakes, selectedModels, selectedVariants, selectedLines);
+            if (!line) {
+                updateUrlParams(selectedMakes, selectedModels, selectedVariants, []);
+                return;
+            }
+
+            updateUrlParams(selectedMakes, selectedModels, selectedVariants, [line]);
+        });
+    }
+
+    // Multi-vehicle "+ Dodaj" and "Izloči" buttons in sidebar (matching /iskanje "Več filtrov")
+    const addVehicleBtn = document.getElementById("sidebarAddVehicleBtn");
+    const excludeVehicleBtn = document.getElementById("sidebarExcludeVehicleBtn");
+    if (addVehicleBtn) {
+        addVehicleBtn.addEventListener("click", () => {
+            const sel = readCurrentSidebarVehicleSelection();
+            if (!sel.make) {
+                showToast(t('adv_select_make_first', 'Najprej izberite znamko vozila.'), 'info');
+                const trigger = makeSelect?.closest('.custom-select-wrapper')?.querySelector('.custom-select-trigger');
+                trigger?.click();
+                return;
+            }
+            const currentList = getSidebarVehicles();
+            if (currentList.length >= 5) {
+                showToast(t('adv_max_vehicles', 'Dodate lahko največ 5 vozil.'), 'info');
+                return;
+            }
+            const isDup = currentList.some(v =>
+                v.make === sel.make &&
+                (v.model || '') === (sel.model || '') &&
+                (v.variant || '') === (sel.variant || '') &&
+                (v.linija || '') === (sel.linija || '')
+            );
+            if (!isDup) {
+                window._sidebarVehicles = [...currentList, sel];
+            }
+            renderSidebarVehicleCards();
+            updateUrlParams([], [], [], []);
+        });
+    }
+
+    if (excludeVehicleBtn) {
+        excludeVehicleBtn.addEventListener("click", () => {
+            const sel = readCurrentSidebarVehicleSelection();
+            if (!sel.make) {
+                showToast(t('adv_select_make_first', 'Najprej izberite znamko vozila.'), 'info');
+                const trigger = makeSelect?.closest('.custom-select-wrapper')?.querySelector('.custom-select-trigger');
+                trigger?.click();
+                return;
+            }
+            const currentExcluded = getSidebarExcludedVehicles();
+            const isDup = currentExcluded.some(v =>
+                v.make === sel.make &&
+                (v.model || '') === (sel.model || '') &&
+                (v.variant || '') === (sel.variant || '') &&
+                (v.linija || '') === (sel.linija || '')
+            );
+            if (!isDup) {
+                window._sidebarExcludedVehicles = [...currentExcluded, sel];
+            }
+            renderSidebarVehicleCards();
+            updateUrlParams([], [], [], []);
+        });
+    }
+
+    // Multi-select Karoserija (#sidebarBodyType)
+    const bodyTypeSelectEl = document.getElementById("sidebarBodyType");
+    if (bodyTypeSelectEl) {
+        bodyTypeSelectEl.addEventListener("change", () => {
+            if (window._isPrefilling || window._syncingBodySelect) return;
+            const chosen = bodyTypeSelectEl.value;
+            if (!chosen) {
+                setSelectedBodyTypes([], true);
+            } else {
+                const current = getSelectedBodyTypes();
+                const next = current.includes(chosen) ? current : [...current, chosen];
+                setSelectedBodyTypes(next, true);
             }
         });
     }
@@ -1368,14 +2094,17 @@ async function initSidebarFiltering() {
     }
     if (form) {
         form.querySelectorAll("input, select").forEach(el => {
-            if (el !== makeSelect && el !== modelSelect && el !== variantSelect) {
+            if (el.classList.contains('custom-select-search')) return;
+            if (el !== makeSelect && el !== modelSelect && el !== variantSelect && el !== lineSelect && el !== bodyTypeSelectEl) {
                 el.addEventListener("change", () => {
-                    applySidebarFilters();
+                    if (window._isPrefilling) return;
                     updateUrlParamsFromInputs();
+                    applySidebarFilters();
                 });
                 el.addEventListener("input", () => {
-                    applySidebarFilters();
+                    if (window._isPrefilling) return;
                     updateUrlParamsFromInputs();
+                    applySidebarFilters();
                 });
             }
         });
@@ -1383,41 +2112,49 @@ async function initSidebarFiltering() {
 
     if (resetBtn) {
         resetBtn.addEventListener("click", () => {
+            window._isPrefilling = true;
+            window._sidebarVehicles = [];
+            window._sidebarExcludedVehicles = [];
+            window._sidebarBodyTypes = [];
+            renderSidebarVehicleCards();
             if (form) {
                 form.reset();
                 form.querySelectorAll("select").forEach(sel => {
                     sel.value = '';
-                    sel.dispatchEvent(new Event('change'));
+                    sel._syncCustomSelect?.();
                 });
                 updateSidebarHybridGroup();
             }
-            if (modelSelect) {
-                modelSelect.innerHTML = '<option value="">Vsi modeli</option>';
-                modelSelect.disabled = true;
+            const bodyTypeEl = document.getElementById('sidebarBodyType');
+            if (bodyTypeEl) {
+                bodyTypeEl.dataset.multiValue = '';
+                bodyTypeEl.value = '';
+                bodyTypeEl._syncCustomSelect?.();
+                bodyTypeEl._syncBodyTiles?.();
             }
-            if (variantSelect) {
-                variantSelect.innerHTML = '<option value="">Vse različice</option>';
-                variantSelect.disabled = true;
-            }
-            const lineSelectReset = document.getElementById("sidebarLine");
-            const lineGroupReset = document.getElementById("sidebarLineGroup");
-            if (lineSelectReset) lineSelectReset.innerHTML = '<option value="">Vse linije</option>';
-            if (lineGroupReset) lineGroupReset.style.display = 'none';
-
             // Clear country/region and their localStorage state
             const countrySelectReset = document.getElementById('sidebarCountry');
             const regionSelectReset = document.getElementById('sidebarRegion');
-            if (countrySelectReset) countrySelectReset.value = '';
+            if (countrySelectReset) {
+                countrySelectReset.value = '';
+                countrySelectReset._syncCustomSelect?.();
+            }
             if (regionSelectReset) {
                 regionSelectReset.innerHTML = '<option value="">Vse regije</option>';
                 regionSelectReset.disabled = true;
+                regionSelectReset._syncCustomSelect?.();
             }
             localStorage.removeItem(lsKey('filterCountry'));
             localStorage.removeItem(lsKey('filterRegion'));
 
-            const params = parseHashParams();
-            const cat = params.get('cat');
-            window.history.replaceState(null, '', `#/oglasi${cat ? '?cat=' + cat : ''}`);
+            const currentParams = parseHashParams();
+            const kept = new URLSearchParams();
+            if (currentParams.get('id')) kept.set('id', currentParams.get('id'));
+            if (currentParams.get('cat')) kept.set('cat', currentParams.get('cat'));
+            const qs = kept.toString();
+            window.history.replaceState(null, '', `${window.location.pathname}${qs ? '?' + qs : ''}`);
+            window._isPrefilling = false;
+            updateFiltersUI();
             applySidebarFilters();
         });
     }
@@ -1425,29 +2162,82 @@ async function initSidebarFiltering() {
     bindSidebarAccordions();
 }
 
+function setAccordionState(trigger, body, open) {
+    trigger.setAttribute('aria-expanded', String(open));
+    if (body) {
+        if (open) {
+            body.style.overflow = 'hidden';
+            body.style.maxHeight = body.scrollHeight + 'px';
+            body.style.opacity = '1';
+            setTimeout(() => {
+                if (trigger.getAttribute('aria-expanded') === 'true') {
+                    body.style.maxHeight = 'none';
+                    body.style.overflow = 'visible';
+                }
+            }, 300);
+        } else {
+            body.style.overflow = 'hidden';
+            body.style.maxHeight = body.scrollHeight + 'px';
+            requestAnimationFrame(() => requestAnimationFrame(() => {
+                body.style.maxHeight = '0';
+                body.style.opacity = '0';
+            }));
+        }
+    }
+}
+
+function syncCollapseAllButton() {
+    const collapseBtn = document.getElementById('sidebarCollapseAllBtn');
+    if (!collapseBtn) return;
+    const triggers = document.querySelectorAll('#sidebarFiltersForm .adv-acc-trigger');
+    const anyOpen = [...triggers].some(t => t.getAttribute('aria-expanded') === 'true');
+    const labelSpan = collapseBtn.querySelector('.ah-collapse-label');
+    collapseBtn.setAttribute('data-collapsed', String(!anyOpen));
+    if (anyOpen) {
+        if (labelSpan) {
+            labelSpan.textContent = t('collapse_all', 'Skrči vse');
+            labelSpan.setAttribute('data-i18n-key', 'collapse_all');
+        }
+        collapseBtn.setAttribute('aria-label', t('collapse_all', 'Skrči vse'));
+        collapseBtn.setAttribute('title', t('collapse_all', 'Skrči vse filtre'));
+    } else {
+        if (labelSpan) {
+            labelSpan.textContent = t('expand_all', 'Razpri vse');
+            labelSpan.setAttribute('data-i18n-key', 'expand_all');
+        }
+        collapseBtn.setAttribute('aria-label', t('expand_all', 'Razpri vse'));
+        collapseBtn.setAttribute('title', t('expand_all', 'Razpri vse filtre'));
+    }
+}
+
 function bindSidebarAccordions() {
     const triggers = document.querySelectorAll('#sidebarFiltersForm .adv-acc-trigger');
-    triggers.forEach(trigger => {
+    triggers.forEach((trigger, index) => {
         const accordion = trigger.closest('.adv-accordion');
         const body = accordion.querySelector('.adv-acc-body');
 
+        if (PLATFORM.id === 'avto' && index < 2) trigger.setAttribute('aria-expanded','true');
+
         // Set up transition — body is always display:flex, max-height collapses it
         if (body) {
-            body.style.overflow = 'hidden';
             body.style.transition = 'max-height 0.28s ease, opacity 0.28s ease';
             body.style.display = 'flex';
             const isOpen = trigger.getAttribute('aria-expanded') === 'true';
             if (!isOpen) {
+                body.style.overflow = 'hidden';
                 body.style.maxHeight = '0';
                 body.style.opacity = '0';
             } else {
-                // Defer so the DOM is ready to measure
                 requestAnimationFrame(() => {
-                    body.style.maxHeight = body.scrollHeight + 'px';
+                    body.style.maxHeight = 'none';
+                    body.style.overflow = 'visible';
                     body.style.opacity = '1';
                 });
             }
         }
+
+        if (trigger.dataset.accordionBound) return;
+        trigger.dataset.accordionBound = 'true';
 
         trigger.addEventListener('click', (e) => {
             if (e.target.closest('.sidebar-pill-remove') || e.target.closest('.sidebar-active-pill')) {
@@ -1455,39 +2245,46 @@ function bindSidebarAccordions() {
             }
             const isOpen = trigger.getAttribute('aria-expanded') === 'true';
             const ns = !isOpen;
-            trigger.setAttribute('aria-expanded', String(ns));
-
-            if (body) {
-                if (ns) {
-                    // Opening
-                    body.style.maxHeight = body.scrollHeight + 'px';
-                    body.style.opacity = '1';
-                } else {
-                    // Closing: snap to exact current height then animate to 0
-                    body.style.maxHeight = body.scrollHeight + 'px';
-                    requestAnimationFrame(() => requestAnimationFrame(() => {
-                        body.style.maxHeight = '0';
-                        body.style.opacity = '0';
-                    }));
-                }
-            }
+            setAccordionState(trigger, body, ns);
+            syncCollapseAllButton();
         });
     });
+
+    const collapseBtn = document.getElementById('sidebarCollapseAllBtn');
+    if (collapseBtn && !collapseBtn.dataset.bound) {
+        collapseBtn.dataset.bound = 'true';
+        collapseBtn.addEventListener('click', () => {
+            const allTriggers = document.querySelectorAll('#sidebarFiltersForm .adv-acc-trigger');
+            const anyOpen = [...allTriggers].some(t => t.getAttribute('aria-expanded') === 'true');
+            const targetOpen = !anyOpen;
+            allTriggers.forEach(trig => {
+                const acc = trig.closest('.adv-accordion');
+                const b = acc?.querySelector('.adv-acc-body');
+                setAccordionState(trig, b, targetOpen);
+            });
+            syncCollapseAllButton();
+        });
+    }
+
+    syncCollapseAllButton();
 }
 
 function applySidebarFilters() {
+    const params = parseHashParams();
     const yearFrom = parseInt(document.getElementById("sidebarYearFrom")?.value, 10) || 0;
     const yearTo = parseInt(document.getElementById("sidebarYearTo")?.value, 10) || Infinity;
-    const priceTo = parseFormattedNumber(document.getElementById("sidebarPriceTo")?.value) || Infinity;
+    const priceFromInput = document.getElementById("sidebarPriceFrom")?.value;
+    const priceFrom = priceFromInput ? parseFormattedNumber(priceFromInput) : 0;
+    const priceInput = document.getElementById("sidebarPriceTo")?.value;
+    const priceTo = PLATFORM.id==='avto'?(priceInput?parseFormattedNumber(priceInput):Infinity):parseFormattedNumber(priceInput)||Infinity;
+    const mileageSelectVal = parseInt(document.getElementById("sidebarMileageTo")?.value, 10) || Infinity;
 
-    let bodyType = document.getElementById("sidebarBodyType")?.value || '';
-    if (!bodyType) {
-        const urlParams = parseHashParams();
-        bodyType = urlParams.get('bodyType') || urlParams.get('bodyTypes') || '';
-    }
+    const selectedBodyTypesList = getSelectedBodyTypes();
+    const bodyType = selectedBodyTypesList.join(',');
     const powerFrom = parseInt(document.getElementById("sidebarPowerFrom")?.value, 10) || 0;
     const powerTo = parseInt(document.getElementById("sidebarPowerTo")?.value, 10) || Infinity;
     const driveType = document.getElementById("sidebarDriveType")?.value || '';
+    const engineConfig = document.getElementById("sidebarEngineConfig")?.value || '';
 
     const engineType = document.getElementById("sidebarEngineType")?.value || '';
     const engineStroke = document.getElementById("sidebarEngineStroke")?.value || '';
@@ -1497,28 +2294,41 @@ function applySidebarFilters() {
     const country = document.getElementById("sidebarCountry")?.value || '';
     const region = document.getElementById("sidebarRegion")?.value || '';
 
+    const form = document.getElementById("sidebarFiltersForm");
+
     // Auction-board facets (present only on #/drazbe).
-    const aucType = document.getElementById("sidebarAucType")?.value || '';
-    const aucStatus = document.getElementById("sidebarAucStatus")?.value || '';
-    const aucBinding = document.getElementById("sidebarAucBinding")?.value || '';
-    const aucCash = document.getElementById("sidebarAucCash")?.value || '';
+    let aucType = '';
+    const aucTypeRadio = form ? form.querySelector('input[name="aucType"]:checked') : null;
+    if (aucTypeRadio) {
+        aucType = aucTypeRadio.value;
+    } else {
+        aucType = document.getElementById("sidebarAucType")?.value || params.get('aucType') || '';
+    }
+
+    const aucStatus = document.getElementById("sidebarAucStatus")?.value || params.get('aucStatus') || '';
+    const aucReserve = document.getElementById("sidebarAucReserve")?.value || params.get('aucReserve') || '';
+
+    const bindingEl = document.getElementById("sidebarAucBinding");
+    const aucBinding = bindingEl ? (bindingEl.type === 'checkbox' ? (bindingEl.checked ? 'yes' : '') : bindingEl.value) : (params.get('aucBinding') || '');
+
+    const cashEl = document.getElementById("sidebarAucCash");
+    const aucCash = cashEl ? (cashEl.type === 'checkbox' ? (cashEl.checked ? 'yes' : '') : cashEl.value) : (params.get('aucCash') || '');
 
     const onlySale = document.getElementById("sidebarOnlySale")?.checked || false;
     const showNoPrice = document.getElementById("sidebarShowNoPrice")?.checked ?? true;
-
-    const form = document.getElementById("sidebarFiltersForm");
     let fuels = [];
     let transmissions = [];
+    let conditions = [];
     if (form) {
         const fd = new FormData(form);
         fuels = fd.getAll("fuel").filter(Boolean);
         transmissions = fd.getAll("transmission").filter(Boolean);
+        conditions = fd.getAll("condition").filter(Boolean);
     }
 
-    const params = parseHashParams();
     const cat = params.get('cat');
     const najem = params.get('najem');
-    const mileageToParam = parseInt(params.get('mileageTo'), 10) || Infinity;
+    const mileageToParam = Math.min(mileageSelectVal, parseInt(params.get('mileageTo'), 10) || Infinity);
     const engineHoursFromParam = parseInt(params.get('engineHoursFrom'), 10) || 0;
     const engineHoursToParam = parseInt(params.get('engineHoursTo'), 10) || Infinity;
 
@@ -1526,41 +2336,70 @@ function applySidebarFilters() {
     const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
     const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
     const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
+    const addedVehicles = getSidebarVehicles();
+    const excludedVehicles = getSidebarExcludedVehicles();
 
-    const filtered = _allActiveListings.filter(car => {
-        const carCat = (car.category === 'motor' || car.category === 'moto') ? 'moto' : car.category;
-        const filterCat = (cat === 'motor' || cat === 'moto') ? 'moto' : cat;
-        if (filterCat && carCat !== filterCat) return false;
-        if (najem === '1' && !car.isRental) return false;
-
-        if (selectedMakes.length > 0 && !selectedMakes.includes(car.make)) return false;
-        if (selectedModels.length > 0 && !selectedModels.includes(car.model)) return false;
-        if (selectedVariants.length > 0) {
-            const titleStr = (car.title || '').toLowerCase();
-            const subtitleStr = (car.subtitle || '').toLowerCase();
-            const match = selectedVariants.some(v => {
-                const variantLower = v.toLowerCase();
-                return titleStr.includes(variantLower) || subtitleStr.includes(variantLower);
-            });
-            if (!match) return false;
-        }
-
+    const matchesCurrentDropdown = (car) => {
+        if (selectedMakes.length > 0 && !selectedMakes.some(mk => makesMatch(car.make, mk))) return false;
+        if (selectedModels.length > 0 && !selectedModels.some(md => modelsMatch(car.model, md))) return false;
+        if (selectedVariants.length > 0 && !selectedVariants.some(v => variantsMatch(car, v))) return false;
         if (selectedLines.length > 0) {
+            const carLine = (car.line || '').toLowerCase();
             const titleStr = (car.title || '').toLowerCase();
             const subtitleStr = (car.subtitle || '').toLowerCase();
             const equipmentStr = (car.equipment || []).join(' ').toLowerCase();
             const match = selectedLines.some(l => {
                 const lineLower = l.toLowerCase();
-                return titleStr.includes(lineLower) || subtitleStr.includes(lineLower) || equipmentStr.includes(lineLower);
+                return (carLine && carLine === lineLower) || titleStr.includes(lineLower) || subtitleStr.includes(lineLower) || equipmentStr.includes(lineLower);
             });
             if (!match) return false;
+        }
+        return true;
+    };
+
+    const hasCurrentDropdownFilter = selectedMakes.length > 0 || selectedModels.length > 0 || selectedVariants.length > 0 || selectedLines.length > 0;
+
+    const filtered = _allActiveListings.filter(car => {
+        if (params.get('advanced') === '1') {
+            const advParams = new URLSearchParams(params);
+            ['make', 'model', 'variant', 'line', 'linija', 'vehicles', 'excludedVehicles', 'bodyType', 'bodyTypes'].forEach(k => advParams.delete(k));
+            if (!matchesAdvancedSearch(car, advParams)) return false;
+        }
+        const carCat = (car.category === 'motor' || car.category === 'moto') ? 'moto' : car.category;
+        const filterCat = (cat === 'motor' || cat === 'moto') ? 'moto' : cat;
+        if (filterCat && carCat !== filterCat) return false;
+        if (najem === '1' && !car.isRental) return false;
+
+        if (excludedVehicles.length > 0 && excludedVehicles.some(ev => carMatchesVehicleEntry(car, ev))) {
+            return false;
+        }
+
+        if (addedVehicles.length > 0) {
+            const matchesAdded = addedVehicles.some(v => carMatchesVehicleEntry(car, v));
+            const matchesDropdown = hasCurrentDropdownFilter ? matchesCurrentDropdown(car) : false;
+            if (!matchesAdded && !matchesDropdown) return false;
+        } else if (hasCurrentDropdownFilter) {
+            if (!matchesCurrentDropdown(car)) return false;
         }
 
         const carYear = parseInt(car.year, 10) || 0;
         if (carYear < yearFrom || (yearTo !== Infinity && carYear > yearTo)) return false;
 
-        const carPrice = car.priceRaw || car.priceEur || 0;
+        const carPrice = PLATFORM.id==='avto'?listingDisplayPrice(car):car.priceRaw || car.priceEur || 0;
+        if (priceFrom > 0 && carPrice < priceFrom) return false;
         if (carPrice > priceTo) return false;
+
+        if (conditions.length > 0) {
+            const carCond = (car.condition || 'Rabljeno').toLowerCase();
+            const matchCond = conditions.some(cond => {
+                const cLower = cond.toLowerCase();
+                if (cLower.includes('novo')) return carCond.includes('novo');
+                if (cLower.includes('test')) return carCond.includes('test');
+                if (cLower.includes('rabljeno')) return carCond.includes('rabljeno') || (!carCond.includes('novo') && !carCond.includes('test'));
+                return carCond === cLower;
+            });
+            if (!matchCond) return false;
+        }
 
         const carMileage = car.mileageKm || (parseInt(car.mileage?.replace(/[^0-9]/g, ''), 10) || 0);
         if (carMileage > mileageToParam) return false;
@@ -1631,7 +2470,7 @@ function applySidebarFilters() {
                     } else if (typeLower === 'kombilimuzina') {
                         return seg.includes('hatchback') || seg.includes('kombilimuzina');
                     } else if (typeLower === 'karavan') {
-                        return seg.includes('wagon') || seg.includes('karavan') || title.includes('avant') || title.includes('touring') || title.includes('karavan');
+                        return seg.includes('wagon') || seg.includes('karavan') || title.includes('avant') || title.includes('touring') || title.includes('sports tourer') || title.includes('karavan');
                     } else if (typeLower === 'terensko' || typeLower === 'suv') {
                         return seg.includes('suv') || seg.includes('terensko') || seg.includes('crossover');
                     } else if (typeLower === 'enoprostorec') {
@@ -1700,6 +2539,20 @@ function applySidebarFilters() {
                     if (!carDrive.includes('4x4') && !carDrive.includes('4matic') && !carDrive.includes('awd') && !carDrive.includes('xdrive') && !carDrive.includes('quattro')) return false;
                 }
             }
+            if (engineConfig) {
+                const carLayout = ((car.engineLayout || '') + ' ' + (car.engineConfig || '') + ' ' + (car.subtitle || '')).toLowerCase();
+                const cfgLower = engineConfig.toLowerCase();
+                if (cfgLower === 'electric') {
+                    if (!carLayout.includes('elektr') && car.fuel !== 'Elektrika' && car.fuel !== 'Electric') return false;
+                } else if (cfgLower === 'hybrid') {
+                    if (!carLayout.includes('hibrid') && !carLayout.includes('hybrid') && car.fuel !== 'Hibrid' && car.fuel !== 'Hybrid') return false;
+                } else if (cfgLower.startsWith('b')) {
+                    const cyl = cfgLower.slice(1);
+                    if (!carLayout.includes(cfgLower) && !carLayout.includes(`boxer-${cyl}`) && !carLayout.includes(`bokser`)) return false;
+                } else if (!carLayout.includes(cfgLower)) {
+                    return false;
+                }
+            }
         }
 
         if (cat === 'moto' || cat === 'motor') {
@@ -1743,8 +2596,8 @@ function applySidebarFilters() {
             if (!hasPrice) return false;
         }
 
-        // ── Auction facets (type / status / binding sale / cash) ──
-        if (car.entryType === 'auction' && (aucType || aucStatus || aucBinding || aucCash)) {
+        // ── Auction facets (type / status / reserve / binding sale / cash) ──
+        if (car.entryType === 'auction' && (aucType || aucStatus || aucReserve || aucBinding || aucCash)) {
             let type = car.auctionType || 'live';
             if (type === 'regular') type = 'live'; // legacy
             if (aucType && type !== aucType) return false;
@@ -1752,11 +2605,19 @@ function applySidebarFilters() {
             if (aucBinding === 'no' && car.auctionBinding) return false;
             if (aucCash === 'yes' && !car.auctionCash) return false;
             if (aucCash === 'no' && car.auctionCash) return false;
+            if (aucReserve) {
+                const reservePrice = Number(car.reservePriceEur) || 0;
+                const currentBid = Number(car.currentBidEur ?? car.priceEur ?? car.priceRaw ?? car.startPriceEur) || 0;
+                if (aucReserve === 'no_reserve' && reservePrice > 0) return false;
+                if (aucReserve === 'with_reserve' && reservePrice <= 0) return false;
+                if (aucReserve === 'reserve_met' && (reservePrice <= 0 || currentBid < reservePrice)) return false;
+            }
             if (aucStatus) {
                 const endMs = car.endsAt ? new Date(car.endsAt).getTime() : Infinity;
                 const ended = endMs <= Date.now();
                 if (aucStatus === 'active' && ended) return false;
                 if (aucStatus === 'ended' && !ended) return false;
+                if (aucStatus === 'ending_soon' && (ended || endMs - Date.now() > 24 * 3600 * 1000)) return false;
                 if (aucStatus === 'upcoming' && !(type === 'prebid' && !ended)) return false;
             }
         }
@@ -1764,8 +2625,18 @@ function applySidebarFilters() {
         return true;
     });
 
+    const sortVal = document.getElementById('sortSelect')?.value || '';
+    if (sortVal) {
+        const getPrice = (c) => PLATFORM.id === 'avto' ? (listingDisplayPrice(c) || c.priceRaw || 0) : (c.priceRaw ?? 0);
+        if (sortVal === 'price-asc') filtered.sort((a, b) => (getPrice(a) || Infinity) - (getPrice(b) || Infinity));
+        else if (sortVal === 'price-desc') filtered.sort((a, b) => getPrice(b) - getPrice(a));
+        else if (sortVal === 'year-desc') filtered.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
+        else if (sortVal === 'km-asc') filtered.sort((a, b) => (a.mileageKm ?? Infinity) - (b.mileageKm ?? Infinity));
+        else if (sortVal === 'power-desc') filtered.sort((a, b) => (b.powerKw ?? 0) - (a.powerKw ?? 0));
+    }
+
     renderListings(filtered);
-    const countEl = document.querySelector(".results-header h1 span");
+    const countEl = document.querySelector(".results-header h1 .ah-results-count, .results-header h1 > span:not(.ah-results-title)");
     if (countEl) countEl.textContent = `(${filtered.length} vozil)`;
     const mobileCount = document.getElementById('mobileFilterCountBadge');
     if (mobileCount) mobileCount.textContent = filtered.length;
@@ -1776,28 +2647,51 @@ function applySidebarFilters() {
 function getSidebarFormState() {
     const params = parseHashParams();
     const fields = [
-        'yearFrom', 'yearTo', 'priceTo', 'bodyType', 'driveType', 
-        'engineType', 'engineStroke', 'color', 'sellerType', 'country', 'region', 
-        'powerFrom', 'powerTo'
+        'yearFrom', 'yearTo', 'priceFrom', 'priceTo', 'mileageTo', 'driveType', 
+        'engineConfig', 'engineType', 'engineStroke', 'color', 'sellerType', 'country', 'region', 
+        'powerFrom', 'powerTo', 'aucStatus', 'aucReserve'
     ];
     
     fields.forEach(f => {
         const val = document.getElementById(`sidebar${f.charAt(0).toUpperCase() + f.slice(1)}`)?.value;
-        if (val) params.set(f, val); else params.delete(f);
+        if (val) params.set(f, PLATFORM.id==='avto'&&(f==='priceTo'||f==='priceFrom')?String(parseFormattedNumber(val)):val); else params.delete(f);
     });
 
-    const onlySale = document.getElementById("sidebarOnlySale")?.checked ? 'true' : '';
-    const showNoPrice = document.getElementById("sidebarShowNoPrice")?.checked ? 'true' : 'false';
-    if (onlySale) params.set('onlySale', onlySale); else params.delete('onlySale');
-    if (showNoPrice) params.set('showNoPrice', showNoPrice); else params.delete('showNoPrice');
-
     const form = document.getElementById("sidebarFiltersForm");
+    const aucTypeVal = (form ? form.querySelector('input[name="aucType"]:checked')?.value : null) ?? document.getElementById('sidebarAucType')?.value;
+    if (aucTypeVal) params.set('aucType', aucTypeVal); else params.delete('aucType');
+
+    const bindingEl = document.getElementById('sidebarAucBinding');
+    const bindingVal = bindingEl ? (bindingEl.type === 'checkbox' ? (bindingEl.checked ? 'yes' : '') : bindingEl.value) : '';
+    if (bindingVal) params.set('aucBinding', bindingVal); else params.delete('aucBinding');
+
+    const cashEl = document.getElementById('sidebarAucCash');
+    const cashVal = cashEl ? (cashEl.type === 'checkbox' ? (cashEl.checked ? 'yes' : '') : cashEl.value) : '';
+    if (cashVal) params.set('aucCash', cashVal); else params.delete('aucCash');
+
+    const bodyTypes = getSelectedBodyTypes();
+    if (bodyTypes.length > 0) params.set('bodyType', bodyTypes.join(',')); else params.delete('bodyType');
+
+    const addedVehicles = getSidebarVehicles();
+    if (addedVehicles.length > 0) params.set('vehicles', JSON.stringify(addedVehicles)); else params.delete('vehicles');
+
+    const excludedVehicles = getSidebarExcludedVehicles();
+    if (excludedVehicles.length > 0) params.set('excludedVehicles', JSON.stringify(excludedVehicles)); else params.delete('excludedVehicles');
+
+    const onlySale = document.getElementById("sidebarOnlySale")?.checked ? 'true' : '';
+    const showNoPriceEl = document.getElementById("sidebarShowNoPrice");
+    const showNoPrice = showNoPriceEl ? (showNoPriceEl.checked ? '' : 'false') : '';
+    if (onlySale) params.set('onlySale', onlySale); else params.delete('onlySale');
+    if (showNoPrice === 'false') params.set('showNoPrice', 'false'); else params.delete('showNoPrice');
+
     if (form) {
         const fd = new FormData(form);
         const fuels = fd.getAll("fuel").filter(Boolean);
         const trans = fd.getAll("transmission").filter(Boolean);
+        const conds = fd.getAll("condition").filter(Boolean);
         if (fuels.length > 0) params.set('fuel', fuels.join(',')); else params.delete('fuel');
         if (trans.length > 0) params.set('transmission', trans.join(',')); else params.delete('transmission');
+        if (conds.length > 0) params.set('condition', conds.join(',')); else params.delete('condition');
     }
     return params;
 }
@@ -1818,7 +2712,14 @@ function renderActivePills(containerId, values, onRemove) {
         if (!label) return;
         const pill = document.createElement('span');
         pill.className = 'sidebar-active-pill';
-        pill.innerHTML = `${escHtml(label)} <span role="button" tabindex="0" class="sidebar-pill-remove" aria-label="Odstrani">&times;</span>`;
+        let logoHtml = '';
+        if (containerId === 'activeMake') {
+            const logo = getBrandLogo(label);
+            if (logo) {
+                logoHtml = `<span class="sidebar-pill-logo-wrap"><img class="sidebar-pill-logo" src="${escHtml(logo)}" alt="" onerror="this.parentElement.style.display='none'"></span>`;
+            }
+        }
+        pill.innerHTML = `${logoHtml}<span>${escHtml(label)}</span> <span role="button" tabindex="0" class="sidebar-pill-remove" aria-label="Odstrani">&times;</span>`;
         const removeBtn = pill.querySelector('.sidebar-pill-remove');
         const handleRemove = (e) => {
             e.preventDefault();
@@ -1844,7 +2745,7 @@ function updateUrlParams(makes, models, variants, lines) {
     if (variants && variants.length > 0) params.set('variant', variants.join(',')); else params.delete('variant');
     if (lines && lines.length > 0) params.set('line', lines.join(',')); else params.delete('line');
     const paramStr = params.toString();
-    window.history.replaceState(null, '', `#/oglasi${paramStr ? '?' + paramStr : ''}`);
+    window.history.replaceState(null, '', `${window.location.pathname}${paramStr ? '?' + paramStr : ''}`);
     updateFiltersUI();
     applySidebarFilters();
 }
@@ -1857,8 +2758,7 @@ function updateAccordionSummaries() {
     const selectedModels = params.get('model') ? params.get('model').split(',').map(s => s.trim()).filter(Boolean) : [];
     const selectedVariants = params.get('variant') ? params.get('variant').split(',').map(s => s.trim()).filter(Boolean) : [];
     const selectedLines = params.get('line') ? params.get('line').split(',').map(s => s.trim()).filter(Boolean) : [];
-    const bodyTypeEl = document.getElementById('sidebarBodyType');
-    const bodyType = bodyTypeEl?.value || '';
+    const selectedBodyTypes = getSelectedBodyTypes();
     const onlySale = document.getElementById('sidebarOnlySale')?.checked;
     
     const osnovniItems = [];
@@ -1869,7 +2769,9 @@ function updateAccordionSummaries() {
                 const updated = selectedMakes.filter(x => x !== mk);
                 const data = window._sidebarBrandModelData;
                 const remainingModels = selectedModels.filter(m => updated.some(k => data?.[k]?.[m]));
-                updateUrlParams(updated, remainingModels, selectedVariants, selectedLines);
+                const remainingVariants = remainingModels.length > 0 ? selectedVariants : [];
+                const remainingLines = updated.length > 0 ? selectedLines : [];
+                updateUrlParams(updated, remainingModels, remainingVariants, remainingLines);
             }
         });
     });
@@ -1877,7 +2779,8 @@ function updateAccordionSummaries() {
         osnovniItems.push({
             label: md,
             onRemove: () => {
-                updateUrlParams(selectedMakes, selectedModels.filter(x => x !== md), selectedVariants, selectedLines);
+                const updatedModels = selectedModels.filter(x => x !== md);
+                updateUrlParams(selectedMakes, updatedModels, updatedModels.length ? selectedVariants : [], selectedLines);
             }
         });
     });
@@ -1897,29 +2800,22 @@ function updateAccordionSummaries() {
             }
         });
     });
-    if (bodyType) {
+    selectedBodyTypes.forEach(bt => {
         osnovniItems.push({
-            label: bodyType,
+            label: bt === 'Terensko' ? 'SUV' : bt,
             onRemove: () => {
-                if (bodyTypeEl) {
-                    bodyTypeEl.value = '';
-                    bodyTypeEl.dispatchEvent(new Event('change'));
-                }
-                applySidebarFilters();
-                updateUrlParamsFromInputs();
-                updateFiltersUI();
+                setSelectedBodyTypes(selectedBodyTypes.filter(x => x !== bt), true);
             }
         });
-    }
+    });
     if (onlySale) {
         osnovniItems.push({
             label: 'Akcija',
             onRemove: () => {
                 const saleEl = document.getElementById('sidebarOnlySale');
                 if (saleEl) saleEl.checked = false;
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -1937,13 +2833,10 @@ function updateAccordionSummaries() {
         cenaItems.push({
             label: `${yearFrom || '…'}–${yearTo || '…'}`,
             onRemove: () => {
-                if (yearFromEl) yearFromEl.value = '';
-                if (yearToEl) yearToEl.value = '';
-                if (yearFromEl) yearFromEl.dispatchEvent(new Event('change'));
-                if (yearToEl) yearToEl.dispatchEvent(new Event('change'));
-                applySidebarFilters();
+                if (yearFromEl) { yearFromEl.value = ''; yearFromEl._syncCustomSelect?.(); }
+                if (yearToEl) { yearToEl.value = ''; yearToEl._syncCustomSelect?.(); }
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -1952,9 +2845,8 @@ function updateAccordionSummaries() {
             label: `do ${priceTo} €`,
             onRemove: () => {
                 if (priceToEl) priceToEl.value = '';
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -1970,9 +2862,9 @@ function updateAccordionSummaries() {
                 label: cb.value,
                 onRemove: () => {
                     cb.checked = false;
-                    applySidebarFilters();
+                    updateSidebarHybridGroup();
                     updateUrlParamsFromInputs();
-                    updateFiltersUI();
+                    applySidebarFilters();
                 }
             });
         });
@@ -1982,9 +2874,8 @@ function updateAccordionSummaries() {
                 label: cb.value,
                 onRemove: () => {
                     cb.checked = false;
-                    applySidebarFilters();
                     updateUrlParamsFromInputs();
-                    updateFiltersUI();
+                    applySidebarFilters();
                 }
             });
         });
@@ -1995,10 +2886,9 @@ function updateAccordionSummaries() {
             label: driveTypeEl.value,
             onRemove: () => {
                 driveTypeEl.value = '';
-                driveTypeEl.dispatchEvent(new Event('change'));
-                applySidebarFilters();
+                driveTypeEl._syncCustomSelect?.();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2010,9 +2900,8 @@ function updateAccordionSummaries() {
             onRemove: () => {
                 if (powerFromEl) powerFromEl.value = '';
                 if (powerToEl) powerToEl.value = '';
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2022,10 +2911,9 @@ function updateAccordionSummaries() {
             label: colorEl.value,
             onRemove: () => {
                 colorEl.value = '';
-                colorEl.dispatchEvent(new Event('change'));
-                applySidebarFilters();
+                colorEl._syncCustomSelect?.();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2046,11 +2934,10 @@ function updateAccordionSummaries() {
             onRemove: () => {
                 if (sellerTypeEl) {
                     sellerTypeEl.value = '';
-                    sellerTypeEl.dispatchEvent(new Event('change'));
+                    sellerTypeEl._syncCustomSelect?.();
                 }
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2067,13 +2954,12 @@ function updateAccordionSummaries() {
                         regionEl.value = '';
                         regionEl.disabled = true;
                         regionEl.innerHTML = '<option value="">Vse regije</option>';
-                        regionEl.dispatchEvent(new Event('change'));
+                        regionEl._syncCustomSelect?.();
                     }
-                    countryEl.dispatchEvent(new Event('change'));
+                    countryEl._syncCustomSelect?.();
                 }
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2084,11 +2970,10 @@ function updateAccordionSummaries() {
                 if (regionEl) {
                     regionEl.value = '';
                     localStorage.setItem(lsKey('filterRegion'), '');
-                    regionEl.dispatchEvent(new Event('change'));
+                    regionEl._syncCustomSelect?.();
                 }
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
@@ -2139,11 +3024,14 @@ function updateFiltersUI() {
         const updated = selectedMakes.filter(x => x !== val);
         const data = window._sidebarBrandModelData;
         const remainingModels = selectedModels.filter(m => updated.some(mk => data?.[mk]?.[m]));
-        updateUrlParams(updated, remainingModels, selectedVariants, selectedLines);
+        const remainingVariants = remainingModels.length > 0 ? selectedVariants : [];
+        const remainingLines = updated.length > 0 ? selectedLines : [];
+        updateUrlParams(updated, remainingModels, remainingVariants, remainingLines);
     });
 
     renderActivePills('activeModel', selectedModels, (val) => {
-        updateUrlParams(selectedMakes, selectedModels.filter(x => x !== val), selectedVariants, selectedLines);
+        const updatedModels = selectedModels.filter(x => x !== val);
+        updateUrlParams(selectedMakes, updatedModels, updatedModels.length ? selectedVariants : [], selectedLines);
     });
 
     renderActivePills('activeVariant', selectedVariants, (val) => {
@@ -2154,32 +3042,43 @@ function updateFiltersUI() {
         updateUrlParams(selectedMakes, selectedModels, selectedVariants, selectedLines.filter(x => x !== val));
     });
 
-    // Body type (Oblika)
-    const bodyTypeEl = document.getElementById('sidebarBodyType');
-    renderActivePills('activeBodyType', bodyTypeEl && bodyTypeEl.value ? [bodyTypeEl.value] : [], () => {
-        bodyTypeEl.value = '';
-        bodyTypeEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
-        updateUrlParamsFromInputs();
-        updateFiltersUI();
-    });
+    // Body type (Oblika) — supports multiple selected body types
+    const selectedBodyTypes = getSelectedBodyTypes();
+    const currentBodyType = selectedBodyTypes[0] || '';
+    const bodyPills = selectedBodyTypes.map(bt => ({
+        label: bt === 'Terensko' ? 'SUV / Terensko' : bt,
+        onRemove: () => {
+            setSelectedBodyTypes(selectedBodyTypes.filter(x => x !== bt), true);
+        }
+    }));
+    renderActivePills('activeBodyType', bodyPills);
+    renderSidebarVehicleCards();
 
     // Cena & Letnik
     const cenaPills = [];
     const yFromEl = document.getElementById('sidebarYearFrom');
     const yToEl = document.getElementById('sidebarYearTo');
+    const pFromEl = document.getElementById('sidebarPriceFrom');
     const pToEl = document.getElementById('sidebarPriceTo');
+    const mToEl = document.getElementById('sidebarMileageTo');
     if (yFromEl?.value || yToEl?.value) {
         cenaPills.push({
             label: `${yFromEl?.value || '…'}–${yToEl?.value || '…'}`,
             onRemove: () => {
-                if (yFromEl) yFromEl.value = '';
-                if (yToEl) yToEl.value = '';
-                if (yFromEl) yFromEl.dispatchEvent(new Event('change'));
-                if (yToEl) yToEl.dispatchEvent(new Event('change'));
-                applySidebarFilters();
+                if (yFromEl) { yFromEl.value = ''; yFromEl._syncCustomSelect?.(); }
+                if (yToEl) { yToEl.value = ''; yToEl._syncCustomSelect?.(); }
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
+            }
+        });
+    }
+    if (pFromEl?.value) {
+        cenaPills.push({
+            label: `od ${pFromEl.value} €`,
+            onRemove: () => {
+                pFromEl.value = '';
+                updateUrlParamsFromInputs();
+                applySidebarFilters();
             }
         });
     }
@@ -2188,32 +3087,35 @@ function updateFiltersUI() {
             label: `do ${pToEl.value} €`,
             onRemove: () => {
                 pToEl.value = '';
-                applySidebarFilters();
                 updateUrlParamsFromInputs();
-                updateFiltersUI();
+                applySidebarFilters();
             }
         });
     }
     renderActivePills('activeCenaLetnik', cenaPills);
+    renderActivePills('activeMileage', mToEl && mToEl.value ? [`do ${Number(mToEl.value).toLocaleString('sl-SI')} km`] : [], () => {
+        mToEl.value = '';
+        mToEl._syncCustomSelect?.();
+        updateUrlParamsFromInputs();
+        applySidebarFilters();
+    });
 
     // Drive type (Pogon)
     const driveTypeEl = document.getElementById('sidebarDriveType');
     renderActivePills('activeDriveType', driveTypeEl && driveTypeEl.value ? [driveTypeEl.value] : [], () => {
         driveTypeEl.value = '';
-        driveTypeEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
+        driveTypeEl._syncCustomSelect?.();
         updateUrlParamsFromInputs();
-        updateFiltersUI();
+        applySidebarFilters();
     });
 
     // Color (Barva)
     const colorEl = document.getElementById('sidebarColor');
     renderActivePills('activeColor', colorEl && colorEl.value ? [colorEl.value] : [], () => {
         colorEl.value = '';
-        colorEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
+        colorEl._syncCustomSelect?.();
         updateUrlParamsFromInputs();
-        updateFiltersUI();
+        applySidebarFilters();
     });
 
     // Seller type (Tip prodajalca)
@@ -2222,10 +3124,9 @@ function updateFiltersUI() {
     const sLabel = sVal ? (sVal === 'private' ? 'Fizična oseba' : 'Trgovec') : null;
     renderActivePills('activeSellerType', sLabel ? [sLabel] : [], () => {
         sellerTypeEl.value = '';
-        sellerTypeEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
+        sellerTypeEl._syncCustomSelect?.();
         updateUrlParamsFromInputs();
-        updateFiltersUI();
+        applySidebarFilters();
     });
 
     // Country (Država)
@@ -2241,12 +3142,11 @@ function updateFiltersUI() {
             rEl.value = '';
             rEl.disabled = true;
             rEl.innerHTML = '<option value="">Vse regije</option>';
-            rEl.dispatchEvent(new Event('change'));
+            rEl._syncCustomSelect?.();
         }
-        countryEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
+        countryEl._syncCustomSelect?.();
         updateUrlParamsFromInputs();
-        updateFiltersUI();
+        applySidebarFilters();
     });
 
     // Region (Regija)
@@ -2254,10 +3154,9 @@ function updateFiltersUI() {
     renderActivePills('activeRegion', regionEl && regionEl.value ? [regionEl.value] : [], () => {
         regionEl.value = '';
         localStorage.setItem(lsKey('filterRegion'), '');
-        regionEl.dispatchEvent(new Event('change'));
-        applySidebarFilters();
+        regionEl._syncCustomSelect?.();
         updateUrlParamsFromInputs();
-        updateFiltersUI();
+        applySidebarFilters();
     });
 
     // Keep open accordions unclipped
@@ -2266,84 +3165,297 @@ function updateFiltersUI() {
         const body = acc.querySelector('.adv-acc-body');
         if (trigger?.getAttribute('aria-expanded') === 'true' && body) {
             body.style.maxHeight = 'none';
+            body.style.overflow = 'visible';
         }
     });
 
+    const makeSelect = document.getElementById("sidebarMake");
     const modelSelect = document.getElementById("sidebarModel");
     const variantSelect = document.getElementById("sidebarVariant");
     const lineSelect = document.getElementById("sidebarLine");
     const lineGroup = document.getElementById("sidebarLineGroup");
     const data = window._sidebarBrandModelData;
 
+    // Sync Make select value & custom select UI
+    if (makeSelect) {
+        const targetMake = selectedMakes[0] || '';
+        if (makeSelect.value !== targetMake) {
+            makeSelect.value = targetMake;
+        }
+        makeSelect._syncCustomSelect?.();
+    }
+
+    // Sync Line select & custom select UI
     if (lineSelect && lineGroup) {
         const linesData = window._vehicleLinesData || {};
         const availableLines = new Set();
         selectedMakes.forEach(mk => {
             (linesData[mk] || []).forEach(l => availableLines.add(l));
         });
+        selectedLines.forEach(l => availableLines.add(l));
         lineSelect.innerHTML = '<option value="">Vse linije</option>';
         Array.from(availableLines).sort().forEach(l => {
-            if (!selectedLines.includes(l)) {
-                const o = document.createElement("option");
-                o.value = l; o.textContent = l;
-                lineSelect.appendChild(o);
-            }
+            const o = document.createElement("option");
+            o.value = l;
+            o.textContent = l;
+            if (selectedLines[0] === l) o.selected = true;
+            lineSelect.appendChild(o);
         });
-        const hasLines = availableLines.size > 0 || selectedLines.length > 0;
+        lineSelect.value = selectedLines[0] || '';
+        const hasLines = availableLines.size > 0;
         lineGroup.style.display = hasLines ? 'flex' : 'none';
+        lineSelect.disabled = !hasLines;
+        lineSelect._syncCustomSelect?.();
     }
 
+    // Populate Model select (works both when a brand is selected AND when no brand is selected!)
     if (modelSelect) {
         modelSelect.innerHTML = '<option value="">Vsi modeli</option>';
-        modelSelect.disabled = true;
         if (selectedMakes.length > 0 && data) {
             const allModels = new Set();
             selectedMakes.forEach(mk => Object.keys(data[mk] || {}).forEach(m => allModels.add(m)));
-            Array.from(allModels).sort().forEach(m => {
-                if (!selectedModels.includes(m)) {
-                    const o = document.createElement("option");
-                    o.value = m; o.textContent = m;
-                    modelSelect.appendChild(o);
+            selectedModels.forEach(m => allModels.add(m));
+
+            // Count active listings per model and check bodyType match
+            const modelCounts = {};
+            const bodyMatchingModels = new Set();
+            Array.from(allModels).forEach(m => {
+                const cnt = (_allActiveListings || []).filter(car =>
+                    selectedMakes.some(mk => makesMatch(car.make, mk)) &&
+                    modelsMatch(car.model, m) &&
+                    (selectedBodyTypes.length === 0 || selectedBodyTypes.includes(car.bodyType))
+                ).length;
+                if (cnt > 0) modelCounts[m] = cnt;
+
+                if (selectedBodyTypes.length > 0) {
+                    const types = getModelBodyTypes(data, selectedMakes[0], m, _allActiveListings);
+                    if (selectedBodyTypes.some(bt => types.includes(bt))) {
+                        bodyMatchingModels.add(m);
+                    }
                 }
             });
-            if (allModels.size > 0) modelSelect.disabled = false;
+
+            const sortedModels = Array.from(allModels).sort();
+            const recommended = sortedModels.filter(m => modelCounts[m] > 0 || bodyMatchingModels.has(m));
+            const rest = sortedModels.filter(m => !recommended.includes(m));
+
+            const formatModelLabel = (m) => {
+                const cnt = modelCounts[m] || 0;
+                return cnt > 0 ? `${m} (${cnt})` : m;
+            };
+
+            const bodyLabelStr = selectedBodyTypes.map(bt => bt === 'Terensko' ? 'SUV' : bt).join(', ');
+
+            if (recommended.length > 0 && rest.length > 0) {
+                const recHeader = document.createElement('option');
+                recHeader.value = '';
+                recHeader.disabled = true;
+                recHeader.dataset.popularLabel = 'true';
+                recHeader.textContent = selectedBodyTypes.length > 0
+                    ? `Priporočeni modeli (${bodyLabelStr})`
+                    : 'Modeli v oglasih';
+                modelSelect.appendChild(recHeader);
+
+                recommended.forEach(m => {
+                    const o = document.createElement("option");
+                    o.value = m;
+                    o.textContent = formatModelLabel(m);
+                    o.dataset.popular = 'true';
+                    if (selectedModels[0] === m) o.selected = true;
+                    modelSelect.appendChild(o);
+                });
+
+                const allHeader = document.createElement('option');
+                allHeader.value = '';
+                allHeader.disabled = true;
+                allHeader.dataset.popularLabel = 'true';
+                allHeader.textContent = 'Vsi modeli znamke';
+                modelSelect.appendChild(allHeader);
+
+                rest.forEach(m => {
+                    const o = document.createElement("option");
+                    o.value = m;
+                    o.textContent = formatModelLabel(m);
+                    if (selectedModels[0] === m) o.selected = true;
+                    modelSelect.appendChild(o);
+                });
+            } else {
+                sortedModels.forEach(m => {
+                    const o = document.createElement("option");
+                    o.value = m;
+                    o.textContent = formatModelLabel(m);
+                    if (selectedModels[0] === m) o.selected = true;
+                    modelSelect.appendChild(o);
+                });
+            }
+
+            modelSelect.disabled = allModels.size === 0;
+            modelSelect.value = selectedModels[0] || '';
+            modelSelect._syncCustomSelect?.();
+        } else if (data) {
+            // Quick model selection even before choosing a brand: list models from active listings
+            const activeModelPairs = new Map();
+            (_allActiveListings || []).forEach(car => {
+                if (!car.make || !car.model) return;
+                if (selectedBodyTypes.length > 0 && !selectedBodyTypes.includes(car.bodyType)) return;
+                const canonicalMake = Object.keys(data).find(k => makesMatch(k, car.make)) || car.make;
+                const key = `${canonicalMake}::${car.model}`;
+                activeModelPairs.set(key, {
+                    make: canonicalMake,
+                    model: car.model,
+                    count: (activeModelPairs.get(key)?.count || 0) + 1
+                });
+            });
+
+            if (activeModelPairs.size > 0) {
+                const header = document.createElement('option');
+                header.value = '';
+                header.disabled = true;
+                header.dataset.popularLabel = 'true';
+                const bodyLabelStr = selectedBodyTypes.map(bt => bt === 'Terensko' ? 'SUV' : bt).join(', ');
+                header.textContent = selectedBodyTypes.length > 0
+                    ? `Modeli v oglasih (${bodyLabelStr})`
+                    : 'Hitra izbira modela (iz oglasov)';
+                modelSelect.appendChild(header);
+
+                Array.from(activeModelPairs.values())
+                    .sort((a, b) => a.model.localeCompare(b.model) || a.make.localeCompare(b.make))
+                    .forEach(item => {
+                        const o = document.createElement('option');
+                        o.value = `${item.make}::${item.model}`;
+                        o.textContent = `${item.model} — ${item.make} (${item.count})`;
+                        modelSelect.appendChild(o);
+                    });
+                modelSelect.disabled = false;
+            } else {
+                modelSelect.disabled = true;
+            }
+            modelSelect.value = '';
+            modelSelect._syncCustomSelect?.();
+        } else {
+            modelSelect.disabled = true;
+            modelSelect._syncCustomSelect?.();
         }
     }
 
+    // Populate Variant select (unlocked both when a model is chosen AND when only a brand is chosen!)
     if (variantSelect) {
         variantSelect.innerHTML = '<option value="">Vse različice</option>';
-        variantSelect.disabled = true;
-        if (data) {
-            const allVariants = new Set();
-            const source = (selectedModels.length > 0) ? selectedModels : Object.keys(data[selectedMakes[0]] || {});
-            selectedMakes.forEach(mk => {
-                selectedModels.forEach(md => {
-                    const v = getModelVariants(data[mk]?.[md]);
-                    v.forEach(x => x && allVariants.add(typeof x === 'object' ? x.trim : x));
+        let variantDisabled = true;
+        if (data && selectedMakes.length > 0) {
+            if (selectedModels.length > 0) {
+                const allVariants = new Set();
+                selectedMakes.forEach(mk => {
+                    selectedModels.forEach(md => {
+                        const eqModels = getEquivalentModels(md);
+                        eqModels.forEach(eqMd => {
+                            const v = getModelVariants(data[mk]?.[eqMd]);
+                            v.forEach(x => x && allVariants.add(typeof x === 'object' ? x.trim : x));
+                        });
+                    });
                 });
-            });
-            Array.from(allVariants).sort().forEach(v => {
-                if (!selectedVariants.includes(v)) {
+                selectedVariants.forEach(v => allVariants.add(v));
+
+                Array.from(allVariants).sort().forEach(v => {
                     const o = document.createElement("option");
-                    o.value = v; o.textContent = v;
+                    o.value = v;
+                    o.textContent = v;
+                    if (selectedVariants[0] === v) o.selected = true;
                     variantSelect.appendChild(o);
+                });
+                if (allVariants.size > 0) variantDisabled = false;
+                variantSelect.value = selectedVariants[0] || '';
+            } else {
+                // Brand is selected, no model selected yet -> allow picking "Model · Variant" directly!
+                const brandVariants = [];
+                selectedMakes.forEach(mk => {
+                    const modelsObj = data[mk] || {};
+                    Object.keys(modelsObj).sort().forEach(md => {
+                        if (selectedBodyTypes.length > 0) {
+                            const mTypes = getModelBodyTypes(data, mk, md, _allActiveListings);
+                            if (mTypes.length > 0 && !selectedBodyTypes.some(bt => mTypes.includes(bt))) return;
+                        }
+                        const vList = getModelVariants(modelsObj[md]);
+                        vList.forEach(x => {
+                            const trimName = typeof x === 'object' ? x.trim : x;
+                            if (trimName) {
+                                brandVariants.push({
+                                    model: md,
+                                    variant: trimName,
+                                    value: `${md}::${trimName}`,
+                                    label: `${md} · ${trimName}`
+                                });
+                            }
+                        });
+                    });
+                });
+
+                if (brandVariants.length > 0) {
+                    brandVariants.forEach(item => {
+                        const o = document.createElement("option");
+                        o.value = item.value;
+                        o.textContent = item.label;
+                        variantSelect.appendChild(o);
+                    });
+                    variantDisabled = false;
                 }
-            });
-            if (allVariants.size > 0) variantSelect.disabled = false;
+                variantSelect.value = '';
+            }
         }
+        variantSelect.disabled = variantDisabled;
+        variantSelect._syncCustomSelect?.();
     }
 }
 
 function prefillSidebarFromUrl() {
     window._isPrefilling = true;
     const params = parseHashParams();
+
+    window._sidebarVehicles = parseJsonVehicleList(params.get('vehicles'));
+    window._sidebarExcludedVehicles = parseJsonVehicleList(params.get('excludedVehicles'));
+    const rawBodyTypes = params.get('bodyType') || params.get('bodyTypes') || '';
+    const parsedBodyTypes = rawBodyTypes.split(',').map(s => s.trim()).filter(Boolean);
+    setSelectedBodyTypes(parsedBodyTypes, false);
+    renderSidebarVehicleCards();
     
-    const fields = ['yearFrom', 'yearTo', 'priceTo', 'bodyType', 'driveType', 'engineType', 'engineStroke', 'color', 'sellerType', 'powerFrom', 'powerTo'];
+    const fields = ['yearFrom', 'yearTo', 'priceFrom', 'priceTo', 'mileageTo', 'driveType', 'engineConfig', 'engineType', 'engineStroke', 'color', 'sellerType', 'powerFrom', 'powerTo', 'aucStatus', 'aucReserve'];
     fields.forEach(f => {
         const el = document.getElementById(`sidebar${f.charAt(0).toUpperCase() + f.slice(1)}`);
         if (el && params.get(f)) {
             el.value = params.get(f);
+            el._syncCustomSelect?.();
             el.dispatchEvent(new Event('change'));
+        }
+    });
+
+    const paramAucType = params.get('aucType');
+    if (paramAucType !== null && paramAucType !== undefined) {
+        const radio = document.querySelector(`input[name="aucType"][value="${paramAucType}"]`);
+        if (radio) {
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            const select = document.getElementById('sidebarAucType');
+            if (select) {
+                select.value = paramAucType;
+                select._syncCustomSelect?.();
+                select.dispatchEvent(new Event('change'));
+            }
+        }
+    }
+
+    ['aucBinding', 'aucCash'].forEach(f => {
+        const val = params.get(f);
+        const el = document.getElementById(`sidebar${f.charAt(0).toUpperCase() + f.slice(1)}`);
+        if (el) {
+            if (el.type === 'checkbox') {
+                el.checked = (val === 'yes' || val === 'true' || val === '1');
+                el.dispatchEvent(new Event('change', { bubbles: true }));
+            } else if (val) {
+                el.value = val;
+                el._syncCustomSelect?.();
+                el.dispatchEvent(new Event('change'));
+            }
         }
     });
 
@@ -2356,6 +3468,7 @@ function prefillSidebarFromUrl() {
         if (countryParam) {
             countrySel.value = countryParam;
             localStorage.setItem(lsKey('filterCountry'), countryParam);
+            countrySel._syncCustomSelect?.();
         }
         const codeToUse = countryParam || countrySel.value;
         if (codeToUse && regionSel) {
@@ -2370,13 +3483,14 @@ function prefillSidebarFromUrl() {
                 regionSel.value = regionParam;
                 localStorage.setItem(lsKey('filterRegion'), regionParam);
             }
+            regionSel._syncCustomSelect?.();
         }
     }
 
     const onlySale = params.get("onlySale");
     const showNoPrice = params.get("showNoPrice");
     if (onlySale && document.getElementById("sidebarOnlySale")) document.getElementById("sidebarOnlySale").checked = onlySale === 'true';
-    if (showNoPrice && document.getElementById("sidebarShowNoPrice")) document.getElementById("sidebarShowNoPrice").checked = showNoPrice === 'true';
+    if (showNoPrice && document.getElementById("sidebarShowNoPrice")) document.getElementById("sidebarShowNoPrice").checked = showNoPrice !== 'false';
 
     const fuel = params.get("fuel");
     if (fuel) {
@@ -2388,6 +3502,12 @@ function prefillSidebarFromUrl() {
     if (trans) {
         const tList = trans.split(',');
         document.querySelectorAll('#sidebarFiltersForm input[name="transmission"]').forEach(cb => cb.checked = tList.includes(cb.value));
+    }
+
+    const cond = params.get("condition");
+    if (cond) {
+        const cList = cond.split(',');
+        document.querySelectorAll('#sidebarFiltersForm input[name="condition"]').forEach(cb => cb.checked = cList.includes(cb.value));
     }
 
     updateSidebarHybridGroup();
@@ -2464,8 +3584,16 @@ export function initDrazbeFilters(auctionListings, onRender) {
     loadSidebarBrands('', () => {
         initCustomSelects();
         _wireDrazbeSidebarEvents();
+        prefillSidebarFromUrl();
         applySidebarFilters();
     });
+
+    if (window._oglasiParamsListener) {
+        document.removeEventListener('routeParamsChanged', window._oglasiParamsListener);
+    }
+    const _onRouteParamsChanged = () => prefillSidebarFromUrl();
+    document.addEventListener('routeParamsChanged', _onRouteParamsChanged);
+    window._oglasiParamsListener = _onRouteParamsChanged;
 
     // Mobile filter toggle
     const mobileFilterToggle = document.getElementById('mobileFilterToggle');
@@ -2533,12 +3661,60 @@ function _wireDrazbeSidebarEvents() {
             const regionSelect = document.getElementById('sidebarRegion');
             if (countrySelect) countrySelect.value = '';
             if (regionSelect) { regionSelect.innerHTML = '<option value="">Vse regije</option>'; regionSelect.disabled = true; }
+            const bodySelect = document.getElementById('sidebarBodyType');
+            if (bodySelect) {
+                bodySelect.value = '';
+                window._sidebarBodyTypes = [];
+                bodySelect.dataset.multiValue = '';
+                bodySelect._syncBodyTiles?.();
+                bodySelect._syncCustomSelect?.();
+            }
+            const defaultAucRadio = document.querySelector('input[name="aucType"][value=""]');
+            if (defaultAucRadio) defaultAucRadio.checked = true;
+            const bindingEl = document.getElementById('sidebarAucBinding');
+            if (bindingEl && bindingEl.type === 'checkbox') bindingEl.checked = false;
+            const cashEl = document.getElementById('sidebarAucCash');
+            if (cashEl && cashEl.type === 'checkbox') cashEl.checked = false;
+            const priceFrom = document.getElementById('sidebarPriceFrom');
+            if (priceFrom) priceFrom.value = '';
+            const priceTo = document.getElementById('sidebarPriceTo');
+            if (priceTo) priceTo.value = '';
+            initCustomSelects();
             applySidebarFilters();
         });
     }
 }
 
+export function initBusinessListingsFilters(dealerListings) {
+    _allActiveListings = dealerListings || [];
+    _drazbeRenderOverride = null;
+    _hasMore = false;
+
+    if (PLATFORM.id === 'avto') {
+        enhanceSearchLayout({ hideBreadcrumb: true });
+        compareList = readVehicleComparison();
+    }
+
+    initViewToggle();
+    populateAndBindSidebarControls();
+    document.querySelectorAll('.js-format-number').forEach(input => setupNumericFormatter(input));
+    initLegendPopup();
+
+    const sortSelect = document.getElementById('sortSelect');
+    if (sortSelect && !sortSelect.dataset.bound) {
+        sortSelect.dataset.bound = 'true';
+        sortSelect.addEventListener('change', () => {
+            applySidebarFilters();
+        });
+    }
+
+    setupMobileSplitPillAndSheets();
+    if (window.lucide) window.lucide.createIcons();
+}
+
 export function destroyOglasiPage() {
+    mobileSheetsCleanup?.();
+    mobileSheetsCleanup = null;
     if (window._oglasiUnsubscribe) {
         window._oglasiUnsubscribe();
         delete window._oglasiUnsubscribe;

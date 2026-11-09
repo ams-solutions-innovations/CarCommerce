@@ -1,3 +1,4 @@
+import { PLATFORM } from '../config/platform.js';
 // Compare page — renders side-by-side comparison of selected vehicles/vessels
 import { escHtml } from '../utils/escHtml.js';
 import { key as lsKey } from '../config/storageKeys.js';
@@ -35,6 +36,7 @@ function saveVisibleFields(keys) {
 }
 
 export function initComparePage() {
+    if(PLATFORM.id==='avto')return import('./compare.autohub.js').then(module=>module.initAutoHubComparePage());
     console.log('[ComparePage] init');
     renderComparison();
 }

@@ -2,6 +2,35 @@
 // Each entry maps a brand name to its iconic primary RGB tuple string, e.g. "234, 179, 8" for Renault yellow.
 
 const BRAND_COLORS_RGB = {
+  // Recreational Vehicles (Vozila za prosti čas)
+  "Adria": "0, 56, 101",
+  "Adria Home": "0, 56, 101",
+  "Dethleffs": "211, 32, 39",
+  "Hobby": "0, 90, 169",
+  "Pössl": "0, 135, 84",
+  "Hymer": "0, 68, 148",
+  "Bürstner": "190, 30, 45",
+  "Carthago": "180, 150, 90",
+  "Knaus": "0, 159, 227",
+  "Rapido": "0, 46, 110",
+  "Sunlight": "245, 130, 32",
+  "Westfalia": "190, 25, 45",
+  "Weinsberg": "0, 159, 227",
+  "Benimar": "192, 24, 35",
+  "Roller Team": "213, 0, 0",
+  "Laika": "200, 16, 46",
+  "Chausson": "0, 43, 127",
+  "Frankia": "0, 51, 102",
+  "Morelo": "201, 160, 80",
+  "Niesmann+Bischoff": "27, 45, 79",
+  "Robeta": "225, 29, 72",
+  "Bravia": "2, 132, 199",
+  "Tourne": "13, 148, 136",
+  "Carado": "220, 38, 38",
+  "Winnebago": "0, 51, 102",
+  "Airstream": "0, 75, 135",
+  "Fendt": "0, 102, 51",
+
   // French brands
   "Renault": "234, 179, 8",          // Renault Yellow
   "Peugeot": "30, 64, 175",          // Peugeot Blue
@@ -98,7 +127,6 @@ const BRAND_COLORS_RGB = {
   "Ducati": "220, 38, 38",           // Ducati Corse Red
   "KTM": "249, 115, 22",             // Ready to Race Orange
   "Harley-Davidson": "249, 115, 22", // Bar & Shield Orange
-  "BMW Motorrad": "37, 99, 235",
   "Triumph": "185, 28, 28",
   "Aprilia": "220, 38, 38",
   "Moto Guzzi": "185, 28, 28",

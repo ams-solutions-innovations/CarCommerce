@@ -2,6 +2,8 @@
 node_modules/
 
 # Build output
+scratch/autohub-references/
+scratch/autohub-qa/
 dist/
 dist-avto/
 dist-navtika/

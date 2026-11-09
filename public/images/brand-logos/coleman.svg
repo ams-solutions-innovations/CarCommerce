@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="#16a34a"/>
+    <!-- Lantern symbol -->
+    <path d="M42 28 L58 28 L58 34 L42 34 Z M36 36 L64 36 L60 62 L40 62 Z M34 64 L66 64 L64 74 L36 74 Z" fill="#ffffff"/>
+    <circle cx="50" cy="48" r="6" fill="#facc15"/>
+  </svg>

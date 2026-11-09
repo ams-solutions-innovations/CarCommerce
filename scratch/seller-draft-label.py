@@ -1,0 +1,3 @@
+from pathlib import Path
+p=Path('src/pages/dashboard.autohub.js');s=p.read_text(encoding='utf-8').replace("${escHtml(draft._stepId||'typeSelect')}", "${text(({typeSelect:'cl_step_category',category:'cl_step_category',basic:'cl_step_basic',technical:'cl_step_technical',equipment:'cl_step_features',media:'cl_step_photos',description:'cl_step_description',price:'cl_step_price',location:'cl_step_location',promotion:'cl_step_visibility',review:'cl_step_review',auctionSetup:'cl_step_auction',auth:'cl_step_signin',partDetails:'cl_step_part_details',tireDetails:'cl_step_tire_details',opremaDetails:'cl_step_oprema_details'})[draft._stepId]||'cl_step_category')}")
+p.write_text(s,encoding='utf-8')

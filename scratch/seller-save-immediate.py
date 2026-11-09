@@ -1,0 +1,11 @@
+from pathlib import Path
+p=Path('src/services/sellerDraftService.js');s=p.read_text(encoding='utf-8').replace('let queue=Promise.resolve();', 'let queue=Promise.resolve();const photoSnapshots=new Map();')
+s=s.replace('export function saveSellerDraft(state)', 'export async function saveSellerDraft(state)')
+s=s.replace("queue=queue.catch(()=>{}).then(()=>photos('put',id,files));return queue;", "const previous=photoSnapshots.get(id);if(previous&&['exterior','interior'].every(group=>previous.files[group].length===files[group].length&&files[group].every((file,index)=>previous.files[group][index]===file)))return previous.promise;queue=queue.catch(()=>{}).then(()=>photos('put',id,files));const promise=queue;photoSnapshots.set(id,{files,promise});promise.catch(()=>{if(photoSnapshots.get(id)?.promise===promise)photoSnapshots.delete(id);});return promise;")
+s=s.replace("export async function clearSellerDraft(){const id=sellerDraftKey();", "export async function clearSellerDraft(){const id=sellerDraftKey();photoSnapshots.delete(id);")
+p.write_text(s,encoding='utf-8')
+p=Path('src/pages/create-listing.js');s=p.read_text(encoding='utf-8')
+s=s.replace("let timer;host.addEventListener('input',()=>{wizardDirty=true;clearTimeout(timer);timer=setTimeout(capture,180);},{signal});", "host.addEventListener('input',()=>{wizardDirty=true;capture();},{signal});")
+s=s.replace("clearTimeout(timer);capture();", "capture();")
+s=s.replace("signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});", '')
+p.write_text(s,encoding='utf-8')

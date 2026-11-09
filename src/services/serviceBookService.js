@@ -1,5 +1,5 @@
 // Digital Service Book — Supabase data layer
-// Requires a `service_records` table: id, vin, mechanic_id, data (jsonb), created_at
+// Table `service_records` (see supabase/b2b.sql): id, vin, mechanic_id, data (jsonb), created_at
 
 import { supabase } from '../lib/supabase.js';
 
@@ -42,4 +42,30 @@ export async function getServiceHistoryByVin(vin) {
         console.error('[ServiceBook] getServiceHistoryByVin:', err);
         return [];
     }
+}
+
+/** Entries the given mechanic has written, newest first (for the entry page's history list). */
+export async function listRecordsByMechanic(mechanicId, limit = 20) {
+    if (!mechanicId) return [];
+    const { data, error } = await supabase
+        .from('service_records')
+        .select('*')
+        .eq('mechanic_id', mechanicId)
+        .order('created_at', { ascending: false })
+        .limit(limit);
+    if (error) throw new Error(error.message);
+    return (data || []).map(r => ({
+        id: r.id,
+        vin: r.vin,
+        mechanicId: r.mechanic_id,
+        createdAt: r.created_at,
+        ...r.data,
+    }));
+}
+
+/** Delete one of the caller's own entries (RLS also enforces ownership). */
+export async function deleteServiceRecord(id) {
+    const { data, error } = await supabase.from('service_records').delete().eq('id', id).select('id');
+    if (error) throw new Error(error.message);
+    if (!data?.length) throw new Error('Vnosa ni mogoče izbrisati.');
 }

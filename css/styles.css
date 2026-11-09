@@ -3226,6 +3226,8 @@ body.dark-mode .legal-doc h2 {
 /* ── Advanced Search Layout (Mobile.de style) ─────────────────────── */
 /* The grid lives in a flex-row accordion body; ensure its field group fills
    the available width so the flex grid below can wrap across multiple columns. */
+#group-bodyType,
+.commercial-selector,
 .adv-field-group:has(.body-type-grid) {
   width: 100%;
 }
@@ -3234,8 +3236,14 @@ body.dark-mode .legal-doc h2 {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
+  justify-content: center !important;
+  align-items: center;
   width: 100%;
+}
+
+.body-type-grid[style*="display: none"],
+.body-type-grid[style*="display:none"] {
+  display: none !important;
 }
 
 .body-type-grid > .body-type-card {
@@ -3281,7 +3289,9 @@ body.dark-mode .legal-doc h2 {
 
 .body-type-card i {
   color: inherit;
-  font-size: 48px;
+  font-size: 38px;
+  width: 38px;
+  height: 38px;
   stroke-width: 1.5;
 }
 
@@ -3915,6 +3925,10 @@ body.dark-mode .custom-select-option.highlighted {
   width: 100%;
   display: flex;
   align-items: center;
+  padding: 0;
+}
+
+.adv-acc-header:has(.remember-toggle) {
   padding: 0 1rem 0 0;
 }
 
@@ -4158,6 +4172,9 @@ body.dark-mode #rot-next-btn {
 }
 
 .adv-acc-body {
+  display: flex;
+  flex-direction: column !important;
+  gap: 1.25rem;
   padding: 1.5rem 1.75rem 1.75rem;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   animation: slideDown 0.2s ease-out;
@@ -4362,215 +4379,199 @@ body.dark-mode #rot-next-btn {
   color: #fff;
 }
 
-/* ── Color Pills (Zunanjost / Barva zunanjosti) ─────────────────── */
+/* ── Color Swatches (Barva zunanjosti) ─────────────────────────── */
+.adv-color-bela { --swatch: #ffffff; }
+.adv-color-crna { --swatch: #111827; }
+.adv-color-siva { --swatch: #64748b; }
+.adv-color-srebrna { --swatch: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 50%, #94a3b8 100%); }
+.adv-color-rdeca { --swatch: #ef4444; }
+.adv-color-modra { --swatch: #2563eb; }
+.adv-color-zelena { --swatch: #16a34a; }
+.adv-color-rjava { --swatch: #78350f; }
+.adv-color-rumena { --swatch: #eab308; }
+.adv-color-oranzna { --swatch: #f97316; }
+.adv-color-vijolicna { --swatch: #8b5cf6; }
+.adv-color-zlata { --swatch: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%); }
+.adv-color-bronasta { --swatch: #b45309; }
+
+.adv-chip-group:has(.adv-chip-color),
+.adv-color-chip-group {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 10px 12px !important;
+  align-items: flex-start !important;
+  padding: 4px 0 10px !important;
+}
+
 .adv-chip-color,
 .adv-chip:has(input[name="color"]) {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 4px 4px 8px !important;
+  min-width: 52px !important;
+  max-width: 64px !important;
+  min-height: auto !important;
+  border-radius: 12px !important;
+  color: var(--text-muted, #94a3b8) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  line-height: 1.2 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  position: relative !important;
+  gap: 7px !important;
+  transition: transform 0.15s ease, color 0.15s ease !important;
+  user-select: none !important;
+  transform: none !important;
 }
 
-/* Bela / White */
-.adv-color-bela,
-.adv-chip:has(input[name="color"][value="Bela"]) {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1.5px solid #cbd5e1 !important;
-}
-.adv-color-bela:hover,
-.adv-chip:has(input[name="color"][value="Bela"]):hover {
-  background: #f8fafc !important;
-  border-color: #94a3b8 !important;
-  transform: translateY(-1px);
+.adv-chip-color:hover,
+.adv-chip:has(input[name="color"]):hover {
+  background: transparent !important;
+  color: var(--color-text, #ffffff) !important;
+  transform: translateY(-2px) !important;
 }
 
-/* Črna / Black */
-.adv-color-crna,
-.adv-chip:has(input[name="color"][value="Črna"]) {
-  background: #18181b !important;
-  color: #ffffff !important;
-  border: 1.5px solid #3f3f46 !important;
-}
-.adv-color-crna:hover,
-.adv-chip:has(input[name="color"][value="Črna"]):hover {
-  background: #27272a !important;
-  border-color: #52525b !important;
-  transform: translateY(-1px);
-}
-
-/* Siva / Gray */
-.adv-color-siva,
-.adv-chip:has(input[name="color"][value="Siva"]) {
-  background: #64748b !important;
-  color: #ffffff !important;
-  border: 1.5px solid #475569 !important;
-}
-.adv-color-siva:hover,
-.adv-chip:has(input[name="color"][value="Siva"]):hover {
-  background: #475569 !important;
-  border-color: #334155 !important;
-  transform: translateY(-1px);
+.adv-chip-color::before,
+.adv-chip:has(input[name="color"])::before {
+  content: '' !important;
+  display: block !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 50% !important;
+  background: var(--swatch) !important;
+  border: 2px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
+  transition: transform 0.15s ease, outline 0.15s ease, box-shadow 0.15s ease !important;
+  margin: 0 !important;
+  line-height: normal !important;
+  font-size: 0 !important;
 }
 
-/* Srebrna / Silver */
-.adv-color-srebrna,
-.adv-chip:has(input[name="color"][value="Srebrna"]) {
-  background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 100%) !important;
-  color: #0f172a !important;
-  border: 1.5px solid #94a3b8 !important;
-}
-.adv-color-srebrna:hover,
-.adv-chip:has(input[name="color"][value="Srebrna"]):hover {
-  background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%) !important;
-  border-color: #64748b !important;
-  transform: translateY(-1px);
+body:not(.dark-mode) .adv-chip-color::before,
+body:not(.dark-mode) .adv-chip:has(input[name="color"])::before {
+  border: 2px solid rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
-/* Rdeča / Red */
-.adv-color-rdeca,
-.adv-chip:has(input[name="color"][value="Rdeča"]) {
-  background: #dc2626 !important;
-  color: #ffffff !important;
-  border: 1.5px solid #b91c1c !important;
+.adv-color-bela::before,
+.adv-chip:has(input[name="color"][value="Bela"])::before {
+  border: 2px solid rgba(255, 255, 255, 0.45) !important;
 }
-.adv-color-rdeca:hover,
-.adv-chip:has(input[name="color"][value="Rdeča"]):hover {
-  background: #b91c1c !important;
-  border-color: #991b1b !important;
-  transform: translateY(-1px);
+body:not(.dark-mode) .adv-color-bela::before,
+body:not(.dark-mode) .adv-chip:has(input[name="color"][value="Bela"])::before {
+  border: 2px solid #cbd5e1 !important;
 }
 
-/* Modra / Blue */
-.adv-color-modra,
-.adv-chip:has(input[name="color"][value="Modra"]) {
-  background: #2563eb !important;
-  color: #ffffff !important;
-  border: 1.5px solid #1d4ed8 !important;
-}
-.adv-color-modra:hover,
-.adv-chip:has(input[name="color"][value="Modra"]):hover {
-  background: #1d4ed8 !important;
-  border-color: #1e40af !important;
-  transform: translateY(-1px);
+.adv-color-crna::before,
+.adv-chip:has(input[name="color"][value="Črna"])::before {
+  border: 2px solid rgba(255, 255, 255, 0.25) !important;
 }
 
-/* Zelena / Green */
-.adv-color-zelena,
-.adv-chip:has(input[name="color"][value="Zelena"]) {
-  background: #16a34a !important;
-  color: #ffffff !important;
-  border: 1.5px solid #15803d !important;
-}
-.adv-color-zelena:hover,
-.adv-chip:has(input[name="color"][value="Zelena"]):hover {
-  background: #15803d !important;
-  border-color: #166534 !important;
-  transform: translateY(-1px);
+.adv-chip-color:hover::before,
+.adv-chip:has(input[name="color"]):hover::before {
+  transform: scale(1.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35) !important;
 }
 
-/* Rjava / Brown */
-.adv-color-rjava,
-.adv-chip:has(input[name="color"][value="Rjava"]) {
-  background: #78350f !important;
-  color: #ffffff !important;
-  border: 1.5px solid #451a03 !important;
-}
-.adv-color-rjava:hover,
-.adv-chip:has(input[name="color"][value="Rjava"]):hover {
-  background: #92400e !important;
-  border-color: #78350f !important;
-  transform: translateY(-1px);
-}
-
-/* Rumena / Yellow */
-.adv-color-rumena,
-.adv-chip:has(input[name="color"][value="Rumena"]) {
-  background: #facc15 !important;
-  color: #0f172a !important;
-  border: 1.5px solid #d97706 !important;
-}
-.adv-color-rumena:hover,
-.adv-chip:has(input[name="color"][value="Rumena"]):hover {
-  background: #f59e0b !important;
-  border-color: #b45309 !important;
-  transform: translateY(-1px);
-}
-
-/* Oranžna / Orange */
-.adv-color-oranzna,
-.adv-chip:has(input[name="color"][value="Oranžna"]) {
-  background: #ea580c !important;
-  color: #ffffff !important;
-  border: 1.5px solid #c2410c !important;
-}
-.adv-color-oranzna:hover,
-.adv-chip:has(input[name="color"][value="Oranžna"]):hover {
-  background: #c2410c !important;
-  border-color: #9a3412 !important;
-  transform: translateY(-1px);
-}
-
-/* Vijolična / Purple */
-.adv-color-vijolicna,
-.adv-chip:has(input[name="color"][value="Vijolična"]) {
-  background: #7c3aed !important;
-  color: #ffffff !important;
-  border: 1.5px solid #6d28d9 !important;
-}
-.adv-color-vijolicna:hover,
-.adv-chip:has(input[name="color"][value="Vijolična"]):hover {
-  background: #6d28d9 !important;
-  border-color: #5b21b6 !important;
-  transform: translateY(-1px);
-}
-
-/* Zlata / Gold */
-.adv-color-zlata,
-.adv-chip:has(input[name="color"][value="Zlata"]) {
-  background: linear-gradient(135deg, #fef08a 0%, #eab308 50%, #ca8a04 100%) !important;
-  color: #451a03 !important;
-  border: 1.5px solid #ca8a04 !important;
-}
-
-/* Bronasta / Bronze */
-.adv-color-bronasta,
-.adv-chip:has(input[name="color"][value="Bronasta"]) {
-  background: #b45309 !important;
-  color: #ffffff !important;
-  border: 1.5px solid #78350f !important;
-}
-
-/* Checked / Selected State for color chips */
-.adv-chip-color:has(input:checked),
-.adv-chip:has(input[name="color"]:checked) {
-  outline: 3px solid var(--color-primary-start, #2563eb) !important;
-  outline-offset: 2px !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
-  transform: translateY(-1px) scale(1.02);
-}
-
+/* Checked / Selected State */
 .adv-chip-color:has(input:checked)::before,
 .adv-chip:has(input[name="color"]:checked)::before {
-  content: "✓";
-  display: inline-block;
-  font-weight: 800;
-  font-size: 0.85em;
-  margin-right: 0.3rem;
-  line-height: 1;
+  outline: 2.5px solid var(--color-primary-start, #2563eb) !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 12px rgba(37, 99, 235, 0.45) !important;
+  transform: scale(1.04) !important;
 }
 
-/* Dark mode adjustments */
-body.dark-mode .adv-color-crna,
-body.dark-mode .adv-chip:has(input[name="color"][value="Črna"]) {
-  background: #09090b !important;
-  border-color: #71717a !important;
+.adv-chip-color:has(input:checked),
+.adv-chip:has(input[name="color"]:checked) {
+  color: var(--color-primary-start, #3b82f6) !important;
+  font-weight: 700 !important;
 }
 
-body.dark-mode .adv-chip-color:has(input:checked),
-body.dark-mode .adv-chip:has(input[name="color"]:checked) {
-  outline: 3px solid #60a5fa !important;
+.adv-chip-color:has(input:checked)::after,
+.adv-chip:has(input[name="color"]:checked)::after {
+  content: '✓' !important;
+  position: absolute !important;
+  top: 21px !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+  pointer-events: none !important;
+}
+
+:is(.adv-color-bela, .adv-color-rumena, .adv-color-srebrna, .adv-chip:has(input[name="color"][value="Bela"]), .adv-chip:has(input[name="color"][value="Rumena"]), .adv-chip:has(input[name="color"][value="Srebrna"])):has(input:checked)::after {
+  color: #0f172a !important;
+  text-shadow: none !important;
+}
+
+/* ── Dynamic Paintwork Chips (Vrsta barve) ─────────────────────────── */
+.adv-chip-paintwork,
+.adv-chip:has(input[name="paintwork"]),
+body .adv-chip-paintwork,
+body .adv-chip:has(input[name="paintwork"]),
+body.dark-mode .adv-chip-paintwork,
+body.dark-mode .adv-chip:has(input[name="paintwork"]) {
+  background: var(--pw-bg, #ffffff) !important;
+  color: var(--pw-color, #0f172a) !important;
+  border: var(--pw-border, 1px solid #cbd5e1) !important;
+  box-shadow: var(--pw-shadow, 0 1px 3px rgba(0, 0, 0, 0.05)) !important;
+  text-shadow: var(--pw-text-shadow, none) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.01em !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  position: relative !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.adv-chip-paintwork:hover,
+.adv-chip:has(input[name="paintwork"]):hover,
+body .adv-chip-paintwork:hover,
+body .adv-chip:has(input[name="paintwork"]):hover,
+body.dark-mode .adv-chip-paintwork:hover,
+body.dark-mode .adv-chip:has(input[name="paintwork"]):hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.06) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* Checked / Selected State for Paintwork Chips */
+.adv-chip-paintwork:has(input:checked),
+.adv-chip:has(input[name="paintwork"]:checked),
+body .adv-chip-paintwork:has(input:checked),
+body .adv-chip:has(input[name="paintwork"]:checked),
+body.dark-mode .adv-chip-paintwork:has(input:checked),
+body.dark-mode .adv-chip:has(input[name="paintwork"]:checked) {
+  background: var(--pw-bg, #ffffff) !important;
+  color: var(--pw-color, #0f172a) !important;
+  border: var(--pw-border, 1px solid #cbd5e1) !important;
+  outline: 2.5px solid var(--color-primary-start, #2563eb) !important;
   outline-offset: 2px !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5) !important;
+  box-shadow: 0 0 14px rgba(37, 99, 235, 0.45) !important;
+  transform: translateY(-2px) scale(1.03) !important;
+}
+
+.adv-chip-paintwork:has(input:checked)::after,
+.adv-chip:has(input[name="paintwork"]:checked)::after {
+  content: ' ✓' !important;
+  font-weight: 900 !important;
+  margin-left: 3px !important;
+  color: inherit !important;
+  position: static !important;
+  transform: none !important;
 }
 
 .adv-chip-large {
@@ -5736,8 +5737,8 @@ body.dark-mode .seller-note-card {
   padding: 1.5rem;
   position: sticky;
   top: 1.5rem;
-  max-height: calc(100vh - 3rem);
-  overflow-y: auto;
+  max-height: none;
+  overflow-y: visible;
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
@@ -7685,7 +7686,7 @@ body.dark-mode .footer-row-value {
 }
 
 .adv-acc-trigger:hover {
-  background: rgba(255, 255, 255, 0.3) !important;
+  background: transparent !important;
 }
 
 .adv-accordion[aria-expanded="true"] {
@@ -7719,7 +7720,7 @@ body.dark-mode .adv-acc-title {
 }
 
 body.dark-mode .adv-acc-trigger:hover {
-  background: rgba(255, 255, 255, 0.05) !important;
+  background: transparent !important;
 }
 
 /* ── Digital Service Book ────────────────────────────────────────────────── */
@@ -8612,10 +8613,14 @@ body.dark-mode .lang-dropdown-item.active {
 /* Power Unit Toggle styles */
 .power-unit-toggle-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 0.75rem;
+}
+
+.power-unit-toggle-wrapper .adv-sub-label {
+  text-transform: none;
 }
 
 .unit-toggle-pill {
@@ -8703,162 +8708,249 @@ body.dark-mode .unit-btn.active {
   grid-template-columns: repeat(3, 1fr);
 }
 
-/* ── Engine type / cylinders field polish ──────────────────────────
-   Groups the cylinder count + layout selects onto a single inset
-   surface, turns the count into a compact accent badge, and lets the
-   configuration select breathe across the rest of the row. */
-.engine-cyl-field .cyl-row {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.625rem;
-  width: fit-content;
-  padding: 0.4rem;
-  border-radius: 9999px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+/* ── Motorcycle & Car Engine Controls Grid ──────────────────────── */
+.adv-engine-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
-body:not(.dark-mode) .engine-cyl-field .cyl-row {
-  background: rgba(0, 0, 0, 0.025);
-  border-color: rgba(0, 0, 0, 0.06);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.03);
+#acc-engine.is-moto-engine .adv-engine-row,
+.adv-engine-row:has(.adv-a2-cell:not([style*="display: none"])) {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 768px) {
+  .adv-engine-row,
+  #acc-engine.is-moto-engine .adv-engine-row,
+  .adv-engine-row:has(.adv-a2-cell:not([style*="display: none"])) {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem;
+  }
+}
+
+/* ── A2 izpit toggle – advanced search (compact inline cell) ─────── */
+.adv-a2-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.adv-a2-cell .adv-a2-pill-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 40px;
+}
+
+.adv-a2-cell .unit-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--ah-soft, rgba(255, 255, 255, 0.05));
+  border: 1px solid var(--ah-line, rgba(255, 255, 255, 0.1));
+}
+
+.adv-a2-cell .unit-toggle-pill .unit-btn {
+  padding: 6px 18px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--ah-muted, rgba(255, 255, 255, 0.6));
+  transition: all 0.15s ease;
+}
+
+.adv-a2-cell .unit-toggle-pill .unit-btn.active {
+  background: var(--ah-blue, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+/* ── Motorcycle Engine Cylinders & Layout Polish ─────────────────── */
+.engine-cyl-field {
+  text-align: left !important;
+  width: 100%;
+}
+
+.engine-cyl-field .adv-label {
+  text-align: left !important;
+  margin-bottom: 0.5rem;
+}
+
+.cyl-controls-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .engine-cyl-field .cyl-count {
-  flex: 0 0 auto;
-  width: 92px;
+  width: 150px;
+  flex: 0 0 150px;
 }
 
-.engine-cyl-field .cyl-layout {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-/* Compact, bold count pill */
 .engine-cyl-field .cyl-count .custom-select-trigger {
-  padding: 0 14px;
-  font-size: 1.2rem;
-  font-weight: 800;
-  letter-spacing: 0.01em;
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  letter-spacing: normal !important;
 }
 
-.engine-cyl-field .cyl-count .select-icon {
-  display: none !important;
-}
-
-/* Placeholder state (no cylinder count chosen yet) reads quieter */
-.engine-cyl-field .cyl-count:not(:has(option:checked:not([value=""]))) .custom-select-value {
-  font-size: 0.9rem;
-  font-weight: 600;
-  opacity: 0.65;
-}
-
-/* Filled state: turn the count into an accent gradient badge */
-.engine-cyl-field .cyl-count:has(option:checked:not([value=""])) .custom-select-trigger {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end)) !important;
-  border-color: transparent !important;
-  color: #ffffff !important;
-  box-shadow: 0 6px 16px -6px var(--color-primary-start);
-}
-
-.engine-cyl-field .cyl-count:has(option:checked:not([value=""])) .select-icon {
-  display: none !important;
-}
-
-.engine-cyl-field .cyl-layout .select-icon {
-  display: none !important;
-}
-
-/* Configuration select: size to widest option, not full row width */
 .engine-cyl-field .cyl-layout {
-  flex: 0 0 auto;
-  width: max-content;
-}
-
-.engine-cyl-field .cyl-layout .custom-select-container {
-  width: max-content;
+  min-width: 190px;
+  max-width: 260px;
+  flex: 0 1 auto;
 }
 
 .engine-cyl-field .cyl-layout .custom-select-trigger {
-  width: max-content;
-  font-weight: 600;
-  padding: 0 20px;
+  height: 40px;
+  padding: 0 16px;
+  font-size: 13px !important;
+  font-weight: 500 !important;
 }
 
-.engine-cyl-field .cyl-layout .custom-select-menu {
-  min-width: 100%;
-  width: max-content;
-}
-
-
-/* Center the cyl-row pill under its label */
-.engine-cyl-field {
-  text-align: center;
-}
-
-/* Dodaj / Odstrani buttons under the cyl dropdowns */
-.adv-btn-pill {
-  padding: .3rem .9rem;
-  border-radius: 9999px;
-  border: none;
-  font-size: .8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity .15s, transform .1s;
-}
-.adv-btn-pill:hover { opacity: .85; transform: scale(1.03); }
-.adv-btn-pill-add {
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
-  color: #fff;
-}
-.adv-btn-pill-remove {
-  background: rgba(239,68,68,.15);
-  color: #ef4444;
-  border: 1px solid rgba(239,68,68,.25);
-}
-body.dark-mode .adv-btn-pill-remove {
-  background: rgba(239,68,68,.2);
-  border-color: rgba(239,68,68,.3);
-}
-.cyl-filter-chip {
+.cyl-btn-group {
   display: inline-flex;
   align-items: center;
-  gap: .3rem;
-  padding: .25rem .65rem;
-  border-radius: 9999px;
-  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
-  color: #fff;
-  font-size: .78rem;
-  font-weight: 600;
+  gap: 0.5rem;
 }
-.cyl-filter-chip button {
-  background: rgba(255,255,255,.3);
-  border: none;
-  color: #fff;
-  border-radius: 50%;
-  width: 16px; height: 16px;
-  font-size: 11px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-}
-.cyl-filter-chip button:hover { background: rgba(255,255,255,.5); }
-.cyl-filter-chip-exclude {
-  background: rgba(239,68,68,.15) !important;
-  color: #ef4444 !important;
-  border: 1px solid rgba(239,68,68,.3);
-}
-.cyl-filter-chip-exclude button {
-  background: rgba(239,68,68,.2) !important;
-  color: #ef4444 !important;
-}
-.cyl-filter-chip-exclude button:hover { background: rgba(239,68,68,.4) !important; }
 
-/* ── A2 izpit toggle – advanced search (inline cell) ───────────── */
-.adv-a2-cell .adv-a2-pill-wrap {
+.cyl-action-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem !important;
+  height: 38px !important;
+  padding: 0 1.15rem !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 999px !important;
+  cursor: pointer;
+  transition: all 0.15s ease !important;
+  white-space: nowrap;
+}
+
+.cyl-action-btn.primary {
+  background: var(--ah-blue, #2563eb) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.cyl-action-btn.primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.cyl-remove-btn {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+  color: #ef4444 !important;
+}
+
+body.dark-mode .cyl-remove-btn {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #f87171 !important;
+}
+
+.cyl-remove-btn:hover {
+  background: rgba(239, 68, 68, 0.25) !important;
+  transform: translateY(-1px);
+}
+
+/* Cylinder active chips container */
+.cyl-chips-container {
   display: flex;
-  justify-content: center;
-  padding-top: 2px;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.cyl-chips-container:empty {
+  margin-top: 0;
+  display: none;
+}
+
+.cyl-filter-chip {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  padding: 6px 12px !important;
+  border-radius: 9999px !important;
+  background: rgba(37, 99, 235, 0.1) !important;
+  border: 1px solid rgba(37, 99, 235, 0.3) !important;
+  color: #2563eb !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.2;
+}
+
+body.dark-mode .cyl-filter-chip {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.35) !important;
+  color: #93c5fd !important;
+}
+
+.cyl-filter-chip button {
+  background: rgba(37, 99, 235, 0.15) !important;
+  border: none !important;
+  color: #2563eb !important;
+  border-radius: 50% !important;
+  width: 18px !important;
+  height: 18px !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  cursor: pointer;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin-left: 2px;
+  transition: all 0.15s ease;
+}
+
+body.dark-mode .cyl-filter-chip button {
+  background: rgba(147, 197, 253, 0.2) !important;
+  color: #93c5fd !important;
+}
+
+.cyl-filter-chip button:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+}
+
+.cyl-filter-chip-exclude {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #ef4444 !important;
+}
+
+body.dark-mode .cyl-filter-chip-exclude {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #f87171 !important;
+}
+
+.cyl-filter-chip-exclude button {
+  background: rgba(239, 68, 68, 0.2) !important;
+  color: #ef4444 !important;
+}
+
+body.dark-mode .cyl-filter-chip-exclude button {
+  background: rgba(248, 113, 113, 0.25) !important;
+  color: #f87171 !important;
+}
+
+.cyl-filter-chip-exclude button:hover {
+  background: #ef4444 !important;
+  color: #ffffff !important;
 }
 
 /* ── A2 izpit toggle row – create listing ───────────────────────── */
@@ -10698,11 +10790,20 @@ body.dark-mode .body-type-card.active .custom-v-icon {
     --bg-glass: #1e293b;
 }
 
-/* Make them slightly larger in the cards */
+/* Custom Vehicle Icons inside body-type-card */
 .body-type-card .custom-v-icon {
-    width: 76px;
-    height: 76px;
-    margin-bottom: 0;
+    width: 60px;
+    height: 60px;
+    margin-bottom: 0.15rem;
+    transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .body-type-card .custom-v-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.1rem;
+  }
 }
 
 /* ── Navtika: Oprema za plovila landing search UI ──────────────────────────── */
@@ -11047,11 +11148,12 @@ body.dark-mode .logo-adaptive {
 
 .custom-select-trigger .custom-select-brand-item {
   min-height: auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 14px;
-  width: auto;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
 }
 
 .custom-select-trigger .custom-select-brand-watermark {
@@ -11060,12 +11162,13 @@ body.dark-mode .logo-adaptive {
   right: auto;
   top: auto;
   bottom: auto;
-  height: 24px;
-  width: 32px;
-  max-width: 38px;
+  height: 20px;
+  width: 28px;
+  max-width: 32px;
   opacity: 1;
-  order: -1;
-  margin-right: 0;
+  order: 1;
+  margin-left: auto;
+  margin-right: 2px;
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
@@ -11167,8 +11270,12 @@ body.dark-mode .logo-adaptive {
 }
 
 .custom-select-option.brand-option.selected .custom-select-brand-name {
-  color: rgb(var(--brand-rgb));
+  color: var(--color-text, #1e293b);
   font-weight: 700;
+}
+
+body.dark-mode .custom-select-option.brand-option.selected .custom-select-brand-name {
+  color: #ffffff !important;
 }
 
 body.dark-mode .custom-select-option.brand-option:hover,
@@ -11178,14 +11285,36 @@ body.dark-mode .custom-select-option.brand-option.selected {
 }
 
 .custom-select-trigger.brand-selected {
+  justify-content: flex-start !important;
+  padding-left: 18px !important;
+  padding-right: 42px !important;
   border-radius: 99px !important;
   background: linear-gradient(90deg, rgba(var(--brand-rgb), 0.25) 0%, rgba(var(--brand-rgb), 0.05) 100%) !important;
   border-color: rgba(var(--brand-rgb), 0.45) !important;
 }
 
+.custom-select-trigger.brand-selected .custom-select-value {
+  margin-right: auto !important;
+  text-align: left !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
 .custom-select-trigger.brand-selected .custom-select-brand-name {
-  color: rgb(var(--brand-rgb)) !important;
+  color: var(--ah-ink, #0f172a) !important;
   font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+body.dark-mode .custom-select-trigger.brand-selected .custom-select-brand-name,
+body.platform-navtika.dark-mode .custom-select-trigger.brand-selected .custom-select-brand-name {
+  color: #ffffff !important;
+}
+
+body.dark-mode .custom-select-trigger .custom-select-brand-badge {
+  color: #ffffff !important;
 }
 
 .custom-select-trigger.brand-selected:hover,
@@ -11215,8 +11344,13 @@ body.platform-navtika.dark-mode .custom-select-trigger.brand-selected.open {
 }
 
 .custom-select-trigger.country-selected .custom-select-country-name {
-  color: rgb(var(--country-rgb)) !important;
+  color: var(--ah-ink, #0f172a) !important;
   font-weight: 600;
+}
+
+body.dark-mode .custom-select-trigger.country-selected .custom-select-country-name,
+body.platform-navtika.dark-mode .custom-select-trigger.country-selected .custom-select-country-name {
+  color: #ffffff !important;
 }
 
 .custom-select-trigger.country-selected:hover,
@@ -11239,3 +11373,624 @@ body.platform-navtika.dark-mode .custom-select-trigger.country-selected.open {
   border-color: rgba(var(--country-rgb), 0.75) !important;
 }
 
+
+
+/* ── AutoHub Modern Legend Modal ─────────────────────────────────── */
+.legend-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 12, 22, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.legend-overlay.active {
+  display: flex !important;
+  opacity: 1 !important;
+}
+
+.legend-card.ah-legend-card,
+.platform-avto .legend-card {
+  position: relative;
+  width: 100%;
+  max-width: 540px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  border-radius: 28px;
+  padding: 24px 26px 22px;
+  background: var(--ah-surface, #ffffff);
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.08));
+  box-shadow: 0 24px 60px -12px rgba(12, 27, 48, 0.35);
+  color: var(--ah-ink, #0c1b30);
+  overflow: hidden;
+  box-sizing: border-box;
+  animation: ah-modal-pop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-mode .legend-card.ah-legend-card,
+body.platform-avto.dark-mode .legend-card,
+.dark-mode .legend-card.ah-legend-card {
+  background: var(--ah-surface, #13233a) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.75) !important;
+  color: var(--ah-ink, #edf4ff) !important;
+}
+
+@keyframes ah-modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.ah-legend-card .legend-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--ah-line, rgba(0, 0, 0, 0.06));
+  flex-shrink: 0;
+}
+
+body.dark-mode .ah-legend-card .legend-card-header,
+.dark-mode .ah-legend-card .legend-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ah-legend-card .legend-card-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  font-family: Manrope, Inter, sans-serif;
+  letter-spacing: -0.02em;
+  color: var(--ah-ink, #0c1b30);
+}
+
+body.dark-mode .ah-legend-card .legend-card-header h3,
+.dark-mode .ah-legend-card .legend-card-header h3 {
+  color: var(--ah-ink, #edf4ff) !important;
+}
+
+.ah-legend-card .legend-card-sub {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ah-muted, #5a6b83);
+  line-height: 1.35;
+}
+
+body.dark-mode .ah-legend-card .legend-card-sub,
+.dark-mode .ah-legend-card .legend-card-sub {
+  color: var(--ah-muted, #a7b9d1) !important;
+}
+
+.ah-legend-card .legend-close-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.1));
+  background: var(--ah-soft, #f1f5f9);
+  color: var(--ah-muted, #5a6b83);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+}
+
+.ah-legend-card .legend-close-btn:hover {
+  background: rgba(239, 68, 68, 0.12) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #ef4444 !important;
+  transform: scale(1.06);
+}
+
+body.dark-mode .ah-legend-card .legend-close-btn,
+.dark-mode .ah-legend-card .legend-close-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #a7b9d1 !important;
+}
+
+body.dark-mode .ah-legend-card .legend-close-btn:hover,
+.dark-mode .ah-legend-card .legend-close-btn:hover {
+  background: rgba(239, 68, 68, 0.22) !important;
+  border-color: rgba(239, 68, 68, 0.5) !important;
+  color: #f87171 !important;
+}
+
+.ah-legend-card .legend-card-body {
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.3) transparent;
+}
+
+.ah-legend-card .legend-card-body::-webkit-scrollbar {
+  width: 5px;
+}
+.ah-legend-card .legend-card-body::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.3);
+  border-radius: 9999px;
+}
+
+.ah-legend-card .legend-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ah-legend-card .legend-section-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ah-muted, #5a6b83);
+  margin: 0;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ah-line, rgba(0, 0, 0, 0.05));
+}
+
+body.dark-mode .ah-legend-card .legend-section-title,
+.dark-mode .ah-legend-card .legend-section-title {
+  color: var(--ah-muted, #a7b9d1) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.ah-legend-card .legend-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+@media (max-width: 480px) {
+  .ah-legend-card .legend-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ah-legend-card .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+.ah-legend-card .legend-item-full {
+  grid-column: 1 / -1;
+}
+
+.ah-legend-card .legend-item .ah-spec {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 9999px;
+  padding: 5px 10px;
+  background: var(--ah-soft, #eaf0f8);
+  color: var(--ah-ink, #0c1b30);
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.08));
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+body.dark-mode .ah-legend-card .legend-item .ah-spec,
+.dark-mode .ah-legend-card .legend-item .ah-spec {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #edf4ff !important;
+}
+
+.ah-legend-card .legend-item .ah-spec#powerToggleLabelPill:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  border-color: rgba(37, 99, 235, 0.35) !important;
+  transform: translateY(-1px);
+}
+
+.ah-legend-card .legend-item .ah-spec .ah-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+.ah-legend-card .legend-item-desc {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--ah-muted, #5a6b83);
+  line-height: 1.25;
+}
+
+body.dark-mode .ah-legend-card .legend-item-desc,
+.dark-mode .ah-legend-card .legend-item-desc {
+  color: var(--ah-muted, #a7b9d1) !important;
+}
+
+.ah-legend-card .legend-badge-demo {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 24px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  background: #0b1f3f;
+  color: #ffffff;
+}
+
+.ah-legend-card .legend-badge-demo.ah-badge-blue {
+  background: #2563eb;
+}
+
+.ah-legend-card .legend-rating-demo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  background: var(--ah-soft, #eaf0f8);
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.08));
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+body.dark-mode .ah-legend-card .legend-rating-demo,
+.dark-mode .ah-legend-card .legend-rating-demo {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ah-legend-card .legend-rating-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #0f766e;
+}
+
+body.dark-mode .ah-legend-card .legend-rating-label,
+.dark-mode .ah-legend-card .legend-rating-label {
+  color: #2dd4bf !important;
+}
+
+.ah-legend-card .legend-rating-demo .ah-rating-track {
+  width: 90px;
+  height: 5px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #0f766e 0%, #cbd5e1 50%, #c2410c 100%);
+  position: relative;
+}
+
+.ah-legend-card .legend-rating-demo .ah-rating-track i {
+  position: absolute;
+  top: -4px;
+  width: 13px;
+  height: 13px;
+  margin-left: -6px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 3px solid #0c1b30;
+}
+
+body.dark-mode .ah-legend-card .legend-rating-demo .ah-rating-track i,
+.dark-mode .ah-legend-card .legend-rating-demo .ah-rating-track i {
+  border-color: #13233a !important;
+}
+
+.ah-legend-card .legend-action-demo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.1));
+  background: var(--ah-surface, #ffffff);
+  color: var(--ah-ink, #0c1b30);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .ah-legend-card .legend-action-demo,
+.dark-mode .ah-legend-card .legend-action-demo {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #edf4ff !important;
+}
+
+.ah-legend-card .legend-action-demo .ah-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.ah-legend-card .legend-settings-box {
+  background: var(--ah-soft, #eaf0f8);
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.08));
+  border-radius: 18px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+body.dark-mode .ah-legend-card .legend-settings-box,
+.dark-mode .ah-legend-card .legend-settings-box {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.ah-legend-card .legend-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ah-legend-card .legend-setting-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ah-legend-card .legend-setting-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--ah-ink, #0c1b30);
+}
+
+body.dark-mode .ah-legend-card .legend-setting-name,
+.dark-mode .ah-legend-card .legend-setting-name {
+  color: var(--ah-ink, #edf4ff) !important;
+}
+
+.ah-legend-card .legend-setting-hint {
+  font-size: 0.72rem;
+  color: var(--ah-muted, #5a6b83);
+}
+
+body.dark-mode .ah-legend-card .legend-setting-hint,
+.dark-mode .ah-legend-card .legend-setting-hint {
+  color: var(--ah-muted, #a7b9d1) !important;
+}
+
+.ah-legend-card .legend-unit-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(12, 27, 48, 0.06);
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.1));
+  border-radius: 9999px;
+  padding: 3px;
+  gap: 2px;
+}
+
+body.dark-mode .ah-legend-card .legend-unit-toggle,
+.dark-mode .ah-legend-card .legend-unit-toggle {
+  background: rgba(0, 0, 0, 0.25) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.ah-legend-card .power-unit-btn,
+.ah-legend-card .displacement-unit-btn {
+  padding: 4px 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--ah-muted, #5a6b83);
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+body.dark-mode .ah-legend-card .power-unit-btn,
+body.dark-mode .ah-legend-card .displacement-unit-btn,
+.dark-mode .ah-legend-card .power-unit-btn,
+.dark-mode .ah-legend-card .displacement-unit-btn {
+  color: var(--ah-muted, #a7b9d1) !important;
+}
+
+.ah-legend-card .power-unit-btn:hover,
+.ah-legend-card .displacement-unit-btn:hover {
+  color: var(--ah-ink, #0c1b30);
+}
+
+body.dark-mode .ah-legend-card .power-unit-btn:hover,
+body.dark-mode .ah-legend-card .displacement-unit-btn:hover,
+.dark-mode .ah-legend-card .power-unit-btn:hover,
+.dark-mode .ah-legend-card .displacement-unit-btn:hover {
+  color: #ffffff !important;
+}
+
+.ah-legend-card .power-unit-btn.active,
+.ah-legend-card .displacement-unit-btn.active {
+  background: var(--ah-blue, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35) !important;
+}
+
+/* ── Customizable Card Fields Checkboxes & Reset Button in Legend ── */
+.legend-card.ah-legend-card,
+.platform-avto .legend-card {
+  max-width: 660px !important;
+  max-height: calc(100vh - 36px) !important;
+}
+
+.ah-legend-card .legend-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ah-legend-card .legend-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 13px;
+  border-radius: 9999px;
+  border: 1px solid var(--ah-line, rgba(12, 27, 48, 0.12));
+  background: var(--ah-soft, #f1f5f9);
+  color: var(--ah-ink, #0c1b30);
+  font-size: 0.76rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+}
+
+.ah-legend-card .legend-reset-btn:hover {
+  background: rgba(37, 99, 235, 0.12) !important;
+  border-color: rgba(37, 99, 235, 0.4) !important;
+  color: var(--ah-blue, #2563eb) !important;
+  transform: translateY(-1px);
+}
+
+body.dark-mode .ah-legend-card .legend-reset-btn,
+.dark-mode .ah-legend-card .legend-reset-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.14) !important;
+  color: #edf4ff !important;
+}
+
+body.dark-mode .ah-legend-card .legend-reset-btn:hover,
+.dark-mode .ah-legend-card .legend-reset-btn:hover {
+  background: rgba(59, 130, 246, 0.22) !important;
+  border-color: rgba(96, 165, 250, 0.5) !important;
+  color: #93c5fd !important;
+}
+
+.ah-legend-card .legend-section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--ah-line, rgba(0, 0, 0, 0.05));
+}
+
+body.dark-mode .ah-legend-card .legend-section-head,
+.dark-mode .ah-legend-card .legend-section-head {
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.ah-legend-card .legend-section-head .legend-section-title {
+  border-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.ah-legend-card .legend-section-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.73rem;
+  font-weight: 600;
+  color: var(--ah-muted, #5a6b83);
+  cursor: pointer;
+  user-select: none;
+}
+
+body.dark-mode .ah-legend-card .legend-section-toggle,
+.dark-mode .ah-legend-card .legend-section-toggle {
+  color: var(--ah-muted, #a7b9d1) !important;
+}
+
+.ah-legend-card .legend-field-cb {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.ah-legend-card .legend-cb-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 6px;
+  border: 1.5px solid rgba(100, 116, 139, 0.45);
+  background: rgba(255, 255, 255, 0.85);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: transparent;
+  transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark-mode .ah-legend-card .legend-cb-box,
+.dark-mode .ah-legend-card .legend-cb-box {
+  background: rgba(15, 23, 42, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+.ah-legend-card .legend-cb-box svg {
+  width: 12px;
+  height: 12px;
+  transform: scale(0.6);
+  opacity: 0;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.ah-legend-card .legend-field-cb:checked + .legend-cb-box {
+  background: var(--ah-blue, #2563eb) !important;
+  border-color: var(--ah-blue, #2563eb) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.32);
+}
+
+.ah-legend-card .legend-field-cb:checked + .legend-cb-box svg {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.ah-legend-card .legend-item-checkable {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  padding: 5px 8px;
+  margin: -5px -8px;
+  border-radius: 12px;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.ah-legend-card .legend-item-checkable:hover {
+  background: rgba(37, 99, 235, 0.06);
+}
+
+body.dark-mode .ah-legend-card .legend-item-checkable:hover,
+.dark-mode .ah-legend-card .legend-item-checkable:hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.ah-legend-card .legend-item-checkable.is-unchecked .ah-spec,
+.ah-legend-card .legend-item-checkable.is-unchecked .legend-rating-demo {
+  opacity: 0.52;
+}
+
+.ah-legend-card .legend-item-checkable.is-unchecked .legend-item-desc {
+  opacity: 0.65;
+}

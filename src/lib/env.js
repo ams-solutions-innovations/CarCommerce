@@ -3,7 +3,7 @@
 // these are secrets (anon keys, public URLs, search-only flows).
 import { getPlatform } from '../config/platform.js';
 
-const e = import.meta.env;
+const e = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};
 
 export const ENV = {
   // Base URL of the Fastify API on Fargate (e.g. https://api.mojavto.si).
@@ -30,6 +30,7 @@ export const ENV = {
 
   // Cloudflare Turnstile public site key (anti-bot widget).
   turnstileSiteKey: e.VITE_TURNSTILE_SITE_KEY || '',
+  geminiApiKey: e.VITE_GEMINI_API_KEY || '',
 
   platform: getPlatform(), // 'avto' | 'navtika'
   isDev: !!e.DEV,

@@ -43,6 +43,10 @@ const NAV_EQUIPMENT_CATS = [
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 export async function initGumeInDeliPage() {
+    if (!isNavtika()) {
+        const { initAutoHubPartsPage } = await import('./parts.autohub.js');
+        return initAutoHubPartsPage();
+    }
     const root = document.getElementById('gd-root');
     if (!root) return;
     window.scrollTo({ top: 0, behavior: 'instant' });

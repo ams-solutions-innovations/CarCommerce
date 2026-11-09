@@ -1,0 +1,239 @@
+<div class="moto-only-field" style="display:none;" id="moto-equipment">
+                    <div class="srch" style="margin-bottom: 1.25rem;">
+                        <i data-lucide="search" style="width:18px;height:18px;flex-shrink:0;"></i>
+                        <input type="text" id="equipmentSearchInput" placeholder="Poišči opremo, npr. panoramska streha, head-up zaslon">
+                    </div>
+
+                    <!-- Row 1: regular feature chips — generated from equipment.js.
+                         SportExhaust + the IMU sub-chips are excluded (bespoke UI below). -->
+                    <div id="moto-equipment-chips"></div>
+
+                    <div class="dv" style="margin:16px 0;"></div>
+
+                    <!-- Bespoke: Izpuh -->
+                    <div class="eq-group" id="exhaust-group" style="display:flex; flex-direction:column; gap:8px;">
+                        <h4 style="font-size:14px; font-weight:700; color:#0c1b30; margin:0 0 4px;">Izpuh</h4>
+                        <div class="chips">
+                            <label class="chip" id="sport-exhaust-label">
+                                <input type="checkbox" name="features" value="SportExhaust" id="sport-exhaust-check">
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;display:none;"></i>
+                                <span>Športni izpuh</span>
+                            </label>
+                        </div>
+                        <div class="sub" id="exhaust-tags-row" style="display:none; margin-top:6px;">
+                            <div style="display:flex; align-items:flex-end; gap:12px; flex-wrap:wrap;">
+                                <div style="width:260px;">
+                                    <div class="lbl">Znamka izpuha</div>
+                                    <select id="exhaust-brand-select" class="glass-select custom-select-hidden">
+                                        <option value="">Vse znamke</option>
+                                    </select>
+                                </div>
+                                <div class="chips">
+                                    <label class="chip"><input type="checkbox" name="exhaustType" value="SlipOn"> <span>Slip-on</span></label>
+                                    <label class="chip"><input type="checkbox" name="exhaustType" value="FullSystem"> <span>Celotni sistem</span></label>
+                                </div>
+                            </div>
+                            <div id="exhaust-tags-list" style="display:contents;"></div>
+                        </div>
+                    </div>
+
+                    <div class="dv" style="margin:16px 0;"></div>
+
+                    <!-- Bespoke: Elektronika & 6-osni IMU -->
+                    <div class="eq-group" id="electronics-group" style="display:flex; flex-direction:column; gap:8px;">
+                        <h4 style="font-size:14px; font-weight:700; color:#0c1b30; margin:0 0 4px;">Elektronika</h4>
+                        <div class="imu">
+                            <i data-lucide="zap" style="width:18px;height:18px;color:#2563eb;"></i>
+                            <b>6-osni IMU</b>
+                            <i data-lucide="help-circle" style="width:16px;height:16px;color:#7b8ba4;cursor:help;"
+                                onclick="event.preventDefault(); window.showIMUTip && window.showIMUTip()"></i>
+                            <button type="button" class="sw" role="switch" aria-checked="false" aria-label="6-osni IMU" id="imu-switch-btn" style="margin-left:14px;">
+                                <input type="checkbox" name="features" value="IMU" class="remember-check" id="imu-trigger-checkbox" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+                            </button>
+                        </div>
+
+                        <!-- IMU sub-chips -->
+                        <div class="sub" id="imuSubRow" style="display:none; margin-top:4px;">
+                            <div class="chips">
+                                <label class="chip sm"><input type="checkbox" name="features" value="TractionControl" class="imu-sub"> <span>Nadzor zdrsa</span></label>
+                                <label class="chip sm"><input type="checkbox" name="features" value="AntiWheelie" class="imu-sub"> <span>Anti-Wheelie</span></label>
+                                <label class="chip sm"><input type="checkbox" name="features" value="CorneringABS" class="imu-sub"> <span>Cornering ABS</span></label>
+                                <label class="chip sm"><input type="checkbox" name="features" value="LinkedBraking" class="imu-sub"> <span>Povezano zaviranje</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 7. SELLER & LOCATION ══════════════════════════════════════ -->
+        <div class="adv-accordion glass-card" id="acc-seller" style="border-radius:2rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1;">
+                    <span class="adv-acc-title"><i data-lucide="map-pin"></i> Ponudnik in lokacija</span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+                <label class="remember-toggle" title="Zapomni si izbiro" onclick="event.stopPropagation()" style="flex-shrink:0;">
+                    <span class="toggle-label">Zapomni</span>
+                    <input type="checkbox" class="remember-check" data-category="ponudnik">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="adv-acc-body" style="display:none;">
+                <div class="g2" style="align-items:start; width:100%;">
+                    <div class="fg">
+                        <div class="fl">Vrsta prodajalca</div>
+                        <div class="chips">
+                            <label class="chip">
+                                <input type="checkbox" name="vendor" value="Private">
+                                <span>Fizična oseba</span>
+                            </label>
+                            <label class="chip on active">
+                                <input type="checkbox" name="vendor" value="Dealer" checked>
+                                <i data-lucide="check" class="chk-icon" style="width:14px;height:14px;"></i>
+                                <span>Trgovec</span>
+                                <span class="ct">1.870</span>
+                            </label>
+                        </div>
+
+                        <div class="g2" style="gap:14px; margin-top:6px;">
+                            <div>
+                                <div class="lbl">Država</div>
+                                <select id="vendor-country" name="country" class="glass-select">
+                                    <option value="">Slovenija</option>
+                                    <option value="AT">Avstrija</option>
+                                    <option value="DE">Nemčija</option>
+                                    <option value="IT">Italija</option>
+                                    <option value="HR">Hrvaška</option>
+                                    <option value="OTHER">Druga država</option>
+                                </select>
+                            </div>
+                            <div>
+                                <div class="lbl">Mesto / poštna številka</div>
+                                <div style="display:flex; align-items:center; gap:8px; padding:0 14px; height:46px; border-radius:9999px; border:1px solid #d5e0ee; background:#fff;">
+                                    <i data-lucide="map-pin" style="width:16px;height:16px;color:#2563eb;flex-shrink:0;"></i>
+                                    <input type="text" name="city" id="cityInput" placeholder="Ljubljana, 1000" class="adv-input" style="border:0;background:transparent;width:100%;font-size:14px;outline:none;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="fl" style="margin-top:8px;font-weight:600;color:#4a5b73;font-size:13px;">Hitra izbira mesta</div>
+                        <div class="chips" id="quickCityChips">
+                            <button type="button" class="chip on active sm" data-city="Ljubljana"><i data-lucide="check" style="width:14px;height:14px;"></i> Ljubljana</button>
+                            <button type="button" class="chip sm" data-city="Maribor">Maribor</button>
+                            <button type="button" class="chip sm" data-city="Celje">Celje</button>
+                            <button type="button" class="chip sm" data-city="Koper">Koper</button>
+                            <button type="button" class="chip sm" data-city="Kranj">Kranj</button>
+                            <button type="button" class="chip sm" data-city="Novo mesto">Novo mesto</button>
+                        </div>
+                    </div>
+
+                    <div class="fg">
+                        <div class="fl">Radij iskanja<small id="radiusSummaryText">do 80 km</small></div>
+                        <div class="map" style="height:150px;">
+                            <svg viewBox="0 0 320 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                                <rect width="320" height="200" fill="#dfeaf8"></rect>
+                                <path d="M-10 150 C60 120 90 160 150 130 S250 90 340 120 V210 H-10Z" fill="#cfe0f4"></path>
+                                <path d="M20 20 C70 40 110 10 170 28 S260 20 310 44" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round"></path>
+                                <path d="M0 100 C80 90 120 130 200 110 S290 70 320 80" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"></path>
+                                <path d="M140 0 C150 60 130 120 160 200" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"></path>
+                                <path d="M230 0 C220 50 250 110 240 200" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"></path>
+                                <circle cx="165" cy="100" r="72" fill="rgba(37,99,235,.14)" stroke="#2563eb" stroke-width="2" stroke-dasharray="5 4"></circle>
+                                <g fill="#fff" stroke="#2563eb" stroke-width="3">
+                                    <circle cx="120" cy="70" r="6"></circle>
+                                    <circle cx="205" cy="135" r="6"></circle>
+                                    <circle cx="190" cy="60" r="6"></circle>
+                                    <circle cx="130" cy="140" r="6"></circle>
+                                </g>
+                                <circle cx="165" cy="100" r="9" fill="#2563eb" stroke="#fff" stroke-width="3.5"></circle>
+                            </svg>
+                        </div>
+                        <div class="sl">
+                            <div class="sl-t"></div>
+                            <div class="sl-f" id="radiusSliderFill" style="left:0;right:48%;"></div>
+                            <button type="button" class="handle" id="radiusSliderHandle" style="left:52%" aria-label="Radij"></button>
+                        </div>
+                        <div class="tk"><span>Točna</span><span>15 km</span><span>40 km</span><span>80 km</span><span>150 km</span><span>300 km</span></div>
+                        <select id="search-radius" name="radius" style="display:none;">
+                            <option value="">Točna lokacija</option>
+                            <option value="15">Do 15 km</option>
+                            <option value="40">Do 40 km</option>
+                            <option value="80" selected>Do 80 km</option>
+                            <option value="150">Do 150 km</option>
+                            <option value="300">Do 300 km</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 8. WARRANTY & SERVICE ═══════════════════════════════════ -->
+        <div class="adv-accordion glass-card" id="acc-warranty" style="border-radius:2rem; margin-bottom:2rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1;">
+                    <span class="adv-acc-title"><i data-lucide="badge-check"></i> Garancija in servis</span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+                <label class="remember-toggle" title="Zapomni si izbiro" onclick="event.stopPropagation()" style="flex-shrink:0;">
+                    <span class="toggle-label">Zapomni</span>
+                    <input type="checkbox" class="remember-check" data-category="garancija">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="adv-acc-body" style="display:none;">
+                <div class="g3" style="width:100%;">
+                    <div class="trow">
+                        <span class="ti"><i data-lucide="book-open"></i></span>
+                        <b>Servisna knjiga potrjena</b>
+                        <button type="button" class="sw on" role="switch" aria-checked="true" aria-label="Servisna knjiga potrjena" style="margin-left:auto">
+                            <input type="checkbox" name="history" value="ServiceBook" class="remember-check" checked style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+                        </button>
+                    </div>
+                    <div class="trow">
+                        <span class="ti"><i data-lucide="shield"></i></span>
+                        <b>Z garancijo</b>
+                        <button type="button" class="sw" role="switch" aria-checked="false" aria-label="Z garancijo" style="margin-left:auto">
+                            <input type="checkbox" name="history" value="Warranty" class="remember-check" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+                        </button>
+                    </div>
+                    <div class="trow">
+                        <span class="ti"><i data-lucide="wind"></i></span>
+                        <b>Nekadilsko vozilo</b>
+                        <button type="button" class="sw" role="switch" aria-checked="false" aria-label="Nekadilsko vozilo" style="margin-left:auto">
+                            <input type="checkbox" name="history" value="NonSmoker" class="remember-check" style="position:absolute;inset:0;opacity:0;cursor:pointer;">
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="search-actions" style="display:flex; justify-content:flex-end; gap:1rem; padding-top:0.5rem;">
+            <button type="reset" class="pill-btn secondary" style="padding:0.875rem 2.5rem;">
+                <i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Ponastavi
+            </button>
+            <button type="submit" class="pill-btn primary search-submit-btn" id="searchBtn"
+                style="padding:0.875rem 3rem; font-size:1.05rem; font-weight:700;">
+                <i data-lucide="search"></i>
+                <span id="searchBtnText">Prikaži rezultate</span>
+            </button>
+        </div>
+    </form>
+
+    <!-- Sticky Mobile Action Bar -->
+    <div id="advStickyBar" class="sticky-mobile-bar">
+        <button type="button" class="btn-sticky" id="advStickySubmit">
+            Prikaži oglase
+        </button>
+    </div>
+</div>
+
+<!-- Results -->
+<div class="page-container" style="max-width:1200px; margin:2rem auto; padding:0 1rem; display:none;"
+    id="results-wrapper">
+    <h2>Search Results (<span id="results-count">0</span>)</h2>
+    <div class="listings-grid" id="search-results-container"
+        style="display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:1.5rem; margin-top:20px;">
+        <!-- Injected via JS -->
+    </div>
+</div

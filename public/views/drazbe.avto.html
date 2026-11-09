@@ -1,0 +1,415 @@
+<!-- AutoHub — Dražbe vozil (Auctions Board) -->
+<div class="drazbe-board-page" style="max-width:1280px;margin:0 auto;padding:24px clamp(16px,3vw,36px) 60px;">
+
+    <!-- SVG Symbol Definitions matching DrazbeDeska -->
+    <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+        <defs>
+            <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7.5"></circle><path d="m20.5 20.5-4-4"></path></symbol>
+            <symbol id="i-heart" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></symbol>
+            <symbol id="i-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></symbol>
+            <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></symbol>
+            <symbol id="i-up" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"></path></symbol>
+            <symbol id="i-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></symbol>
+            <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></symbol>
+            <symbol id="i-plus" viewBox="0 0 24 24"><path d="M5 12h14M12 5v14"></path></symbol>
+            <symbol id="i-user" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
+            <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></symbol>
+            <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path></symbol>
+            <symbol id="i-gauge" viewBox="0 0 24 24"><path d="m12 14 4-4"></path><path d="M3.34 19a10 10 0 1 1 17.32 0"></path></symbol>
+            <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path></symbol>
+            <symbol id="i-fuel" viewBox="0 0 24 24"><path d="M3 22h12M4 9h10"></path><path d="M14 22V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18"></path><path d="M14 13h2a2 2 0 0 1 2 2v2a2 2 0 0 0 2 2 2 2 0 0 0 2-2V9.83a2 2 0 0 0-.59-1.42L18 5"></path></symbol>
+            <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="6" cy="5.5" r="2"></circle><circle cx="18" cy="5.5" r="2"></circle><circle cx="6" cy="18.5" r="2"></circle><circle cx="18" cy="18.5" r="2"></circle><path d="M6 7.5v9M18 7.5v9M6 12h12"></path></symbol>
+            <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></symbol>
+            <symbol id="i-check2" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"></path></symbol>
+            <symbol id="i-verified" viewBox="0 0 24 24"><path d="M3.85 8.62a4 4 0 0 1 4.78-4.77 4 4 0 0 1 6.74 0 4 4 0 0 1 4.78 4.78 4 4 0 0 1 0 6.74 4 4 0 0 1-4.77 4.78 4 4 0 0 1-6.75 0 4 4 0 0 1-4.78-4.77 4 4 0 0 1 0-6.76Z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+            <symbol id="i-camera" viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"></path><circle cx="12" cy="13" r="3"></circle></symbol>
+            <symbol id="i-scale" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></symbol>
+            <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"></path></symbol>
+            <symbol id="i-grid" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="3" rx="1"></rect><rect width="7" height="7" x="14" y="14" rx="1"></rect><rect width="7" height="7" x="3" y="14" rx="1"></rect></symbol>
+            <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></symbol>
+            <symbol id="i-sort" viewBox="0 0 24 24"><path d="m21 16-4 4-4-4M17 20V4M3 8l4-4 4 4M7 4v16"></path></symbol>
+            <symbol id="i-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"></path></symbol>
+            <symbol id="i-pinboard" viewBox="0 0 24 24"><path d="M12 17v5"></path><path d="M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z"></path></symbol>
+            <symbol id="i-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"></path></symbol>
+            <symbol id="i-battery" viewBox="0 0 24 24"><rect width="16" height="10" x="2" y="7" rx="2" ry="2"></rect><path d="M22 11v2"></path></symbol>
+            <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></symbol>
+            <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></symbol>
+            <symbol id="i-lockk" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></symbol>
+            <symbol id="i-gavel" viewBox="0 0 24 24"><path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"></path><path d="m16 16 6-6"></path><path d="m8 8 6-6"></path><path d="m9 7 8 8"></path><path d="m21 11-8-8"></path></symbol>
+            <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path><circle cx="12" cy="12" r="3"></circle></symbol>
+            <symbol id="i-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></symbol>
+            <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></symbol>
+            <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path></symbol>
+            <symbol id="i-shieldck" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></symbol>
+            <symbol id="i-timer" viewBox="0 0 24 24"><path d="M10 2h4"></path><path d="M12 14l3-3"></path><circle cx="12" cy="14" r="8"></circle></symbol>
+            <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></symbol>
+            <symbol id="i-signature" viewBox="0 0 24 24"><path d="m21 17-2.156-1.868A.5.5 0 0 0 18 15.5v.5a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-2a2 2 0 0 0-2-2 2 2 0 0 0-2 2v1.5a.5.5 0 0 1-.844.368L7 14"></path><path d="M3 21h18"></path><path d="M6 8 3.5 5.5a2.12 2.12 0 0 1 3-3L9 5"></path></symbol>
+            <symbol id="nv-car" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></symbol>
+            <symbol id="nv-bike" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"></circle><circle cx="5.5" cy="17.5" r="3.5"></circle><circle cx="15" cy="5" r="1"></circle><path d="M12 17.5V14l-3-3 4-3 2 3h2"></path></symbol>
+        </defs>
+    </svg>
+
+    <!-- ═══ HEADER ROW: Breadcrumbs + Title + Action Toolbar ═════════ -->
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap">
+        <div>
+            <nav aria-label="Pot" style="display:flex;align-items:center;gap:8px;font-size:13px;color:#4a5b73;font-weight:500">
+                <a href="/" style="color:#1d4ed8;text-decoration:none">Domov</a>
+                <svg class="i"><use href="#i-right"></use></svg>
+                <span>Dražbe</span>
+            </nav>
+            <h1 class="d" style="font-size:36px;font-weight:800;letter-spacing:-.025em;margin-top:10px">
+                Dražbe vozil <span class="num" id="drazbeCount" style="color:#5a6b83;font-weight:700;font-size:24px;margin-left:6px">14 dražb</span>
+            </h1>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <button type="button" class="pill" id="btnSaveSearchHeader" style="background:#e6eefc;border-color:#b6caf3;color:#1d4ed8;height:46px;cursor:pointer">
+                <svg class="i"><use href="#i-bell"></use></svg> Shrani iskanje in obveščaj me
+            </button>
+            <div class="seg" role="group" aria-label="Prikaz" id="viewToggleGroup">
+                <button type="button" class="on" data-view="list" aria-pressed="true"><svg class="i"><use href="#i-list"></use></svg> Seznam</button>
+                <button type="button" data-view="grid" aria-pressed="false"><svg class="i"><use href="#i-grid"></use></svg> Mreža</button>
+            </div>
+            <div style="position:relative">
+                <button type="button" class="pill" id="drazbeSortBtn" style="height:46px;cursor:pointer">
+                    <svg class="i"><use href="#i-sort"></use></svg> Razvrsti: <strong style="font-weight:700" id="currentSortLabel">Zaključek najprej</strong><svg class="i"><use href="#i-down"></use></svg>
+                </button>
+                <div class="drazbe-sort-dropdown" id="drazbeSortDropdown" style="display:none;position:absolute;top:calc(100% + 6px);right:0;background:#fff;border-radius:18px;border:1px solid #dbe5f1;box-shadow:0 12px 32px rgba(12,27,48,0.16);padding:6px;min-width:210px;z-index:60">
+                    <button type="button" class="drazbe-sort-item on" data-sort="ending-soon" style="display:flex;align-items:center;width:100%;height:38px;padding:0 14px;border:0;background:transparent;border-radius:12px;font-size:13.5px;font-weight:600;color:#0c1b30;cursor:pointer;text-align:left">Zaključek najprej</button>
+                    <button type="button" class="drazbe-sort-item" data-sort="price-asc" style="display:flex;align-items:center;width:100%;height:38px;padding:0 14px;border:0;background:transparent;border-radius:12px;font-size:13.5px;font-weight:600;color:#0c1b30;cursor:pointer;text-align:left">Cena: najprej nižja</button>
+                    <button type="button" class="drazbe-sort-item" data-sort="price-desc" style="display:flex;align-items:center;width:100%;height:38px;padding:0 14px;border:0;background:transparent;border-radius:12px;font-size:13.5px;font-weight:600;color:#0c1b30;cursor:pointer;text-align:left">Cena: najprej višja</button>
+                    <button type="button" class="drazbe-sort-item" data-sort="bids-desc" style="display:flex;align-items:center;width:100%;height:38px;padding:0 14px;border:0;background:transparent;border-radius:12px;font-size:13.5px;font-weight:600;color:#0c1b30;cursor:pointer;text-align:left">Največ ponudb</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ 4 TOP AUCTION TYPE FILTER CARDS (.az-ty) ═════════════════ -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(260px,100%),1fr));gap:16px;margin-top:22px" id="auctionTypeCardsGroup">
+        <button type="button" class="az-ty all on" data-type="" aria-pressed="true">
+            <span class="ic"><svg class="i"><use href="#i-gavel"></use></svg></span>
+            <div>
+                <b>Vse dražbe<em id="badgeCntAll">14</em></b>
+                <p>Aktivne dražbe vozil, urejene po času zaključka.</p>
+            </div>
+        </button>
+        <button type="button" class="az-ty liv" data-type="live" aria-pressed="false">
+            <span class="ic"><svg class="i"><use href="#i-eye"></use></svg></span>
+            <div>
+                <b>Živa dražba<em id="badgeCntLiv">9</em></b>
+                <p>Javne ponudbe, vidne vsem. Ponudba v zadnjih 2 minutah podaljša dražbo.</p>
+            </div>
+        </button>
+        <button type="button" class="az-ty pre" data-type="prebid" aria-pressed="false">
+            <span class="ic"><svg class="i"><use href="#i-clock"></use></svg></span>
+            <div>
+                <b>Pred-dražba<em id="badgeCntPre">3</em></b>
+                <p>Najprej predponudbe, nato še 2 uri žive faze.</p>
+            </div>
+        </button>
+        <button type="button" class="az-ty sil" data-type="silent" aria-pressed="false">
+            <span class="ic"><svg class="i"><use href="#i-lockk"></use></svg></span>
+            <div>
+                <b>Tiha dražba<em id="badgeCntSil">2</em></b>
+                <p>Ponudbe in minimalna cena ostanejo skrite do zaključka.</p>
+            </div>
+        </button>
+    </div>
+
+    <!-- ═══ ACTIVE FILTER CHIPS BAR ═══════════════════════════════════ -->
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px" id="activeFilterChipsBar">
+        <!-- Rendered by JS or updated on state changes -->
+    </div>
+
+    <!-- ═══ MAIN CONTENT: Filter Sidebar + Auction Cards Grid ═════════ -->
+    <div style="display:flex;flex-wrap:wrap;gap:28px;margin-top:24px;align-items:flex-start">
+
+        <!-- ── SIDEBAR: Filtri (.card) ─────────────────────────────── -->
+        <aside aria-label="Filtri" style="flex:1 1 320px;max-width:370px;min-width:280px">
+            <div class="card" style="border-radius:28px;overflow:hidden">
+
+                <!-- Vrsta vozila -->
+                <div class="sec">
+                    <div class="sh"><span class="t">Vrsta vozila</span></div>
+                    <div class="seg" style="width:100%" id="vehicleTypeSegment">
+                        <button type="button" class="on" data-vtype="avto" style="flex:1"><svg class="i"><use href="#nv-car"></use></svg> Avtomobili</button>
+                        <button type="button" data-vtype="moto" style="flex:1"><svg class="i"><use href="#nv-bike"></use></svg> Motorji</button>
+                    </div>
+                </div>
+
+                <!-- Status dražbe -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Status dražbe</span>
+                        <a href="#" class="rs" id="resetStatusBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div class="sm" id="statusChipsGroup">
+                        <button type="button" class="chip on" data-status="active">Aktivne <span class="ct" id="cntStatusActive">14</span></button>
+                        <button type="button" class="chip" data-status="upcoming">Prihajajoče <span class="ct" id="cntStatusUpcoming">3</span></button>
+                        <button type="button" class="chip" data-status="ended">Končane <span class="ct" id="cntStatusEnded">126</span></button>
+                    </div>
+                </div>
+
+                <!-- Čas do zaključka -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Čas do zaključka</span>
+                        <a href="#" class="rs" id="resetTimeBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div class="sm" id="timeRemainingChipsGroup">
+                        <button type="button" class="chip" data-time="1h">Do 1 ure <span class="ct">1</span></button>
+                        <button type="button" class="chip" data-time="24h">Do 24 ur <span class="ct">4</span></button>
+                        <button type="button" class="chip" data-time="3d">Do 3 dni <span class="ct">8</span></button>
+                        <button type="button" class="chip on" data-time="7d">Do 7 dni <span class="ct">14</span></button>
+                    </div>
+                </div>
+
+                <!-- Pogoji dražbe (.tsw) -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Pogoji dražbe</span>
+                        <a href="#" class="rs" id="resetConditionsBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div class="az-tg">
+                        <div>Obvezna prodaja<small>Pravno zavezujoča pogodba kupca in prodajalca</small></div>
+                        <button type="button" class="tsw on" id="swBinding" role="switch" aria-checked="true"></button>
+                    </div>
+                    <div class="az-tg">
+                        <div>Gotovinsko plačilo ob prevzemu<small>Samo skupaj z obvezno prodajo</small></div>
+                        <button type="button" class="tsw" id="swCash" role="switch" aria-checked="false"></button>
+                    </div>
+                    <div class="az-tg">
+                        <div>Minimalna cena dosežena<small>Prikaži samo dražbe, ki bodo prodane</small></div>
+                        <button type="button" class="tsw" id="swReserveMet" role="switch" aria-checked="false"></button>
+                    </div>
+                    <div class="az-tg">
+                        <div>Samo dražbe s ponudbami<small>Skrij dražbe brez ponudb</small></div>
+                        <button type="button" class="tsw" id="swHasBids" role="switch" aria-checked="false"></button>
+                    </div>
+                </div>
+
+                <!-- Znamka in model -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Znamka in model</span>
+                        <a href="#" class="rs" id="resetBrandBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div style="display:flex;flex-wrap:wrap;gap:8px" id="brandChipsWrapper">
+                        <button type="button" class="bchip" data-brand="Porsche" style="--rgb:100,116,139;cursor:pointer">Porsche<img src="assets/36f553c85be290121a3322634110dc19.png" alt=""><svg class="i bchip-x"><use href="#i-x"></use></svg></button>
+                        <button type="button" class="bchip" data-brand="Tesla" style="--rgb:225,29,72;cursor:pointer">Tesla<img src="assets/756e3f301221a44fb81c321926abf1f8.svg" alt=""><svg class="i bchip-x"><use href="#i-x"></use></svg></button>
+                        <button type="button" class="bchip" data-brand="Toyota" style="--rgb:225,29,72;cursor:pointer">Toyota<img src="assets/915082cca7b54e2bcce753b61333a212.svg" alt=""><svg class="i bchip-x"><use href="#i-x"></use></svg></button>
+                        <button type="button" class="chip" id="addBrandChipBtn" style="height:40px;border-style:dashed;cursor:pointer"><svg class="i"><use href="#i-plus"></use></svg> Dodaj znamko</button>
+                    </div>
+                    <div style="margin-top:14px;position:relative">
+                        <select class="fld" id="sidebarModelSelect" style="width:100%;appearance:none;-webkit-appearance:none;cursor:pointer">
+                            <option value="">Vsi modeli</option>
+                        </select>
+                        <svg class="i" style="position:absolute;right:16px;top:15px;pointer-events:none;color:#5a6b83"><use href="#i-down"></use></svg>
+                    </div>
+                </div>
+
+                <!-- Izklicna cena (histogram + dual slider) -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Izklicna cena</span>
+                        <a href="#" class="rs" id="resetPriceBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div class="az-histogram" id="priceHistogram" style="display:flex;align-items:flex-end;gap:3px;height:76px;padding:0 8px" aria-hidden="true">
+                        <!-- 25 interactive histogram columns -->
+                        <div class="az-bar" style="flex:1;height:8px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:14px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:22px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:33px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:46px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:58px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:66px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:70px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:64px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:55px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:46px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:38px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:31px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:26px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:21px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:17px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:13px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:10px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:8px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:6px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:5px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:4px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:3px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:3px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                        <div class="az-bar" style="flex:1;height:2px;background:#2563eb;border-radius:3px 3px 0 0"></div>
+                    </div>
+                    <div class="sl" id="priceSliderTrack">
+                        <div class="sl-t"></div>
+                        <div class="sl-f" id="priceSliderFill" style="left:0%;right:0%"></div>
+                        <button type="button" class="handle" id="priceHandleMin" style="left:0%" aria-label="Najmanj"></button>
+                        <button type="button" class="handle" id="priceHandleMax" style="left:100%" aria-label="Največ"></button>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:12px">
+                        <div style="flex:1">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#5a6b83;margin:0 0 4px 12px">OD</div>
+                            <div class="fld num" style="height:44px">
+                                <input type="number" id="sidebarPriceFrom" value="1000" min="0" max="250000" step="1000" style="border:none;background:transparent;width:100%;font:inherit;outline:none">
+                                <span style="margin-left:auto;color:#5a6b83">€</span>
+                            </div>
+                        </div>
+                        <div style="flex:1">
+                            <div style="font-size:11px;font-weight:700;letter-spacing:.05em;color:#5a6b83;margin:0 0 4px 12px">DO</div>
+                            <div class="fld num" style="height:44px">
+                                <input type="number" id="sidebarPriceTo" value="200000" min="0" max="250000" step="5000" style="border:none;background:transparent;width:100%;font:inherit;outline:none">
+                                <span style="margin-left:auto;color:#5a6b83">€</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Letnik (dual slider + inputs) -->
+                <div class="sec">
+                    <div class="sh">
+                        <span class="t">Letnik</span>
+                        <a href="#" class="rs" id="resetYearBtn" style="text-decoration:none">Ponastavi</a>
+                        <svg class="i"><use href="#i-up"></use></svg>
+                    </div>
+                    <div class="sl" id="yearSliderTrack">
+                        <div class="sl-t"></div>
+                        <div class="sl-f" id="yearSliderFill" style="left:0%;right:0%"></div>
+                        <button type="button" class="handle" id="yearHandleMin" style="left:0%" aria-label="Najmanj letnik"></button>
+                        <button type="button" class="handle" id="yearHandleMax" style="left:100%" aria-label="Največ letnik"></button>
+                    </div>
+                    <div style="display:flex;gap:10px;margin-top:12px">
+                        <div style="flex:1">
+                            <input type="number" id="sidebarYearFrom" class="fld num" style="height:44px;width:100%" value="2015" min="2000" max="2026">
+                        </div>
+                        <div style="flex:1">
+                            <input type="number" id="sidebarYearTo" class="fld num" style="height:44px;width:100%" value="2025" min="2000" max="2026">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zapomni si filtre + Obveščaj me -->
+                <div class="sec" style="border-bottom:0;background:#f7faff">
+                    <div class="az-tg" style="padding-top:0">
+                        <div>Zapomni si moje filtre<small>Naslednjič odprem dražbe z istimi nastavitvami</small></div>
+                        <button type="button" class="tsw on" id="swRememberFilters" role="switch" aria-checked="true"></button>
+                    </div>
+                    <button type="button" class="pill" id="sidebarNotifyBtn" style="width:100%;justify-content:center;margin-top:8px;background:#e6eefc;border-color:#b6caf3;color:#1d4ed8;cursor:pointer">
+                        <svg class="i"><use href="#i-bell"></use></svg> Obveščaj me o novih dražbah
+                    </button>
+                    <div style="margin-top:12px;text-align:center">
+                        <a href="/iskanje-drazbe" id="drazbeSidebarAdvBtn" style="font-size:12.5px;font-weight:700;color:#1d4ed8;text-decoration:none">
+                            Napredno iskanje dražb →
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- ── MAIN AUCTIONS LISTING AREA ──────────────────────────── -->
+        <div style="flex:999 1 560px;min-width:0">
+            <!-- Cards list container -->
+            <div id="carListingsContainer" class="list-layout" style="display:flex;flex-direction:column;gap:12px">
+                <div class="drazbe-loading" style="padding:40px;text-align:center;color:#5a6b83">Nalaganje dražb …</div>
+            </div>
+
+            <!-- "Prikaži več dražb" CTA Button -->
+            <div style="display:flex;justify-content:center;margin-top:16px" id="loadMoreAuctionsWrap">
+                <button type="button" class="pill" id="loadMoreAuctionsBtn" style="height:50px;padding:0 28px;cursor:pointer">
+                    Prikaži več dražb <span class="num" id="moreAuctionsCount" style="color:#5a6b83;font-weight:600">(8)</span>
+                    <svg class="i"><use href="#i-down"></use></svg>
+                </button>
+            </div>
+
+            <!-- "Ne najdeš prave dražbe?" Banner -->
+            <div class="promo-h" style="margin-top:24px">
+                <span class="ic"><svg class="i"><use href="#i-bell"></use></svg></span>
+                <div style="flex:1 1 280px">
+                    <h3>Ne najdeš prave dražbe?</h3>
+                    <p>Shrani iskanje in sporočili ti bomo, ko se odpre dražba z vozilom, ki te zanima.</p>
+                </div>
+                <button type="button" class="btn-blue" id="btnNotifyBanner" style="height:48px;padding:0 24px;cursor:pointer">
+                    <svg class="i"><use href="#i-bell"></use></svg> Obveščaj me
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ═══ BOTTOM SECTIONS: Kako delujejo dražbe + Obvestila ═════════ -->
+    <div style="display:flex;flex-wrap:wrap;gap:24px;margin-top:40px">
+
+        <!-- Kako delujejo dražbe Card -->
+        <section class="card" style="flex:1 1 440px;padding:24px 26px">
+            <h2 class="h3" style="font-size:19px">Kako delujejo dražbe</h2>
+            <div style="margin-top:6px">
+                <div class="az-info">
+                    <span class="ic"><svg class="i"><use href="#i-gavel"></use></svg></span>
+                    <div>
+                        <b>Korak ponudbe 50 €</b>
+                        Vsaka naslednja ponudba mora biti vsaj 50 € nad trenutno. Z predponudbo licitiramo namesto vas do izbranega zneska.
+                    </div>
+                </div>
+                <div class="az-info">
+                    <span class="ic"><svg class="i"><use href="#i-shieldck"></use></svg></span>
+                    <div>
+                        <b>Zaščita pred sniperji</b>
+                        Ponudba v zadnjih 2 minutah podaljša dražbo za 2 minuti, zato se zadnje sekunde ne morejo izkoristiti.
+                    </div>
+                </div>
+                <div class="az-info">
+                    <span class="ic"><svg class="i"><use href="#i-wallet"></use></svg></span>
+                    <div>
+                        <b>Kupčeva premija 3 %</b>
+                        Plača jo kupec ob zmagi, prodajalec ne plača provizije. Plačilo gre prek platforme in se po 48 urah sprosti prodajalcu.
+                    </div>
+                </div>
+                <div class="az-info">
+                    <span class="ic"><svg class="i"><use href="#i-signature"></use></svg></span>
+                    <div>
+                        <b>Obvezna prodaja</b>
+                        Pri dražbah z obvezno prodajo sta ponudba in prodaja pravno zavezujoči. Zavezo podpišete pred oddajo ponudbe.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Obvestila o dražbah Newsletter Card -->
+        <section class="card" style="flex:1 1 380px;padding:24px 26px;display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:14px">
+                <span class="ic" style="width:48px;height:48px;border-radius:16px;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;flex:none">
+                    <svg class="i"><use href="#i-bell"></use></svg>
+                </span>
+                <div>
+                    <h2 class="h3" style="font-size:19px">Obvestila o dražbah</h2>
+                    <p style="font-size:13px;color:#5a6b83;margin-top:2px">Pustite e-naslov in obveščali vas bomo o dražbah vozil, ki vas zanimajo.</p>
+                </div>
+            </div>
+            <div class="az-nl" style="margin-top:16px">
+                <input type="email" id="auctionNewsletterEmail" class="fld" style="flex-basis:100%" placeholder="Vaš e-naslov (npr. janez@primer.si)" value="martin.dumanic@gmail.com">
+                <input type="text" id="auctionNewsletterQuery" class="fld" placeholder="Npr. BMW, Audi, kombi ...">
+                <button type="button" class="btn-blue" id="auctionNewsletterSubmitBtn" style="height:48px;padding:0 26px;cursor:pointer">Prijava</button>
+            </div>
+            <div style="margin-top:18px;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#6b7b93">Pogosta iskanja</div>
+            <div class="sm" style="margin-top:10px" id="popularSearchesChips">
+                <button type="button" class="chip" data-search="Porsche 911">Porsche 911</button>
+                <button type="button" class="chip" data-search="Audi RS">Audi RS</button>
+                <button type="button" class="chip" data-search="BMW M">BMW M</button>
+                <button type="button" class="chip" data-search="Mercedes-AMG">Mercedes-AMG</button>
+                <button type="button" class="chip" data-search="Kombi do 40.000 €">Kombi do 40.000 €</button>
+                <button type="button" class="chip" data-search="Električni">Električni</button>
+            </div>
+            <p style="font-size:12.5px;color:#5a6b83;margin-top:auto;padding-top:16px;line-height:1.5">
+                Obvestila lahko izklopite kadar koli. E-pošto uporabljamo samo za obvestila o dražbah.
+            </p>
+        </section>
+
+    </div>
+
+</div>

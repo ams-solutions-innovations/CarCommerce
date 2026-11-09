@@ -48,7 +48,10 @@
       "Bash(grep -n \"\\\\${.*\\\\.\\\\\\(make\\\\|model\\\\|title\\\\|variant\\\\|description\\\\|authorName\\\\\\)\" src/pages/compare.js)",
       "Bash(grep -n \"\\\\${.*\\\\.\\\\\\(name\\\\b\\\\|description\\\\|address\\\\|phone\\\\|email\\\\|comment\\\\|text\\\\|make\\\\|model\\\\\\)\" src/pages/business-profile.js)",
       "Bash(grep -n \"\\\\${.*\\\\.\\\\\\(make\\\\|model\\\\|title\\\\|description\\\\|authorName\\\\|name\\\\b\\\\\\)\" src/pages/auction-listing.js)",
-      "Bash(npx cross-env *)"
+      "Bash(npx cross-env *)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "ClaudeInChromeDomain(localhost:3000)",
+      "ClaudeInChromeDomain(localhost:5181)"
     ],
     "additionalDirectories": [
       "c:\\Users\\marti\\.claude\\projects\\c--Users-marti-AMS-d-o-o-MojAvto-si\\memory"

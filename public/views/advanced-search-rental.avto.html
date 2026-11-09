@@ -1,0 +1,270 @@
+<div class="search-container" data-search-kind="rentals" style="max-width:1060px; margin:3rem auto; padding:0 1rem;">
+    <!-- Title / Hero -->
+    <div style="text-align:center; margin-bottom:2rem;">
+        <h1 style="font-size:2.2rem; font-weight:800; margin:0 0 0.5rem 0; display:flex; align-items:center; justify-content:center; gap:0.6rem;">
+            <span>🔑</span>
+            <span>Napredno iskanje najema vozil</span>
+        </h1>
+        <p style="font-size:1.05rem; color:#64748b; margin:0; max-width:600px; margin:0 auto;">
+            Prilagojeno iskanje za najem osebnih vozil, potovalnih kombijev, dostavnikov in avtodomov. Brez nepotrebnih prodajnih polj.
+        </p>
+    </div>
+
+    <!-- Quick Vehicle Type Tabs -->
+    <div class="home-tabs-container" style="margin-bottom:2rem;">
+        <div id="rentalCategoryTabs" class="glass-card rounded-pill tabs-glass" style="display:flex; justify-content:center; gap:0.5rem; flex-wrap:wrap;">
+            <button type="button" class="tab-btn active" data-tab="" title="Vsa vozila">
+                <i data-lucide="layout-grid"></i>
+                <span>Vsa vozila</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="avto" title="Avtomobili">
+                <i data-lucide="car"></i>
+                <span>Avtomobili</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="potniski-kombi" title="Potovalni kombiji">
+                <i data-lucide="users"></i>
+                <span>Kombi 8+1</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="pocitniska" title="Avtodomi & Kamperji">
+                <i data-lucide="tent-tree"></i>
+                <span>Avtodomi</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="gospodarska" title="Dostavniki za selitve">
+                <i data-lucide="truck"></i>
+                <span>Dostavniki</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="moto" title="Motorna kolesa">
+                <i data-lucide="bike"></i>
+                <span>Motorji</span>
+            </button>
+        </div>
+    </div>
+
+    <form id="advancedRentalSearchForm">
+        <input type="hidden" id="rentalCatHidden" name="cat" value="">
+
+        <!-- ══ 1. TERMIN IN LOKACIJA PREVZEMA (PERSISTENT OPEN) ═══════════════ -->
+        <div class="adv-accordion glass-card persistent-open" style="border-radius:1.5rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="true" style="flex:1; display:flex; align-items:center; gap:0.6rem; border:none; background:transparent; font-size:1.1rem; font-weight:700; cursor:pointer;">
+                    <i data-lucide="calendar-clock" style="color:#2563eb;"></i>
+                    <span class="adv-acc-title">1. Termin najema in lokacija</span>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:flex; flex-direction:column; gap:1.25rem; padding:0.5rem 1.25rem 1.5rem 1.25rem;">
+                <div class="adv-grid-2" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem;">
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Datum prevzema</label>
+                        <input type="date" id="advRentalDateFrom" name="dateFrom" class="adv-input pill-input" style="width:100%; box-sizing:border-box;">
+                    </div>
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Datum vračila</label>
+                        <input type="date" id="advRentalDateTo" name="dateTo" class="adv-input pill-input" style="width:100%; box-sizing:border-box;">
+                    </div>
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Prevzemno mesto</label>
+                        <select id="advRentalLocation" name="location" class="glass-select pill-input" style="width:100%;">
+                            <option value="">Vse lokacije po Sloveniji</option>
+                            <option value="Ljubljana">Ljubljana (Center & okolica)</option>
+                            <option value="Letališče Brnik">Letališče Brnik (LJU)</option>
+                            <option value="Maribor">Maribor</option>
+                            <option value="Celje">Celje</option>
+                            <option value="Koper">Koper / Primorska</option>
+                            <option value="Novo mesto">Novo mesto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Okvirno trajanje najema (hitra izbira)</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="" checked> Brez omejitve</label>
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="1"> 1 dan</label>
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="3"> Vikend (3 dni)</label>
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="7"> 7 dni (1 teden)</label>
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="14"> 14 dni (2 tedna)</label>
+                        <label class="adv-chip"><input type="radio" name="rentalDays" value="30"> 30+ dni (mesečni najem)</label>
+                    </div>
+                </div>
+
+                <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                    <label class="adv-chip"><input type="checkbox" name="deliveryPossible" value="1"> Možnost dostave vozila na vaš naslov</label>
+                    <label class="adv-chip"><input type="checkbox" name="oneWayRental" value="1"> Vračilo na drugi lokaciji (One-way)</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 2. CENA NA DAN IN VARŠČINA ═══════════════════════════════════════ -->
+        <div class="adv-accordion glass-card" style="border-radius:1.5rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1; display:flex; align-items:center; justify-content:space-between; border:none; background:transparent; font-size:1.1rem; font-weight:700; cursor:pointer;">
+                    <span style="display:flex; align-items:center; gap:0.6rem;">
+                        <i data-lucide="euro" style="color:#2563eb;"></i>
+                        <span class="adv-acc-title">2. Cena najema in varščina</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:none; flex-direction:column; gap:1.25rem; padding:0.5rem 1.25rem 1.5rem 1.25rem;">
+                <div class="adv-grid-2" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Cena na dan od (€/dan)</label>
+                        <input type="number" name="priceFrom" placeholder="0 €" class="adv-input pill-input" min="0" step="5">
+                    </div>
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Cena na dan do (€/dan)</label>
+                        <input type="number" name="priceTo" placeholder="Brez omejitve" class="adv-input pill-input" min="0" step="5">
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Najvišja varščina (varnostni polog ob prevzemu)</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="maxDeposit" value="" checked> Vse možnosti</label>
+                        <label class="adv-chip"><input type="radio" name="maxDeposit" value="0"> Brez varščine (0 €)</label>
+                        <label class="adv-chip"><input type="radio" name="maxDeposit" value="300"> do 300 €</label>
+                        <label class="adv-chip"><input type="radio" name="maxDeposit" value="500"> do 500 €</label>
+                        <label class="adv-chip"><input type="radio" name="maxDeposit" value="1000"> do 1.000 €</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 3. KILOMETRI IN ZAVAROVANJE ══════════════════════════════════════ -->
+        <div class="adv-accordion glass-card" style="border-radius:1.5rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1; display:flex; align-items:center; justify-content:space-between; border:none; background:transparent; font-size:1.1rem; font-weight:700; cursor:pointer;">
+                    <span style="display:flex; align-items:center; gap:0.6rem;">
+                        <i data-lucide="shield-check" style="color:#2563eb;"></i>
+                        <span class="adv-acc-title">3. Kilometrina in pogoji zavarovanja</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:none; flex-direction:column; gap:1.25rem; padding:0.5rem 1.25rem 1.5rem 1.25rem;">
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Vključena kilometrina</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="kmLimit" value="" checked> Vse možnosti</label>
+                        <label class="adv-chip"><input type="radio" name="kmLimit" value="unlimited"> ⭐ Neomejeni kilometri</label>
+                        <label class="adv-chip"><input type="radio" name="kmLimit" value="300"> Vsaj 300 km/dan</label>
+                        <label class="adv-chip"><input type="radio" name="kmLimit" value="400"> Vsaj 400 km/dan</label>
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Paket zavarovanja in potovanja</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="checkbox" name="zeroExcess" value="1"> 🛡️ Polno kasko brez odbitne franšize (Zero Excess)</label>
+                        <label class="adv-chip"><input type="checkbox" name="crossBorder" value="1"> 🌍 Dovoljen prehod meje (vožnja v tujino)</label>
+                        <label class="adv-chip"><input type="checkbox" name="assistance247" value="1"> 📞 24/7 asistenca na cesti vključena</label>
+                        <label class="adv-chip"><input type="checkbox" name="extraDriver" value="1"> 👤 Brezplačen dodatni voznik</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 4. LASTNOSTI IN DODATNA OPREMA ═══════════════════════════════════ -->
+        <div class="adv-accordion glass-card" style="border-radius:1.5rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1; display:flex; align-items:center; justify-content:space-between; border:none; background:transparent; font-size:1.1rem; font-weight:700; cursor:pointer;">
+                    <span style="display:flex; align-items:center; gap:0.6rem;">
+                        <i data-lucide="settings" style="color:#2563eb;"></i>
+                        <span class="adv-acc-title">4. Menjalnik, gorivo in dodatna oprema</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:none; flex-direction:column; gap:1.25rem; padding:0.5rem 1.25rem 1.5rem 1.25rem;">
+                <div class="adv-grid-2" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Menjalnik</label>
+                        <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                            <label class="adv-chip"><input type="checkbox" name="transmission" value="Avtomatski"> Avtomatski</label>
+                            <label class="adv-chip"><input type="checkbox" name="transmission" value="Ročni"> Ročni</label>
+                        </div>
+                    </div>
+                    <div class="adv-field-group">
+                        <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.35rem; display:block;">Pogon / Gorivo</label>
+                        <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                            <label class="adv-chip"><input type="checkbox" name="fuel" value="Diesel"> Dizel</label>
+                            <label class="adv-chip"><input type="checkbox" name="fuel" value="Petrol"> Bencin</label>
+                            <label class="adv-chip"><input type="checkbox" name="fuel" value="Hybrid"> Hibrid</label>
+                            <label class="adv-chip"><input type="checkbox" name="fuel" value="Electric"> Elektrika</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Število sedežev</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                        <label class="adv-chip"><input type="checkbox" name="seats" value="2"> 2 sedeža</label>
+                        <label class="adv-chip"><input type="checkbox" name="seats" value="5"> 5 sedežev</label>
+                        <label class="adv-chip"><input type="checkbox" name="seats" value="7"> 7 sedežev (družinski)</label>
+                        <label class="adv-chip"><input type="checkbox" name="seats" value="9"> 8+1 sedežev (potovalni kombi)</label>
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Praktična oprema za potovanje</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="checkbox" name="vignette" value="1"> 🛣️ Slovenska e-vinjeta vključena</label>
+                        <label class="adv-chip"><input type="checkbox" name="towHitch" value="1"> ⚓ Vlečna kljuka</label>
+                        <label class="adv-chip"><input type="checkbox" name="childSeat" value="1"> 👶 Otroški varnostni sedež na voljo</label>
+                        <label class="adv-chip"><input type="checkbox" name="roofBox" value="1"> 📦 Strešni kovček / nosilci</label>
+                        <label class="adv-chip"><input type="checkbox" name="winterTires" value="1"> ❄️ Zimska oprema vključena</label>
+                        <label class="adv-chip"><input type="checkbox" name="allWheelDrive" value="1"> 4x4 štirikolesni pogon</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 5. POSEBNOSTI ZA AVTODOME IN BIVALNA VOZILA ═══════════════════════ -->
+        <div class="adv-accordion glass-card" id="camperAccordion" style="border-radius:1.5rem; margin-bottom:2rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem; padding:1rem 1.25rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="false" style="flex:1; display:flex; align-items:center; justify-content:space-between; border:none; background:transparent; font-size:1.1rem; font-weight:700; cursor:pointer;">
+                    <span style="display:flex; align-items:center; gap:0.6rem;">
+                        <i data-lucide="tent-tree" style="color:#2563eb;"></i>
+                        <span class="adv-acc-title">5. Bivalna oprema za avtodome in kamperje</span>
+                    </span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron"></i>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:none; flex-direction:column; gap:1.25rem; padding:0.5rem 1.25rem 1.5rem 1.25rem;">
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Število ležišč</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+                        <label class="adv-chip"><input type="checkbox" name="berths" value="2"> 2 ležišči</label>
+                        <label class="adv-chip"><input type="checkbox" name="berths" value="4"> 4 ležišča</label>
+                        <label class="adv-chip"><input type="checkbox" name="berths" value="5"> 5+ ležišč</label>
+                    </div>
+                </div>
+
+                <div class="adv-field-group">
+                    <label class="adv-label" style="font-weight:700; font-size:0.85rem; margin-bottom:0.5rem; display:block;">Udobje bivalnega prostora</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="checkbox" name="camperShower" value="1"> 🚿 Tuš in topla voda</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperWc" value="1"> 🚽 Kemični WC</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperAc" value="1"> ❄️ Bivalna klimatska naprava</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperSolar" value="1"> ☀️ Sončne celice (avtonomija)</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperAwning" value="1"> ⛺ Tenda / baldahin</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperHeating" value="1"> 🔥 Bivalno gretje (Webasto / Truma)</label>
+                        <label class="adv-chip"><input type="checkbox" name="camperSet" value="1"> 🪑 Kamping miza in stoli vključeni</label>
+                        <label class="adv-chip"><input type="checkbox" name="bCategory" value="1" checked> 🚗 Vožnja z izpitom B kategorije (do 3.5t)</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SUBMIT / RESET ACTIONS ═══════════════════════════════════════════ -->
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; padding:1rem 0;">
+            <button type="reset" id="advRentalResetBtn" class="pill-btn" style="border-radius:999px; padding:0.8rem 1.8rem; font-weight:700; background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.3); cursor:pointer;">
+                <i data-lucide="x-circle" style="width:16px;height:16px;"></i> Počisti filtre
+            </button>
+            <button type="submit" id="advRentalSubmitBtn" class="pill-btn primary" style="border-radius:999px; padding:0.9rem 2.5rem; font-size:1.05rem; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:0.6rem;">
+                <i data-lucide="search" style="width:18px;height:18px;"></i>
+                <span id="advRentalSubmitText">Prikaži ponudbo najema</span>
+            </button>
+        </div>
+    </form>
+</div>

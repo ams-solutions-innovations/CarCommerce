@@ -5,6 +5,7 @@ import { getBusinessById } from '../services/businessService.js';
 import '../../css/booking.css';
 import { key as lsKey } from '../config/storageKeys.js';
 import { t } from '../core/i18n.js';
+import { PLATFORM } from '../config/platform.js';
 import {
     getServicesForBusiness,
     getProductsForServices,
@@ -190,6 +191,19 @@ function updateSummaryPanel() {
     const quoteEl = document.getElementById('bookingSummaryQuote');
     const emptyEl = document.getElementById('bookingSummaryEmpty');
     if (!linesEl) return;
+    let mobileTotal = document.getElementById('ahBookingTotal');
+    const nav = document.getElementById('bookingNav');
+    if (PLATFORM.id === 'avto' && nav && !mobileTotal) {
+        mobileTotal = document.createElement('div');
+        mobileTotal.id = 'ahBookingTotal';
+        mobileTotal.className = 'ah-booking-total';
+        mobileTotal.setAttribute('aria-live','polite');
+        nav.prepend(mobileTotal);
+    }
+    if (mobileTotal) {
+        const amount = calculateTotal(state.selectedServiceIds,state.selectedProducts);
+        mobileTotal.textContent = `${t('total_from','Skupaj od')} ${amount.total > 0 ? `${amount.total} €` : t('price_on_request','Po ogledu')}`;
+    }
 
     if (state.selectedServiceIds.length === 0 && state.selectedProducts.length === 0) {
         if (emptyEl) emptyEl.style.display = 'block';
@@ -245,6 +259,15 @@ function renderProgress() {
     const labels = getStepLabels();
     const total = labels.length;
     const currentDisplay = state.currentStep;
+    let stepTitle = document.getElementById('ahBookingStep');
+    if (PLATFORM.id === 'avto' && !stepTitle) {
+        stepTitle = document.createElement('p');
+        stepTitle.id = 'ahBookingStep';
+        stepTitle.className = 'ah-booking-step';
+        stepTitle.setAttribute('aria-live','polite');
+        track.after(stepTitle);
+    }
+    if (stepTitle) stepTitle.textContent = `${currentDisplay}/${total} · ${labels[currentDisplay - 1]}`;
 
     let html = '';
     for (let i = 1; i <= total; i++) {

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="#ffffff" stroke="#0056b3" stroke-width="4"/>
+    <!-- Blue Jay bird -->
+    <path d="M26 62 C34 40, 54 30, 78 30 C72 38, 64 42, 62 48 C60 54, 52 56, 44 64 C36 70, 28 68, 26 62 Z" fill="#0056b3"/>
+    <path d="M64 36 L78 30 L72 44 Z" fill="#0284c7"/>
+    <circle cx="62" cy="38" r="2.5" fill="#ffffff"/>
+  </svg>

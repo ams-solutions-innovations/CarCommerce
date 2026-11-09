@@ -81,12 +81,13 @@ export function bindB2BContext(user) {
 }
 
 // ── One-shot fetch (used during guarded routes) ───────────────────────────────
-export async function fetchB2BProfile(user) {
+export async function fetchB2BProfile(user,{force=false}={}) {
     if (!user) return null;
-    if (_profile && _profile.uid === user.id) return _profile;
+    if (!force && _profile && _profile.uid === user.id) return _profile;
     const { data } = await supabase.from('profiles').select('*').eq('id', user.id).single();
     if (!data) return null;
     _profile = normalizeProfile(user.id, data);
     window.__currentUserProfile = _profile;
+    if(force){try{localStorage.setItem(LS_KEY,JSON.stringify(_profile));}catch{} _emit();}
     return _profile;
 }

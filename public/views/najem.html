@@ -1,0 +1,370 @@
+<!-- Najem vozil (Rentals Board) — MojAvto.si / AutoHub.si -->
+<div class="oglasi-layout">
+
+    <!-- ═══ SIDEBAR: Filtri za najem ═════════════════════════════ -->
+    <aside class="oglasi-sidebar">
+        <style>
+            #sidebarFiltersForm { gap: 0.6rem !important; }
+            #sidebarFiltersForm .form-group { display: flex; flex-direction: column; gap: 0.2rem; align-items: center; text-align: center; width: 100%; }
+            #sidebarFiltersForm .form-group > label:not(.adv-chip) { font-size: 0.8rem; font-weight: 600; color: var(--text-dark); text-align: center; width: 100% !important; display: block !important; margin-bottom: 0px !important; }
+            #sidebarFiltersForm select { text-align: center; text-align-last: center; width: 100%; height: 38px !important; }
+            #sidebarFiltersForm input:not([type="checkbox"]):not([type="radio"]) { text-align: center; width: 100%; }
+            #sidebarFiltersForm .adv-chip-group { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; width: 100%; }
+            #sidebarFiltersForm .adv-chip { width: auto !important; max-width: 100% !important; display: inline-flex !important; flex: none !important; }
+            #sidebarFiltersForm .pill-input { height: 38px !important; padding: 0 15px !important; font-size: 0.88rem !important; border-radius: 9999px !important; }
+            #sidebarFiltersForm .adv-accordion {
+                margin-bottom: 0.5rem !important;
+                border-radius: 0.75rem !important;
+                background: #f1f5f9 !important;
+                border: 1px solid #cbd5e1 !important;
+                box-shadow: 0 1px 3px rgba(0,0,0,0.05) !important;
+                overflow: hidden;
+            }
+            body.dark-mode #sidebarFiltersForm .adv-accordion {
+                background: rgba(15,23,42,0.6) !important;
+                border-color: rgba(255,255,255,0.08) !important;
+            }
+            #sidebarFiltersForm .adv-acc-trigger {
+                padding: 0.6rem 1rem !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 0.5rem !important;
+                flex-wrap: wrap !important;
+                row-gap: 0.25rem !important;
+                width: 100%;
+                border: none;
+                background: transparent;
+                cursor: pointer;
+            }
+            #sidebarFiltersForm .adv-acc-title { font-size: 0.9rem !important; font-weight: 700 !important; }
+            body.dark-mode #sidebarFiltersForm .adv-acc-title { color: #ffffff !important; }
+            body.dark-mode #sidebarFiltersForm .adv-acc-trigger { color: #ffffff !important; }
+            body.dark-mode #sidebarFiltersForm .adv-acc-trigger i { color: #ffffff !important; stroke: #ffffff !important; }
+            #sidebarFiltersForm .adv-acc-body { padding: 0 !important; display: flex; flex-direction: column; gap: 0 !important; }
+            #sidebarFiltersForm .adv-acc-body-inner {
+                padding: 0.5rem 1rem 1rem 1rem;
+                display: flex; flex-direction: column; gap: 0.5rem;
+                border-top: 1px solid rgba(0,0,0,0.04); width: 100%; box-sizing: border-box;
+            }
+            body.dark-mode #sidebarFiltersForm .adv-acc-body-inner { border-top-color: rgba(255,255,255,0.04); }
+            .rental-hero-dates-card {
+                background: rgba(255,255,255,0.85);
+                backdrop-filter: blur(12px);
+                border: 1px solid rgba(226,232,240,0.8);
+                border-radius: 1.25rem;
+                padding: 1.25rem;
+                margin-bottom: 1.5rem;
+                box-shadow: 0 4px 20px -2px rgba(0,0,0,0.06);
+            }
+            body.dark-mode .rental-hero-dates-card {
+                background: rgba(30,41,59,0.7);
+                border-color: rgba(255,255,255,0.08);
+                box-shadow: 0 4px 20px -2px rgba(0,0,0,0.3);
+            }
+            .rental-quick-days {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.4rem;
+                margin-top: 0.75rem;
+            }
+            .rental-quick-day-btn {
+                padding: 0.3rem 0.8rem;
+                border-radius: 999px;
+                border: 1px solid #cbd5e1;
+                background: transparent;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--text-dark, #1e293b);
+                cursor: pointer;
+                transition: all 0.15s ease;
+            }
+            body.dark-mode .rental-quick-day-btn {
+                border-color: rgba(255,255,255,0.15);
+                color: #e2e8f0;
+            }
+            .rental-quick-day-btn.active, .rental-quick-day-btn:hover {
+                background: #2563eb;
+                border-color: #2563eb;
+                color: #ffffff;
+            }
+            .rental-pricing-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+                font-size: 0.85rem;
+                font-weight: 700;
+                color: #10b981;
+                background: rgba(16,185,129,0.12);
+                padding: 0.25rem 0.6rem;
+                border-radius: 0.5rem;
+            }
+        </style>
+
+        <button type="button" id="mobileFilterToggle" class="mobile-filter-toggle">
+            <span class="mft-label"><i data-lucide="sliders-horizontal"></i> <span>Filtri najema</span></span>
+            <i data-lucide="chevron-down" class="mft-chevron"></i>
+        </button>
+
+        <div class="oglasi-sidebar-card glass-card" id="filtersCard">
+            <div class="filters-card-inner" style="min-height:0; overflow:hidden;">
+                <div class="sidebar-filters-header" style="display:flex; justify-content:center; align-items:center; gap:0.4rem; margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.4rem;">
+                    <i data-lucide="key-round" style="width:16px; height:16px; flex-shrink:0;"></i>
+                    <h3 style="margin:0; font-size:1.1rem; font-weight:700;">Filtri najema</h3>
+                </div>
+
+                <form id="sidebarFiltersForm" style="display:flex; flex-direction:column; gap:0.6rem;">
+
+                    <!-- 1. KATEGORIJA VOZILA -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="true">
+                                <i data-lucide="car" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Kategorija vozila</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body">
+                            <div class="adv-acc-body-inner">
+                                <div class="form-group">
+                                    <select id="rentalCategorySelect" class="pill-input" data-no-search="true">
+                                        <option value="">Vse kategorije</option>
+                                        <option value="avto">Osebni avtomobili</option>
+                                        <option value="suv">SUV in Terenska vozila</option>
+                                        <option value="potniski-kombi">Potovalni kombiji (8+1)</option>
+                                        <option value="pocitniska">Avtodomi in kamperji</option>
+                                        <option value="gospodarska">Dostavniki za selitve</option>
+                                        <option value="moto">Motorna kolesa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. CENA NA DAN -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="true">
+                                <i data-lucide="euro" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Cena na dan (€/dan)</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body">
+                            <div class="adv-acc-body-inner">
+                                <div style="display:flex; gap:0.4rem; width:100%;">
+                                    <input type="number" id="rentalPriceFrom" placeholder="Od €" class="pill-input" min="0" step="5">
+                                    <input type="number" id="rentalPriceTo" placeholder="Do €" class="pill-input" min="0" step="5">
+                                </div>
+                                <div class="adv-chip-group" style="margin-top:0.25rem;">
+                                    <label class="adv-chip"><input type="radio" name="quickPrice" value="50"> do 50 €/dan</label>
+                                    <label class="adv-chip"><input type="radio" name="quickPrice" value="100"> do 100 €/dan</label>
+                                    <label class="adv-chip"><input type="radio" name="quickPrice" value="150"> do 150 €/dan</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. VARŠČINA / KAVŠČINA -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="false">
+                                <i data-lucide="shield-check" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Varščina (polog)</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body" style="display:none;">
+                            <div class="adv-acc-body-inner">
+                                <div class="form-group">
+                                    <select id="rentalDepositSelect" class="pill-input" data-no-search="true">
+                                        <option value="">Vse varščine</option>
+                                        <option value="0">Brez varščine (0 €)</option>
+                                        <option value="300">Do 300 €</option>
+                                        <option value="500">Do 500 €</option>
+                                        <option value="1000">Do 1.000 €</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. KILOMETRI IN ZAVAROVANJE -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="false">
+                                <i data-lucide="gauge" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Pogoji in kilometrina</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body" style="display:none;">
+                            <div class="adv-acc-body-inner">
+                                <label class="adv-chip" style="justify-content:flex-start; text-align:left; width:100%;">
+                                    <input type="checkbox" id="filterUnlimitedKm" value="1"> Neomejeni kilometri
+                                </label>
+                                <label class="adv-chip" style="justify-content:flex-start; text-align:left; width:100%;">
+                                    <input type="checkbox" id="filterZeroExcess" value="1"> 0 € odbitne franšize
+                                </label>
+                                <label class="adv-chip" style="justify-content:flex-start; text-align:left; width:100%;">
+                                    <input type="checkbox" id="filterVignette" value="1"> SLO vinjeta vključena
+                                </label>
+                                <label class="adv-chip" style="justify-content:flex-start; text-align:left; width:100%;">
+                                    <input type="checkbox" id="filterCrossBorder" value="1"> Dovoljen prehod meje (tujina)
+                                </label>
+                                <label class="adv-chip" style="justify-content:flex-start; text-align:left; width:100%;">
+                                    <input type="checkbox" id="filterAddDriver" value="1"> Brezplačen 2. voznik
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. LOKACIJA PREVZEMA -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="false">
+                                <i data-lucide="map-pin" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Lokacija prevzema</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body" style="display:none;">
+                            <div class="adv-acc-body-inner">
+                                <div class="form-group">
+                                    <select id="rentalLocationSelect" class="pill-input" data-no-search="true">
+                                        <option value="">Vse lokacije</option>
+                                        <option value="Ljubljana">Ljubljana</option>
+                                        <option value="Maribor">Maribor</option>
+                                        <option value="Celje">Celje</option>
+                                        <option value="Koper">Koper</option>
+                                        <option value="Novo mesto">Novo mesto</option>
+                                        <option value="Letališče Brnik">Letališče Brnik (LJU)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. MENJALNIK IN GORIVO -->
+                    <div class="adv-accordion">
+                        <div class="adv-acc-header">
+                            <button class="adv-acc-trigger" type="button" aria-expanded="false">
+                                <i data-lucide="settings-2" style="width:16px; height:16px;"></i>
+                                <span class="adv-acc-title">Menjalnik in gorivo</span>
+                            </button>
+                        </div>
+                        <div class="adv-acc-body" style="display:none;">
+                            <div class="adv-acc-body-inner">
+                                <div class="form-group">
+                                    <label>Menjalnik</label>
+                                    <select id="rentalTransmissionSelect" class="pill-input" data-no-search="true">
+                                        <option value="">Vsi menjalniki</option>
+                                        <option value="Avtomatski">Avtomatski</option>
+                                        <option value="Ročni">Ročni</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Vrsta goriva</label>
+                                    <select id="rentalFuelSelect" class="pill-input" data-no-search="true">
+                                        <option value="">Vsa goriva</option>
+                                        <option value="Diesel">Dizel</option>
+                                        <option value="Petrol">Bencin</option>
+                                        <option value="Hybrid">Hibrid</option>
+                                        <option value="Electric">Elektrika</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top:0.5rem; display:flex; justify-content:center;">
+                        <a href="/iskanje-najem" id="rentalSidebarAdvBtn" class="pill-btn primary" style="width:100%; box-sizing:border-box; justify-content:center; border-radius:999px; font-weight:700; gap:0.5rem; text-decoration:none;"><i data-lucide="sliders-horizontal" style="width:16px;height:16px;"></i> Napredno iskanje najema</a>
+                    </div>
+                    <div style="margin-top:0.5rem; padding-bottom:0.25rem; display:flex; justify-content:center;">
+                        <button type="button" id="sidebarResetBtn" class="pill-btn" style="width:100%; justify-content:center; background:#dc2626; color:#fff; border:none; border-radius:999px; font-weight:700; gap:0.5rem; box-shadow:0 4px 12px rgba(220,38,38,0.3); cursor:pointer;">
+                            <i data-lucide="x-circle" style="width:16px;height:16px;"></i> Počisti vse
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══ MAIN: Najem vozil ════════════════════════════════════ -->
+    <main class="oglasi-main">
+
+        <!-- Date & Duration Hero Filter Card -->
+        <div class="rental-hero-dates-card">
+            <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:1rem; margin-bottom:1rem;">
+                <div>
+                    <h2 style="margin:0; font-size:1.35rem; font-weight:800; display:flex; align-items:center; gap:0.5rem;">
+                        <i data-lucide="calendar-range" style="color:#2563eb;"></i>
+                        <span>Izberite obdobje najema</span>
+                    </h2>
+                    <p style="margin:0.25rem 0 0 0; font-size:0.85rem; color:#64748b;">Cene vseh vozil se avtomatsko preračunajo za izbrano število dni.</p>
+                </div>
+                <div id="rentalPeriodSummary" style="font-size:0.9rem; font-weight:700; color:#2563eb; background:rgba(37,99,235,0.1); padding:0.4rem 0.8rem; border-radius:999px;">
+                    Obdobje: 3 dni
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:1rem;">
+                <div class="form-group" style="text-align:left;">
+                    <label style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:#64748b; margin-bottom:0.3rem; display:block;">Datum prevzema</label>
+                    <input type="date" id="rentalDateFrom" class="pill-input" style="width:100%; box-sizing:border-box;">
+                </div>
+                <div class="form-group" style="text-align:left;">
+                    <label style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:#64748b; margin-bottom:0.3rem; display:block;">Datum vračila</label>
+                    <input type="date" id="rentalDateTo" class="pill-input" style="width:100%; box-sizing:border-box;">
+                </div>
+                <div class="form-group" style="text-align:left;">
+                    <label style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:#64748b; margin-bottom:0.3rem; display:block;">Prevzemno mesto</label>
+                    <select id="rentalHeroLocation" class="pill-input" style="width:100%;">
+                        <option value="">Vse lokacije v SLO</option>
+                        <option value="Ljubljana">Ljubljana (Center / Železniška)</option>
+                        <option value="Letališče Brnik">Letališče Brnik (LJU)</option>
+                        <option value="Maribor">Maribor</option>
+                        <option value="Celje">Celje</option>
+                        <option value="Koper">Koper / Obala</option>
+                        <option value="Novo mesto">Novo mesto</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="rental-quick-days">
+                <span style="font-size:0.75rem; font-weight:700; text-transform:uppercase; color:#64748b; display:flex; align-items:center; margin-right:0.25rem;">Hitra izbira:</span>
+                <button type="button" class="rental-quick-day-btn" data-days="1">1 dan</button>
+                <button type="button" class="rental-quick-day-btn active" data-days="3">Vikend (3 dni)</button>
+                <button type="button" class="rental-quick-day-btn" data-days="7">1 teden (7 dni)</button>
+                <button type="button" class="rental-quick-day-btn" data-days="14">2 tedna (14 dni)</button>
+                <button type="button" class="rental-quick-day-btn" data-days="30">Mesečni najem (30 dni)</button>
+            </div>
+        </div>
+
+        <div class="results-header">
+            <h1 style="display:flex; align-items:center; gap:0.5rem;">
+                <span>🔑 Najem vozil</span>
+                <span id="najemCount" style="font-size:1.1rem; color:#64748b; font-weight:500;"></span>
+            </h1>
+            <div class="sort-wrap">
+                <a href="/iskanje-najem" id="najemHeaderAdvBtn" class="ah-pill" style="text-decoration:none; display:inline-flex; align-items:center; gap:0.4rem; font-weight:600;"><i data-lucide="sliders-horizontal" style="width:15px;height:15px;"></i><span>Napredno iskanje</span></a>
+                <span class="sort-label">Razvrsti:</span>
+                <div class="pill-select-wrapper">
+                    <select class="pill-input" id="najemSortSelect" data-no-search="true">
+                        <option value="">Priporočeno</option>
+                        <option value="price-asc">Cena/dan: najnižja</option>
+                        <option value="price-desc">Cena/dan: najvišja</option>
+                        <option value="deposit-asc">Varščina: najnižja</option>
+                    </select>
+                </div>
+                <div class="view-toggle-group">
+                    <button class="view-toggle-btn active" data-view="list" title="Seznam" aria-label="List view">
+                        <i data-lucide="list"></i>
+                    </button>
+                    <button class="view-toggle-btn" data-view="grid" title="Mreža" aria-label="Grid view">
+                        <i data-lucide="layout-grid"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="carListingsContainer" class="list-layout">
+            <div class="drazbe-loading">Nalaganje vozil za najem …</div>
+        </div>
+    </main>
+</div>

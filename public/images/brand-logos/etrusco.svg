@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="#334155" stroke="#d97706" stroke-width="3"/>
+    <!-- Etruscan horse -->
+    <path d="M30 68 C34 50, 42 36, 56 28 C62 34, 58 44, 54 48 C62 46, 70 50, 72 58 C72 68, 60 72, 50 72 Z" fill="#d97706"/>
+    <circle cx="52" cy="34" r="3" fill="#ffffff"/>
+  </svg>

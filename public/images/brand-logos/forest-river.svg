@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <path d="M50 8 L86 22 L86 56 C86 76, 50 92, 50 92 C50 92, 14 76, 14 56 L14 22 Z" fill="#1b5e20"/>
+    <!-- Pine tree -->
+    <polygon points="50,22 64,44 56,44 68,62 32,62 44,44 36,44" fill="#ffffff"/>
+    <path d="M26 72 C38 66, 62 76, 74 70 L72 78 C60 84, 38 74, 28 80 Z" fill="#0288d1"/>
+  </svg>

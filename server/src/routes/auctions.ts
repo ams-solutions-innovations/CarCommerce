@@ -48,7 +48,7 @@ export const auctionRoutes: FastifyPluginAsync = async (app) => {
       if (!success) return reply.code(429).send({ error: 'Too many requests', statusCode: 429 });
     }
     const input = createInput.parse(req.body);
-    await assertOwner('listings', input.listingId, req.user!.id); // 403/404 if not the owner
+    const listing = await assertOwner('listings', input.listingId, req.user!.id); // 403/404 if not the owner
 
     // cash-on-pickup is only valid together with a binding contract.
     const cashAllowed = input.bindingContract && input.cashAllowed;
@@ -59,9 +59,10 @@ export const auctionRoutes: FastifyPluginAsync = async (app) => {
     const isPrebid = input.auctionType === 'prebid';
 
     const db = supabaseForUser(req.accessToken!); // RLS enforces seller_id = auth.uid()
-    const { data, error } = await db
+    let { data, error } = await db
       .from('auctions')
       .insert({
+        id: input.listingId,
         listing_id: input.listingId,
         seller_id: req.user!.id,
         platform: input.platform,
@@ -83,7 +84,13 @@ export const auctionRoutes: FastifyPluginAsync = async (app) => {
       })
       .select('*')
       .single();
+    if(error?.code==='23505'){
+      const {data:existing}=await db.from('auctions').select('*').eq('id',input.listingId).eq('seller_id',req.user!.id).maybeSingle();
+      if(existing){data=existing;error=null;}
+    }
     if (error) return reply.code(400).send({ error: error.message, statusCode: 400 });
+    const {error:listingError}=await db.from('listings').update({data:{...(listing.data as Record<string,unknown>||{}),entryType:'auction',endsAt:data.ends_at}}).eq('id',input.listingId).eq('owner_id',req.user!.id);
+    if(listingError)return reply.code(400).send({error:listingError.message,statusCode:400});
     return reply.code(201).send(data);
   });
 

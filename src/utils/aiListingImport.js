@@ -21,6 +21,7 @@
 
 import { EQUIPMENT_GROUPS, ALL_EQUIPMENT_VALUES } from '../data/equipment.js';
 import { t } from '../core/i18n.js';
+import { ENV } from '../lib/env.js';
 
 // ── The import contract: enums (must mirror create-listing select options) ──────
 const FUELS = ['Petrol', 'Dizel', 'Hibrid', 'Elektrika', 'LPG', 'CNG', 'Vodik'];
@@ -487,11 +488,131 @@ SPODAJ PRILEPI BESEDILO SVOJEGA OGLASA:
 `;
 }
 
+// ── Gemini AI Extraction ────────────────────────────────────────────────────────
+/**
+ * Calls Google Gemini API to extract vehicle listing data from raw unstructured text.
+ * Returns parsed and validated listing data matching MojAvto.si taxonomy.
+ * 
+ * @param {string} rawText - Unstructured vehicle listing text pasted by user.
+ * @param {object} [options]
+ * @param {string} [options.apiKey] - Optional custom Gemini API key.
+ * @param {string} [options.model] - Optional custom Gemini model name (default: gemini-2.5-flash).
+ * @param {string} [options.endpoint] - Optional backend proxy endpoint.
+ * @returns {Promise<{ ok: boolean, data?: object, errors?: string[], warnings?: string[], needsConfig?: boolean }>}
+ */
+export async function extractListingWithGemini(rawText, options = {}) {
+    const text = String(rawText || '').trim();
+    if (!text) {
+        return { ok: false, errors: ['Vnesite ali prilepite besedilo vašega oglasa.'], warnings: [] };
+    }
+
+    // Direct JSON fallback: if the user already pasted structured JSON (or for testing),
+    // parse it directly without calling the external API.
+    const isDirectJson = (text.startsWith('{') && text.endsWith('}')) || text.startsWith('```json') || (text.startsWith('```') && text.includes('{'));
+    if (isDirectJson) {
+        return parseImportJson(text);
+    }
+
+    const apiKey = options.apiKey
+        || (typeof ENV !== 'undefined' && ENV.geminiApiKey)
+        || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_API_KEY)
+        || (typeof window !== 'undefined' && window.__GEMINI_API_KEY)
+        || '';
+
+    const endpoint = options.endpoint
+        || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_ENDPOINT)
+        || '';
+
+    // If a backend proxy endpoint is configured:
+    if (endpoint) {
+        const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text }),
+        });
+        if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            return {
+                ok: false,
+                errors: [errBody.error || errBody.message || `Strežnik za AI obdelavo je vrnil napako (${res.status}).`],
+                warnings: [],
+            };
+        }
+        const json = await res.json();
+        return parseImportJson(typeof json === 'string' ? json : JSON.stringify(json));
+    }
+
+    // If no API key is provided yet, inform the user / developer gracefully
+    if (!apiKey) {
+        return {
+            ok: false,
+            needsConfig: true,
+            errors: [
+                'Gemini API ključ še ni nastavljen v kodi (nastavite VITE_GEMINI_API_KEY v .env).',
+            ],
+            warnings: [],
+        };
+    }
+
+    const model = options.model
+        || (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GEMINI_MODEL)
+        || 'gemini-2.5-flash';
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+
+    const systemPrompt = buildImportPromptText().replace(/─+\s*SPODAJ PRILEPI BESEDILO SVOJEGA OGLASA:\s*─+\s*$/i, '').trim();
+
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            system_instruction: {
+                parts: [{ text: systemPrompt }],
+            },
+            contents: [
+                {
+                    role: 'user',
+                    parts: [
+                        {
+                            text: `Pretvori naslednje neobdelano besedilo obstoječega oglasa za vozilo v strukturiran JSON po navodilih in shemi:\n\n${text}`,
+                        },
+                    ],
+                },
+            ],
+            generationConfig: {
+                response_mime_type: 'application/json',
+                temperature: 0.1,
+            },
+        }),
+    });
+
+    if (!response.ok) {
+        let errMsg = `Napaka pri klicu Gemini API (${response.status})`;
+        try {
+            const errData = await response.json();
+            if (errData?.error?.message) {
+                errMsg = `Gemini API: ${errData.error.message}`;
+            }
+        } catch (_) {}
+        return { ok: false, errors: [errMsg], warnings: [] };
+    }
+
+    const resJson = await response.json();
+    const candidateText = resJson?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!candidateText) {
+        return { ok: false, errors: ['Gemini API ni vrnil nobenih podatkov o vozilu.'], warnings: [] };
+    }
+
+    return parseImportJson(candidateText);
+}
+
 // ── Overlay UI ──────────────────────────────────────────────────────────────────
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /**
- * Opens the experimental AI-import overlay.
+ * Opens the simplified AI-import overlay where users can paste raw listing text.
+ * Gemini API extracts vehicle attributes and populates create-listing form.
+ * 
  * @param {{ onApply: (data:object, warnings:string[]) => void }} opts
  */
 export function openAiImportOverlay({ onApply }) {
@@ -505,37 +626,22 @@ export function openAiImportOverlay({ onApply }) {
             <button class="aii-close" id="aiiClose" aria-label="Zapri">✕</button>
 
             <div class="aii-head">
-                <span class="aii-badge">⚗︎ Eksperimentalno</span>
-                <h2 class="aii-title" id="aiiTitle">Že imate oglas? Uvozite ga s pomočjo AI</h2>
-                <p class="aii-sub">Imate to vozilo že objavljeno drugje? S pomočjo klepetalnega robota (ChatGPT ali DeepSeek) ga lahko pretvorite v naš oglas — izpolnimo vse razen fotografij.</p>
-                <p class="aii-desktop">💻 Priporočamo uporabo na <strong>računalniku</strong>.</p>
-            </div>
-
-            <div class="aii-steps">
-                <div class="aii-step">
-                    <span class="aii-step-n">1</span>
-                    <div>Odprite svoj obstoječi oglas, označite vse besedilo (<kbd>Ctrl</kbd>+<kbd>A</kbd>) in ga kopirajte.</div>
-                </div>
-                <div class="aii-step">
-                    <span class="aii-step-n">2</span>
-                    <div>
-                        Prenesite naša navodila in jih skupaj z besedilom oglasa prilepite v klepetalnega robota.
-                        <div class="aii-row">
-                            <button class="aii-btn aii-btn--ghost" id="aiiDownload">⬇ Prenesi navodila (.txt)</button>
-                            <a class="aii-link" href="https://chat.openai.com/" target="_blank" rel="noopener">ChatGPT ↗</a>
-                            <a class="aii-link" href="https://chat.deepseek.com/" target="_blank" rel="noopener">DeepSeek ↗</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="aii-step">
-                    <span class="aii-step-n">3</span>
-                    <div>Robot vrne <strong>JSON</strong>. Kopirajte celoten odgovor in ga prilepite spodaj.</div>
-                </div>
+                <span class="aii-badge">✨ AI Uvoz</span>
+                <h2 class="aii-title" id="aiiTitle">Uvozite oglas s pomočjo AI</h2>
+                <p class="aii-sub">Kopirajte vsebino svojega obstoječega oglasa (z Avto.net, Mobile.de ali lastnih zapiskov) in jo prilepite spodaj. Naš sistem bo preko Gemini AI samodejno prepoznal vozilo, tehnične podatke in opremo ter izpolnil obrazec.</p>
             </div>
 
             <div class="aii-field">
-                <label class="aii-label" for="aiiJson">Prilepite JSON pomočnika AI</label>
-                <textarea id="aiiJson" class="aii-textarea" rows="8" placeholder='{ "make": "Volkswagen", "model": "Passat", ... }' spellcheck="false"></textarea>
+                <label class="aii-label" for="aiiRawText">Kopirano besedilo oglasa</label>
+                <textarea id="aiiRawText" class="aii-textarea" rows="10" placeholder="Sem prilepite celotno kopirano besedilo obstoječega oglasa...
+
+Primer:
+Volkswagen Passat Variant 2.0 TDI DSG Elegance
+Letnik: 2021, 145.000 km, Dizel, 110 kW (150 KM), Avtomatski menjalnik
+Barva: Siva kovinska, Karoserija: Karavan
+Oprema: LED žarometi, Navigacija, Usnje, Vzvratna kamera, Gretje sedežev, Tempomat...
+Cena: 18.900 €" spellcheck="false"></textarea>
+                <div class="aii-field-hint">Prilepite lahko neobdelano besedilo ali celoten opis obstoječega oglasa — AI bo samodejno izluščil podatke.</div>
             </div>
 
             <div id="aiiResult" class="aii-result" style="display:none;"></div>
@@ -547,7 +653,9 @@ export function openAiImportOverlay({ onApply }) {
 
             <div class="aii-actions">
                 <button class="aii-btn aii-btn--ghost" id="aiiCancel">Prekliči</button>
-                <button class="aii-btn aii-btn--primary" id="aiiApply" disabled>Ustvari oglas iz podatkov</button>
+                <button class="aii-btn aii-btn--primary" id="aiiApply" disabled>
+                    <span class="aii-btn-text">Prepoznaj in izpolni z AI</span>
+                </button>
             </div>
         </div>`;
 
@@ -559,15 +667,15 @@ export function openAiImportOverlay({ onApply }) {
         document.body.style.overflow = '';
     };
 
-    const jsonEl = overlay.querySelector('#aiiJson');
+    const rawTextEl = overlay.querySelector('#aiiRawText');
     const consentEl = overlay.querySelector('#aiiConsent');
     const applyBtn = overlay.querySelector('#aiiApply');
     const resultEl = overlay.querySelector('#aiiResult');
 
     const refreshApplyState = () => {
-        applyBtn.disabled = !(consentEl.checked && jsonEl.value.trim().length > 0);
+        applyBtn.disabled = !(consentEl.checked && rawTextEl.value.trim().length > 0);
     };
-    jsonEl.addEventListener('input', refreshApplyState);
+    rawTextEl.addEventListener('input', refreshApplyState);
     consentEl.addEventListener('change', refreshApplyState);
 
     overlay.querySelector('#aiiClose').addEventListener('click', close);
@@ -577,31 +685,59 @@ export function openAiImportOverlay({ onApply }) {
         if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onEsc); }
     });
 
-    overlay.querySelector('#aiiDownload').addEventListener('click', () => {
-        const blob = new Blob([buildImportPromptText()], { type: 'text/plain;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'MojAvto-navodila-AI.txt';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-    });
-
     const showResult = (kind, html) => {
         resultEl.style.display = 'block';
         resultEl.className = `aii-result aii-result--${kind}`;
         resultEl.innerHTML = html;
     };
 
-    applyBtn.addEventListener('click', () => {
-        const { ok, data, errors, warnings } = parseImportJson(jsonEl.value);
-        if (!ok) {
-            showResult('err', `<strong>Podatkov ni bilo mogoče uvoziti:</strong><ul>${errors.map(e => `<li>${esc(e)}</li>`).join('')}</ul>`);
-            return;
+    applyBtn.addEventListener('click', async () => {
+        const rawText = rawTextEl.value.trim();
+        if (!rawText) return;
+
+        applyBtn.disabled = true;
+        const defaultBtnText = '<span class="aii-btn-text">Prepoznaj in izpolni z AI</span>';
+        applyBtn.innerHTML = '<span class="aii-spinner">⏳</span> Prepoznavam podatke...';
+        rawTextEl.disabled = true;
+        resultEl.style.display = 'none';
+
+        try {
+            const res = await extractListingWithGemini(rawText);
+
+            if (!res.ok) {
+                applyBtn.disabled = false;
+                applyBtn.innerHTML = defaultBtnText;
+                rawTextEl.disabled = false;
+
+                if (res.needsConfig) {
+                    showResult('warn', `
+                        <strong>Povezava z Gemini API je pripravljena!</strong>
+                        <p style="margin:0.4rem 0 0.6rem;">Ker API ključ (<code>VITE_GEMINI_API_KEY</code>) še ni vgrajen v kodo, lahko spodaj vnesete začasni Gemini API ključ za takojšen preizkus ali pa neposredno prilepite JSON odgovor.</p>
+                        <div class="aii-config-row">
+                            <input type="password" id="aiiTempApiKey" class="aii-input" placeholder="Vnesite AIzaSy... ključ" spellcheck="false" autocomplete="off" />
+                            <button type="button" class="aii-btn aii-btn--primary" id="aiiRetryWithKey">Poskusi s ključem</button>
+                        </div>
+                    `);
+                    overlay.querySelector('#aiiRetryWithKey')?.addEventListener('click', () => {
+                        const tempKey = overlay.querySelector('#aiiTempApiKey')?.value.trim();
+                        if (!tempKey) return;
+                        window.__GEMINI_API_KEY = tempKey;
+                        applyBtn.click();
+                    });
+                    return;
+                }
+
+                showResult('err', `<strong>Podatkov ni bilo mogoče prepoznati:</strong><ul>${(res.errors || []).map(e => `<li>${esc(e)}</li>`).join('')}</ul>`);
+                return;
+            }
+
+            close();
+            onApply(res.data, res.warnings || []);
+        } catch (err) {
+            applyBtn.disabled = false;
+            applyBtn.innerHTML = defaultBtnText;
+            rawTextEl.disabled = false;
+            showResult('err', `<strong>Napaka pri obdelavi z AI:</strong> ${esc(err.message || 'Prišlo je do neznane napake.')}`);
         }
-        close();
-        onApply(data, warnings || []);
     });
 }

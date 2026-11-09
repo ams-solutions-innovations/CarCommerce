@@ -1,0 +1,12 @@
+from pathlib import Path
+p=Path('src/pages/accounts.autohub.js')
+s=p.read_text(encoding='utf-8').replace("import { key as lsKey } from '../config/storageKeys.js';\n",'').replace(' void lsKey;\n','')
+s=s.replace('button.disabled=value;', "button.disabled=value||(button.hasAttribute('data-resend')&&lastSent>Date.now()-60000);")
+s=s.replace("if(initial==='login'&&query.get('mode')==='mfa'){factor=await accountMfa();if(signal.aborted)return;if(factor){mode='mfa';draw();}}", "if(initial==='login'&&query.get('mode')==='mfa'){try{factor=await accountMfa();if(signal.aborted)return;if(factor){mode='mfa';draw();}}catch(failure){if(!signal.aborted)error(failure.message);}}")
+s=s.replace('<span class="ah-google-mark" aria-hidden="true">G</span>', '<svg class="ah-google-mark" aria-hidden="true" viewBox="0 0 48 48"><path fill="#4285F4" d="M43.6 24.5c0-1.4-.1-2.8-.4-4.1H24v7.8h11a9.4 9.4 0 0 1-4.1 6.2v5h6.7c3.9-3.6 6-8.8 6-14.9Z"/><path fill="#34A853" d="M24 44c5.4 0 9.9-1.8 13.2-4.8l-6.7-5c-1.8 1.2-4 1.9-6.5 1.9-5.2 0-9.6-3.5-11.2-8.3H6v5.2A20 20 0 0 0 24 44Z"/><path fill="#FBBC05" d="M12.8 27.8a12 12 0 0 1 0-7.6V15H6a20 20 0 0 0 0 18l6.8-5.2Z"/><path fill="#EA4335" d="M24 11.9c2.9 0 5.5 1 7.6 3l5.7-5.7A19 19 0 0 0 24 4 20 20 0 0 0 6 15l6.8 5.2A12 12 0 0 1 24 11.9Z"/></svg>')
+p.write_text(s,encoding='utf-8')
+p=Path('src/pages/onboarding.autohub.js');s=p.read_text(encoding='utf-8')
+s=s.replace("termsAcceptedAt:prefs.autohubOnboarding?.termsAcceptedAt||user.user_metadata?.terms_accepted_at||new Date().toISOString()", "termsAcceptedAt:state.termsAcceptedAt||prefs.autohubOnboarding?.termsAcceptedAt||user.user_metadata?.terms_accepted_at")
+s=s.replace("async function advance(nextStep){if(busy)return;busy=true;", "async function advance(nextStep){if(busy)return;const terms=host.querySelector('[name=\"terms\"]');if(terms&&!terms.reportValidity())return;if(terms?.checked)state.termsAcceptedAt=new Date().toISOString();busy=true;")
+s=s.replace("!user.user_metadata?.terms_accepted_at&&!prefs.autohubOnboarding?.termsAcceptedAt", "!user.user_metadata?.terms_accepted_at&&!prefs.autohubOnboarding?.termsAcceptedAt&&!state.termsAcceptedAt")
+p.write_text(s,encoding='utf-8')

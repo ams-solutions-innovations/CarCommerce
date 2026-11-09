@@ -18,8 +18,8 @@ const BASE_URL = isGitHubActions
 // ESM src/config/platform.js with import.meta.env.)
 const HTML_META = {
   avto: {
-    title: 'MojAvto.si — Nakup in prodaja vozil',
-    description: 'MojAvto.si — spletni oglasnik vozil. Kupujte, prodajajte in predstavite svoje vozilo.',
+    title: 'Carcommerce.si — Nakup in prodaja vozil',
+    description: 'Carcommerce.si — spletni oglasnik vozil. Kupujte, prodajajte in predstavite svoje vozilo.',
   },
   navtika: {
     title: 'MojaNavtika.si — Nakup, prodaja in najem plovil',

@@ -6,6 +6,7 @@ import { PLATFORM } from '../config/platform.js';
 import { key as lsKey } from '../config/storageKeys.js';
 import { ApiNavService } from '../services/apiNavService.js';
 import { navigateTo } from '../router.js';
+import { initAutoHubHeader } from './autohub/header.js';
 
 const FLAG_SL = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" style="width: 100%; height: 100%; object-fit: cover; display: block;">
@@ -38,6 +39,7 @@ const FLAG_GB = `
 `;
 
 export function initHeader() {
+  if (PLATFORM.id === 'avto') return initAutoHubHeader();
   const headerEl = document.getElementById('header');
 
   async function render(user) {
@@ -128,6 +130,8 @@ export function initHeader() {
                     <div class="dropdown-divider dropdown-publish-listing"></div>
                     <a href="/dashboard"><i data-lucide="layout-dashboard"></i> ${t('dashboard_link')}</a>
                     <a href="/profil"><i data-lucide="user"></i> ${t('my_profile')}</a>
+                    <a href="/mape"><i data-lucide="folder"></i> ${t('ah_my_folders', 'Moje mape')}</a>
+                    <a href="/oglasne-deske"><i data-lucide="pin"></i> ${t('ah_boards', 'Oglasne deske')}</a>
                     <a href="/garaža"><i data-lucide="warehouse"></i> ${t('my_garage')}</a>
                     <a href="/primerjava" style="display: flex; align-items: center; justify-content: space-between;">
                         <span><i data-lucide="scale"></i> ${t('compare_btn')}</span>
@@ -181,6 +185,8 @@ export function initHeader() {
                     <div class="dropdown-divider dropdown-publish-listing"></div>
                     <a href="/dashboard"><i data-lucide="layout-dashboard"></i> ${t('dashboard_link')}</a>
                     <a href="/profil"><i data-lucide="user"></i> ${t('my_profile')}</a>
+                    <a href="/mape"><i data-lucide="folder"></i> ${t('ah_my_folders', 'Moje mape')}</a>
+                    <a href="/oglasne-deske"><i data-lucide="pin"></i> ${t('ah_boards', 'Oglasne deske')}</a>
                     <a href="/garaža"><i data-lucide="warehouse"></i> ${t('my_garage')}</a>
                     <a href="/primerjava" style="display:flex;align-items:center;justify-content:space-between;">
                       <span><i data-lucide="scale"></i> ${t('compare_btn')}</span>

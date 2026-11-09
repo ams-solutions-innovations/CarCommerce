@@ -7,6 +7,7 @@ import { PLATFORM } from '../config/platform.js';
 import { brandsFileFor } from '../data/brandFiles.js';
 
 export function initEvaluatePage() {
+    if(PLATFORM.id==='avto')return import('./evaluate.autohub.js').then(module=>module.initAutoHubEvaluatePage());
     console.log('[EvaluatePage] init');
     window.scrollTo({ top: 0, behavior: 'instant' });
     bindEvaluationLogic();

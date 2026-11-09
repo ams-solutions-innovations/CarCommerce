@@ -1,0 +1,206 @@
+<!-- Synchronized with advanced-search-auctions.avto.html -->
+<div class="search-container" data-search-kind="auctions" style="max-width:1060px; margin:2rem auto 4rem auto; padding:0 1rem;">
+    <!-- Breadcrumb -->
+    <nav class="ah-search-breadcrumb" style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1.25rem; font-size:0.875rem; color:var(--ah-muted, #94a3b8);">
+        <a href="/" style="color:inherit; text-decoration:none;">Domov</a>
+        <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>
+        <a href="/drazbe" style="color:inherit; text-decoration:none;">Dražbe vozil</a>
+        <i data-lucide="chevron-right" style="width:14px; height:14px;"></i>
+        <span style="color:var(--ah-text, #f1f5f9); font-weight:600;">Napredno iskanje</span>
+    </nav>
+
+    <!-- Header / Title -->
+    <div class="ah-advanced-search-header" style="margin-bottom:2rem;">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; margin-bottom:0.5rem;">
+            <h1 style="font-size:2rem; font-weight:800; margin:0; display:flex; align-items:center; gap:0.75rem; color:var(--ah-text, #f1f5f9);">
+                <i data-lucide="gavel" style="color:#3b82f6; width:32px; height:32px;"></i>
+                <span>Napredno iskanje dražb</span>
+                <span id="auctionCountBadge" class="ah-count-badge" style="font-size:0.875rem; font-weight:600; padding:0.25rem 0.75rem; border-radius:9999px; background:rgba(59, 130, 246, 0.15); color:#60a5fa; border:1px solid rgba(59, 130, 246, 0.3);">4 aktivne</span>
+            </h1>
+            <a href="/drazbe" style="display:inline-flex; align-items:center; gap:0.4rem; font-size:0.95rem; font-weight:600; color:#3b82f6; text-decoration:none;">
+                <span>Vse aktivne dražbe</span>
+                <i data-lucide="arrow-right" style="width:16px; height:16px;"></i>
+            </a>
+        </div>
+        <p style="font-size:1rem; color:var(--ah-muted, #94a3b8); margin:0;">
+            Natančno filtrirajte dražbena vozila glede na vrsto dražbe, pogoje prodaje, rezervno ceno in tehnične specifikacije.
+        </p>
+    </div>
+
+    <!-- Search Type Pills — hidden on dedicated auction page -->
+    <div id="searchTypePills" class="search-type-pills" style="display:none;"></div>
+
+    <!-- Vehicle Type Tabs (Cars/Motorcycles/Commercial/Leisure) -->
+    <div class="home-tabs-container" style="margin-bottom:2rem;">
+        <div id="vehicleTypeTabs" class="glass-card rounded-pill tabs-glass">
+            <button type="button" class="tab-btn active" data-tab="avto" title="Avtomobili">
+                <i data-lucide="car"></i>
+                <span>Avtomobili</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="moto" title="Motorji">
+                <i data-lucide="bike"></i>
+                <span>Motorji</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="gospodarska" title="Gospodarska vozila">
+                <i data-lucide="truck"></i>
+                <span>Gospodarska</span>
+            </button>
+            <button type="button" class="tab-btn" data-tab="prosti-cas" title="Prosti čas">
+                <i data-lucide="tent-tree"></i>
+                <span>Prosti čas</span>
+            </button>
+        </div>
+    </div>
+
+    <form id="advancedSearchForm" data-v="3">
+        <!-- Hidden fields for category context -->
+        <input type="hidden" id="hiddenCat" name="cat" value="">
+        <input type="hidden" id="hiddenSub" name="sub" value="">
+        <input type="hidden" id="hiddenSearchType" name="searchType" value="">
+        <input type="hidden" id="hiddenVType" name="vtype" value="">
+        <input type="hidden" id="hiddenNajem" name="najem" value="">
+
+        <!-- ══ 0. DRAŽBENI PARAMETRI (PERSISTENT OPEN) ═══════════════════ -->
+        <div class="adv-accordion glass-card persistent-open" id="acc-auction-params" style="border-radius:2rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="true" style="flex:1;">
+                    <span class="adv-acc-title"><i data-lucide="gavel"></i> Parametri dražbe</span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron" style="display:none;"></i>
+                </button>
+                <label class="remember-toggle" title="Zapomni si izbiro" onclick="event.stopPropagation()" style="flex-shrink:0;">
+                    <span class="toggle-label">Zapomni</span>
+                    <input type="checkbox" class="remember-check" data-category="drazba_parametri">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="adv-acc-body" style="display:flex; flex-direction:column; gap:1.25rem;">
+                <!-- Tip dražbe -->
+                <div class="adv-field-group">
+                    <label class="adv-label">Vrsta dražbe</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="aucType" value="" checked> Vse vrste</label>
+                        <label class="adv-chip"><input type="radio" name="aucType" value="live"> 🔴 Živa dražba</label>
+                        <label class="adv-chip"><input type="radio" name="aucType" value="prebid"> ⏱ Pred-dražba</label>
+                        <label class="adv-chip"><input type="radio" name="aucType" value="silent"> 🔒 Tiha dražba</label>
+                    </div>
+                </div>
+
+                <!-- Status dražbe -->
+                <div class="adv-field-group">
+                    <label class="adv-label">Status dražbe</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="aucStatus" value="active" checked> Aktivne dražbe</label>
+                        <label class="adv-chip"><input type="radio" name="aucStatus" value="endingSoon"> ⏱ Kmalu se zaključi (&lt; 24h)</label>
+                        <label class="adv-chip"><input type="radio" name="aucStatus" value="upcoming"> 📅 Prihajajoče</label>
+                        <label class="adv-chip"><input type="radio" name="aucStatus" value="ended"> Zaključene</label>
+                        <label class="adv-chip"><input type="radio" name="aucStatus" value=""> Vse faze</label>
+                    </div>
+                </div>
+
+                <!-- Rezervna cena -->
+                <div class="adv-field-group">
+                    <label class="adv-label">Rezervna cena</label>
+                    <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                        <label class="adv-chip"><input type="radio" name="aucReserve" value="" checked> Vse</label>
+                        <label class="adv-chip"><input type="radio" name="aucReserve" value="noReserve"> Brez rezervne cene</label>
+                        <label class="adv-chip"><input type="radio" name="aucReserve" value="hasReserve"> Z rezervno ceno</label>
+                        <label class="adv-chip"><input type="radio" name="aucReserve" value="met"> Rezervna cena dosežena</label>
+                    </div>
+                </div>
+
+                <!-- Cenovni filtri dražbe -->
+                <div class="adv-field-row" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem;">
+                    <!-- Izklicna cena -->
+                    <div class="adv-field-group">
+                        <label class="adv-label">Izklicna cena (€)</label>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <input type="text" name="startPriceFrom" class="pill-input js-format-number" placeholder="Od €" inputmode="numeric" style="width:100%;">
+                            <span style="color:var(--ah-muted, #94a3b8);">-</span>
+                            <input type="text" name="startPriceTo" class="pill-input js-format-number" placeholder="Do €" inputmode="numeric" style="width:100%;">
+                        </div>
+                    </div>
+                    <!-- Trenutna ponudba -->
+                    <div class="adv-field-group">
+                        <label class="adv-label">Trenutna ponudba (€)</label>
+                        <div style="display:flex; gap:0.5rem; align-items:center;">
+                            <input type="text" name="bidPriceFrom" class="pill-input js-format-number" placeholder="Od €" inputmode="numeric" style="width:100%;">
+                            <span style="color:var(--ah-muted, #94a3b8);">-</span>
+                            <input type="text" name="bidPriceTo" class="pill-input js-format-number" placeholder="Do €" inputmode="numeric" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Posebni pogoji & Čas zaključka -->
+                <div class="adv-field-row" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:1rem; align-items:center;">
+                    <!-- Časovni okvir zaključka -->
+                    <div class="adv-field-group">
+                        <label class="adv-label">Zaključek dražbe</label>
+                        <div class="pill-select-wrapper" style="width:100%;">
+                            <select name="aucTimeframe" class="pill-input" style="width:100%;">
+                                <option value="">Katerikoli čas</option>
+                                <option value="today">Danes</option>
+                                <option value="24h">V naslednjih 24 urah</option>
+                                <option value="3d">V naslednjih 3 dneh</option>
+                                <option value="7d">Ta teden (7 dni)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Pogoji nakupa -->
+                    <div class="adv-field-group">
+                        <label class="adv-label">Posebni pogoji</label>
+                        <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.5rem; align-items:center;">
+                            <label class="adv-chip"><input type="checkbox" name="aucBinding" value="yes"> Obvezna prodaja</label>
+                            <label class="adv-chip"><input type="checkbox" name="aucCash" value="yes"> Gotovinsko plačilo</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ 1. BASIC INFORMATION ═══════════════════════════════════════ -->
+        <div class="adv-accordion glass-card persistent-open" style="border-radius:2rem; margin-bottom:1rem;">
+            <div class="adv-acc-header" style="display:flex; align-items:center; gap:0.75rem;">
+                <button type="button" class="adv-acc-trigger" aria-expanded="true" style="flex:1;">
+                    <span class="adv-acc-title"><i data-lucide="clipboard-list"></i> Osnovni podatki</span>
+                    <i data-lucide="chevron-down" class="adv-acc-chevron" style="display:none;"></i>
+                </button>
+            </div>
+            <div class="adv-acc-body" style="display:flex;">
+                <div class="adv-field-group" id="group-bodyType">
+                    <label class="adv-label" id="bodyTypeLabel">Vrsta vozila</label>
+                    <input type="hidden" name="bodyType" id="bodyTypeHidden" value="">
+                    <div class="body-type-grid" id="grid-cars">
+                        <button type="button" class="body-type-card" data-value="Limuzina"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-sedan"></use></svg><span>Limuzina</span></button>
+                        <button type="button" class="body-type-card" data-value="Kombilimuzina"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-hatchback"></use></svg><span>Kombilimuzina</span></button>
+                        <button type="button" class="body-type-card" data-value="Karavan"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-estate-station-wagon"></use></svg><span>Karavan</span></button>
+                        <button type="button" class="body-type-card" data-value="Terensko"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-suv-off-road"></use></svg><span>Terensko vozilo</span></button>
+                        <button type="button" class="body-type-card" data-value="Enoprostorec"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-van-mpv"></use></svg><span>Enoprostorec</span></button>
+                        <button type="button" class="body-type-card" data-value="Kabriolet"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-cabriolet-convertible"></use></svg><span>Kabriolet</span></button>
+                        <button type="button" class="body-type-card" data-value="Coupe"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-coupe"></use></svg><span>Coupe</span></button>
+                        <button type="button" class="body-type-card" data-value="Sportni"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-sports-car"></use></svg><span>Športni avto</span></button>
+                        <button type="button" class="body-type-card" data-value="Pick-up"><svg class="custom-v-icon"><use href="/icons/vehicles-custom.svg#vc-pick-up-truck"></use></svg><span>Pick-up</span></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="search-actions" style="display:flex; justify-content:flex-end; gap:1rem; padding-top:0.5rem;">
+            <button type="reset" class="pill-btn secondary" style="padding:0.875rem 2.5rem;">
+                <i data-lucide="rotate-ccw" style="width:16px;height:16px;"></i> Ponastavi
+            </button>
+            <button type="submit" class="pill-btn primary search-submit-btn" id="searchBtn"
+                style="padding:0.875rem 3rem; font-size:1.05rem; font-weight:700;">
+                <i data-lucide="search"></i>
+                <span id="searchBtnText">Prikaži rezultate</span>
+            </button>
+        </div>
+    </form>
+
+    <div id="advStickyBar" class="sticky-mobile-bar">
+        <button type="button" class="btn-sticky" id="advStickySubmit">
+            Prikaži dražbe
+        </button>
+    </div>
+</div>

@@ -9,7 +9,9 @@
         { "id": "avto", "label": "Avtomobili", "i18nKey": "cat_cars", "href": "/iskanje?cat=avto", "icon": "car" },
         { "id": "moto", "label": "Motorji", "i18nKey": "cat_moto", "href": "/iskanje?cat=moto", "icon": "bike" },
         { "id": "gospodarska", "label": "Gospodarska", "i18nKey": "cat_commercial", "href": "/iskanje?cat=gospodarska", "icon": "truck" },
-        { "id": "prosti-cas", "label": "Prosti čas", "i18nKey": "cat_recreation", "href": "/iskanje?cat=prosti-cas", "icon": "tent-tree" }
+        { "id": "prosti-cas", "label": "Prosti čas", "i18nKey": "cat_recreation", "href": "/iskanje?cat=prosti-cas", "icon": "tent-tree" },
+        { "id": "drazbe", "label": "Dražbe", "i18nKey": "nav_auctions", "href": "/iskanje-drazbe", "icon": "gavel" },
+        { "id": "najem", "label": "Najem vozil", "i18nKey": "nav_rentals", "href": "/najem", "icon": "key-round" }
       ]
     },
     {

@@ -1,0 +1,173 @@
+/* Native transfers of references 11, 73 and 74. */
+.platform-avto :is(.ah-parts-page,.ah-catalog-page) { padding-top:32px; padding-bottom:60px; }
+.platform-avto .ah-parts-hero { display:grid; grid-template-columns:minmax(0,1fr) 300px; align-items:center; gap:35px; background:var(--ah-surface); border:1px solid var(--ah-line); border-radius:32px; padding:38px; box-shadow:var(--ah-card-shadow); }
+.platform-avto .ah-parts-hero h1 { font-size:44px; font-weight:800; line-height:1.08; margin:22px 0 15px; }
+.platform-avto .ah-parts-hero-copy>p { max-width:570px; font-size:13px; line-height:1.6; color:var(--ah-muted); }
+.platform-avto .ah-parts-hero-copy>.ah-tag .ah-icon { width:15px; height:15px; }
+.platform-avto .ah-parts-modes { width:max-content; max-width:100%; margin:18px 0; }
+.platform-avto .ah-parts-modes button { font-size:11px; }
+.platform-avto .ah-garage-caption { text-transform:uppercase; letter-spacing:.06em; color:var(--ah-muted); font-size:10px; font-weight:700; margin:20px 0 10px; }
+.platform-avto #gd-root[data-parts-mode="dimension"] :is(.ah-garage-caption,.ah-garage-choices) { display:none; }
+.platform-avto .ah-garage-choices { display:flex; align-items:stretch; gap:10px; flex-wrap:wrap; }
+.platform-avto .ah-garage-choice { border:1px solid var(--ah-line); padding:10px; border-radius:16px; background:var(--ah-soft); color:var(--ah-ink); display:flex; align-items:center; gap:10px; cursor:pointer; text-align:left; }
+.platform-avto .ah-garage-choice[aria-pressed="true"] { border-color:var(--ah-blue); box-shadow:0 0 0 2px #2563eb26; }
+.platform-avto .ah-garage-choice .ah-icon { width:34px; height:34px; }
+.platform-avto .ah-garage-choice strong { font-size:12px; display:block; }
+.platform-avto .ah-garage-choice small { display:block; color:var(--ah-muted); font-size:10px; margin-top:5px; }
+.platform-avto .ah-garage-add { display:flex; align-items:center; gap:5px; border:1px dashed #bad0ff; color:var(--ah-blue); border-radius:16px; padding:10px 16px; font-size:11px; font-weight:700; text-decoration:none; }
+.platform-avto .ah-hero-dimensions { display:flex; align-items:center; gap:15px; flex-wrap:wrap; margin:18px 0; }
+.platform-avto .ah-hero-dimensions>div:last-child { display:flex; gap:10px; }
+.platform-avto .ah-hero-dimensions .ah-form-field { width:85px; margin:0; }
+.platform-avto .ah-hero-dimensions .ah-form-field span { font-size:9px; text-transform:uppercase; }
+.platform-avto .ah-hero-dimensions select { padding:10px; font-weight:700; font-size:16px; border-radius:14px; }
+.platform-avto .ah-season-segment { display:flex; align-items:center; padding:4px; gap:3px; border-radius:999px; background:var(--ah-soft); }
+.platform-avto .ah-season-segment button { display:flex; align-items:center; gap:5px; border:0; border-radius:999px; padding:8px 10px; background:transparent; color:var(--ah-muted); font-size:10px; font-weight:700; cursor:pointer; }
+.platform-avto .ah-season-segment .ah-icon { width:15px; height:15px; }
+.platform-avto .ah-season-segment [aria-pressed="true"] { background:var(--ah-surface); color:var(--ah-blue); box-shadow:0 1px 4px #0c1b3012; }
+.platform-avto .ah-parts-hero-copy .ah-dimension-hint { font-size:10px; margin:14px 0 0; }
+.platform-avto .ah-parts-hero-art { position:relative; display:flex; align-items:center; justify-content:center; padding:25px; }
+.platform-avto .ah-parts-hero-art img { width:100%; filter:drop-shadow(0 14px 18px #0c1b3033); }
+.platform-avto .ah-parts-hero-art .ah-tag { position:absolute; bottom:24px; right:0; padding:8px 12px; background:var(--ah-soft); box-shadow:var(--ah-card-shadow); font-size:11px; }
+.platform-avto .ah-parts-service-strip { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:20px; border:1px solid #bad0ff; background:linear-gradient(110deg,var(--ah-soft),var(--ah-surface)); border-radius:24px; padding:20px 24px; margin:18px 0 32px; }
+.platform-avto .ah-parts-service-strip>div:first-child { display:flex; align-items:center; gap:13px; }
+.platform-avto .ah-parts-service-strip>div:first-child>.ah-icon { width:38px; height:38px; color:var(--ah-blue); background:var(--ah-surface); border-radius:12px; padding:9px; }
+.platform-avto .ah-parts-service-strip strong { font-size:13px; display:block; }
+.platform-avto .ah-parts-service-strip small { display:block; font-size:11px; color:var(--ah-muted); margin-top:5px; }
+.platform-avto .ah-parts-categories { display:grid; grid-template-columns:repeat(8,minmax(0,1fr)); gap:13px; margin:16px 0 34px; }
+.platform-avto .ah-parts-categories button { background:var(--ah-surface); border:1px solid var(--ah-line); border-radius:21px; padding:16px 12px; color:var(--ah-ink); text-align:left; box-shadow:var(--ah-card-shadow); cursor:pointer; }
+.platform-avto .ah-parts-categories button>span { width:38px; height:38px; padding:9px; display:flex; align-items:center; justify-content:center; border-radius:12px; color:rgb(var(--category-tint)); border:1px solid rgba(var(--category-tint),.2); background:rgba(var(--category-tint),.12); margin-bottom:12px; }
+.platform-avto .ah-parts-categories strong { font-size:11px; display:block; }
+.platform-avto .ah-parts-categories small { display:block; font-size:9px; color:var(--ah-muted); margin-top:5px; }
+.platform-avto .ah-parts-layout { display:grid; grid-template-columns:270px minmax(0,1fr); align-items:start; gap:26px; }
+.platform-avto .ah-parts-filters { background:var(--ah-surface); border:1px solid var(--ah-line); padding:20px; border-radius:24px; box-shadow:var(--ah-card-shadow); }
+.platform-avto .ah-product-filter-form>h3 { border-top:1px solid var(--ah-line); padding-top:20px; margin:20px 0 14px; font-size:12px; }
+.platform-avto .ah-parts-filter-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:20px; }
+.platform-avto .ah-parts-filter-heading h2 { margin:0; font-size:15px; }
+.platform-avto .ah-parts-filter-heading button { font-size:10px; }
+.platform-avto .ah-parts-filters .ah-segment { margin-bottom:12px; }
+.platform-avto .ah-parts-filters .ah-segment button { padding:7px 10px; font-size:10px; }
+.platform-avto .ah-parts-filters .ah-season-segment button { flex:1; justify-content:center; flex-direction:column; gap:7px; border-radius:12px; padding:9px; }
+.platform-avto .ah-parts-filters .ah-season-segment { border-radius:15px; }
+.platform-avto .ah-sidebar-dimensions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.platform-avto .ah-sidebar-dimensions .ah-form-field { font-size:9px; }
+.platform-avto .ah-sidebar-dimensions select { padding:8px; font-size:11px; border-radius:999px; }
+.platform-avto .ah-parts-filters>form>select,.platform-avto .ah-parts-results-tools :is(input,select),.platform-avto .ah-offers-panel>.ah-section-heading>select { background:var(--ah-surface); border:1px solid var(--ah-line); color:var(--ah-muted); border-radius:999px; padding:10px 12px; font-size:11px; width:100%; min-width:0; }
+.platform-avto .ah-parts-price-range { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.platform-avto .ah-product-switch { display:flex; align-items:center; justify-content:space-between; gap:10px; color:var(--ah-muted); font-size:11px; margin:13px 0; }
+.platform-avto .ah-product-switch input { appearance:none; width:30px; height:17px; border-radius:999px; background:#cbd5e1; position:relative; cursor:pointer; transition:background-color .25s ease; }
+.platform-avto .ah-product-switch input:before { content:''; position:absolute; width:13px; height:13px; left:2px; top:2px; border-radius:50%; background:white; transition:transform .25s ease; }
+.platform-avto .ah-product-switch input:checked { background:var(--ah-blue); }.platform-avto .ah-product-switch input:checked:before { transform:translateX(13px); }
+.platform-avto .ah-product-filter-form>.ah-orange-button { width:100%; margin-top:18px; font-size:12px; }
+.platform-avto .ah-parts-results { min-width:0; }
+.platform-avto .ah-parts-results .ah-section-heading h2 { margin:0; font-size:23px; }
+.platform-avto .ah-parts-results .ah-section-heading h2 small { font-size:12px; color:var(--ah-muted); margin-left:7px; font-weight:500; }
+.platform-avto .ah-parts-results-tools { display:grid; grid-template-columns:minmax(0,1fr) 110px 160px; gap:10px; margin:18px 0; }
+.platform-avto .ah-product-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; }
+.platform-avto .ah-product-card { position:relative; overflow:hidden; background:var(--ah-surface); border:1px solid var(--ah-line); border-radius:23px; box-shadow:var(--ah-card-shadow); min-width:0; transition:transform .25s ease,box-shadow .25s ease; }
+.platform-avto .ah-product-photo { position:relative; aspect-ratio:1.2; background:linear-gradient(140deg,var(--ah-soft),#d9e6f5); padding:18px; }
+.platform-avto .ah-product-photo>a { display:block; width:100%; height:100%; }
+.platform-avto .ah-product-photo img { width:100%; height:100%; object-fit:contain; }
+.platform-avto .ah-product-placeholder { width:100%; height:100%; display:grid; place-items:center; color:var(--ah-blue); }
+.platform-avto .ah-product-placeholder .ah-icon { width:70px; height:70px; }
+.platform-avto .ah-product-season { position:absolute; top:10px; left:10px; padding:4px 7px; border-radius:999px; font-size:9px; font-weight:700; color:var(--ah-blue); background:var(--ah-surface); }
+.platform-avto .ah-product-heart { position:absolute; top:9px; right:9px; width:28px; height:28px; border:0; box-shadow:0 2px 8px #0c1b3026; }
+.platform-avto .is-saved { color:var(--ah-blue); }.platform-avto .is-saved>.ah-icon { fill:#2563eb; stroke:#2563eb; }
+.platform-avto .ah-fit-tag { display:inline-flex; align-items:center; gap:4px; color:#fff; background:#0f766e; border-radius:999px; padding:4px 7px; font-size:9px; font-weight:700; }
+.platform-avto .ah-fit-tag.is-no { background:#be123c; }.platform-avto .ah-fit-tag.is-unknown { background:#475569; }
+.platform-avto .ah-fit-tag .ah-icon { width:12px; height:12px; }
+.platform-avto .ah-product-photo>.ah-fit-tag { position:absolute; bottom:10px; left:10px; max-width:calc(100% - 20px); }
+.platform-avto .ah-illustration-label { position:absolute; bottom:8px; right:10px; color:var(--ah-muted); font-size:8px; background:var(--ah-surface); border-radius:6px; padding:2px 4px; }
+.platform-avto .ah-product-info { padding:16px; }
+.platform-avto .ah-product-brand { display:inline-block; color:var(--ah-blue); background:var(--ah-soft); border-radius:999px; padding:4px 9px; font-size:10px; font-weight:700; }
+.platform-avto .ah-product-info h3 { font-size:13px; font-weight:800; margin:9px 0 7px; line-height:1.5; }.platform-avto .ah-product-info h3 a { text-decoration:none; color:var(--ah-ink); }
+.platform-avto .ah-product-info p { color:var(--ah-muted); font-size:10px; margin:0 0 10px; }
+.platform-avto .ah-product-eu { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:12px; }
+.platform-avto .ah-eu-pill { display:inline-flex; align-items:center; gap:4px; border-radius:7px; background:var(--ah-soft); color:var(--ah-muted); padding:4px 6px; font-size:9px; }
+.platform-avto .ah-eu-pill .ah-icon { width:12px; height:12px; }
+.platform-avto .ah-product-price { font-size:21px; font-weight:800; letter-spacing:-.03em; }.platform-avto .ah-product-price small { font-weight:400; font-size:10px; color:var(--ah-muted); }
+.platform-avto .ah-product-set { display:block; margin:7px 0; color:var(--ah-muted); font-size:9px; }
+.platform-avto .ah-product-source { display:flex; align-items:center; gap:4px; border-top:1px solid var(--ah-line); padding-top:10px; margin-top:12px; color:var(--ah-muted); font-size:10px; }.platform-avto .ah-product-source .ah-icon { width:13px; height:13px; }
+.platform-avto .ah-product-grid.is-list { grid-template-columns:1fr; }.platform-avto .ah-product-grid.is-list .ah-product-card { display:grid; grid-template-columns:190px 1fr; }.platform-avto .ah-product-grid.is-list .ah-product-photo { aspect-ratio:auto; min-height:200px; }
+.platform-avto .ah-products-more { display:flex; margin:24px auto; }
+.platform-avto .ah-parts-disclaimer { color:var(--ah-muted); font-size:11px; line-height:1.6; margin-top:18px; }
+.platform-avto .ah-parts-errors { color:#92400e; background:#fffbeb; border-radius:14px; padding:15px; font-size:12px; margin:20px 0; }
+.platform-avto .ah-mobile-parts-filter { display:none; }
+.platform-avto .ah-catalog-hero { display:grid; grid-template-columns:minmax(0,.85fr) minmax(0,1fr); gap:28px; align-items:start; }
+.platform-avto .ah-catalog-gallery { min-width:0; }
+.platform-avto .ah-catalog-photo { position:relative; aspect-ratio:1; padding:42px; border-radius:30px; overflow:hidden; background:linear-gradient(140deg,var(--ah-soft),#d9e6f5); }
+.platform-avto .ah-catalog-photo>img { width:100%; height:100%; object-fit:contain; }
+.platform-avto .ah-catalog-photo-actions { position:absolute; display:flex; flex-direction:column; gap:10px; right:20px; top:20px; }
+.platform-avto .ah-catalog-photo-actions .ah-icon-button { border:0; background:var(--ah-surface); box-shadow:0 4px 10px #0c1b3026; color:var(--ah-blue); }
+.platform-avto .ah-catalog-photo-tag { position:absolute; top:20px; left:20px; }
+.platform-avto .ah-catalog-thumbs { display:flex; gap:10px; margin-top:14px; overflow-x:auto; padding:3px; }
+.platform-avto .ah-catalog-thumbs button { position:relative; width:110px; height:110px; flex-shrink:0; border:1px solid transparent; background:var(--ah-soft); border-radius:18px; padding:10px; color:var(--ah-muted); font-size:11px; font-weight:700; cursor:pointer; }
+.platform-avto .ah-catalog-thumbs img { width:100%; height:100%; object-fit:contain; }.platform-avto .ah-catalog-thumbs small { display:block; margin-top:7px; }
+.platform-avto .ah-catalog-thumbs [aria-pressed="true"] { outline:2px solid var(--ah-blue); box-shadow:0 4px 10px #2563eb26; }
+.platform-avto .ah-catalog-summary h1 { font-size:36px; font-weight:800; margin:18px 0 9px; }.platform-avto .ah-catalog-subtitle { font-size:13px; color:var(--ah-muted); line-height:1.6; }
+.platform-avto .ah-product-fit { display:flex; align-items:center; gap:12px; padding:17px; background:#14b8a615; border:1px solid #14b8a633; border-radius:20px; color:#0f766e; margin:18px 0; }
+.platform-avto .ah-product-fit>.ah-icon { width:38px; height:38px; padding:9px; border-radius:12px; background:#0f766e; color:white; flex-shrink:0; }
+.platform-avto .ah-product-fit strong { display:block; font-size:13px; }.platform-avto .ah-product-fit small { display:block; font-size:11px; color:var(--ah-muted); margin-top:5px; }.platform-avto .ah-product-fit button { margin-left:auto; font-size:11px; }
+.platform-avto .ah-product-fit.is-unknown { border-color:#f59e0b33; background:#f59e0b10; color:#92400e; }.platform-avto .ah-product-fit.is-unknown>.ah-icon { background:#d97706; }
+.platform-avto .ah-product-fit.is-no { border-color:#f43f5e33; background:#f43f5e10; color:#be123c; }.platform-avto .ah-product-fit.is-no>.ah-icon { background:#be123c; }
+.platform-avto .ah-catalog-price-card { background:var(--ah-surface); padding:26px; border-radius:28px; box-shadow:var(--ah-card-shadow); }
+.platform-avto .ah-catalog-price-heading { display:flex; align-items:center; justify-content:space-between; gap:20px; border-bottom:1px solid var(--ah-line); padding-bottom:18px; margin-bottom:18px; }
+.platform-avto .ah-catalog-price-heading small { text-transform:uppercase; font-size:10px; font-weight:700; letter-spacing:.06em; color:var(--ah-muted); }
+.platform-avto .ah-catalog-price-heading strong { display:block; font-size:42px; font-weight:800; margin-top:7px; }.platform-avto .ah-catalog-price-heading strong span { font-size:11px; color:var(--ah-muted); margin-left:4px; }
+.platform-avto .ah-catalog-price-heading b { font-size:13px; }.platform-avto .ah-catalog-price-heading p { font-size:11px; color:var(--ah-muted); }
+.platform-avto .ah-eu-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:18px; }
+.platform-avto .ah-eu-cards>div { padding:16px; background:var(--ah-surface); border-radius:20px; }.platform-avto .ah-eu-cards .ah-icon { color:var(--ah-blue); width:16px; height:16px; display:inline; }
+.platform-avto .ah-eu-cards small { font-size:9px; font-weight:700; color:var(--ah-muted); margin-left:5px; }.platform-avto .ah-eu-cards strong { display:block; margin-top:12px; font-size:24px; }
+.platform-avto .ah-catalog-seller { background:var(--ah-surface); border-radius:24px; padding:23px; margin-top:18px; }.platform-avto .ah-catalog-seller h2 { font-size:16px; margin:0 0 15px; }.platform-avto .ah-catalog-seller .ah-actions { margin-top:14px; }
+.platform-avto .ah-catalog-lower { display:grid; grid-template-columns:minmax(0,1fr) 330px; gap:24px; align-items:start; margin-top:28px; }
+.platform-avto :is(.ah-offers-panel,.ah-product-compatibility,.ah-product-specs) { border-radius:28px; background:var(--ah-surface); box-shadow:var(--ah-card-shadow); padding:24px; min-width:0; }
+.platform-avto :is(.ah-offers-panel,.ah-product-compatibility,.ah-product-specs) h2 { font-size:21px; margin:0; }.platform-avto .ah-offers-panel>.ah-section-heading>select { max-width:160px; }
+.platform-avto .ah-offers-panel h2 span { font-size:11px; padding:4px 7px; background:var(--ah-soft); color:var(--ah-blue); border-radius:50%; }
+.platform-avto .ah-offer-table { margin:18px -24px -24px; }
+.platform-avto .ah-offer-table-heading,.platform-avto .ah-offer-row { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(0,.9fr) minmax(0,.7fr) minmax(0,.7fr) minmax(0,1fr); gap:10px; align-items:center; padding:20px; border-top:1px solid var(--ah-line); font-size:12px; }
+.platform-avto .ah-offer-table.is-part .ah-offer-table-heading,.platform-avto .ah-offer-table.is-part .ah-offer-row { grid-template-columns:minmax(0,1.8fr) minmax(0,.9fr) minmax(0,.7fr) minmax(0,1fr); }
+.platform-avto .ah-offer-table-heading { font-size:9px; font-weight:700; text-transform:uppercase; color:var(--ah-muted); padding-block:12px; }
+.platform-avto .ah-offer-shop { display:flex; align-items:center; gap:10px; min-width:0; }.platform-avto .ah-shop-avatar { width:36px; height:36px; border-radius:12px; background:var(--ah-soft); color:var(--ah-blue); display:grid; place-items:center; font-size:11px; font-weight:700; flex-shrink:0; }
+.platform-avto .ah-offer-shop strong { font-size:12px; overflow-wrap:anywhere; }.platform-avto .ah-offer-row small { display:block; color:var(--ah-muted); font-size:9px; margin-top:5px; overflow-wrap:anywhere; }
+.platform-avto .ah-offer-row.is-lowest { background:#14b8a609; }.platform-avto .ah-offer-stock { color:#15803d; font-size:11px; }.platform-avto .ah-offer-stock.is-out { color:#b45309; }
+.platform-avto .ah-offer-row>div:last-child { display:flex; flex-direction:column; gap:6px; }.platform-avto .ah-offer-row :is(.ah-blue-button,.ah-pill) { padding:8px 10px; font-size:10px; text-align:center; }.platform-avto .ah-offer-disabled { font-size:10px; color:var(--ah-muted); }
+.platform-avto .ah-product-specs h2 { display:flex; align-items:center; gap:9px; margin-bottom:22px; }.platform-avto .ah-product-specs h2 .ah-icon { color:var(--ah-blue); }
+.platform-avto .ah-product-specs>div { display:flex; justify-content:space-between; gap:20px; border-bottom:1px dashed var(--ah-line); padding:12px 0; font-size:11px; }.platform-avto .ah-product-specs span { color:var(--ah-muted); }.platform-avto .ah-product-specs strong { text-align:right; }
+.platform-avto .ah-product-specs>.ah-blue-button { width:100%; margin-top:22px; }
+.platform-avto .ah-related-products { margin-top:32px; }.platform-avto .ah-related-products h2 { font-size:24px; margin-bottom:22px; }.platform-avto .ah-related-products .ah-product-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.platform-avto .ah-product-sold { padding:18px; border-radius:18px; background:#f973160f; color:#9a3412; }.platform-avto .ah-product-sold>.ah-icon { display:block; margin-bottom:12px; }.platform-avto .ah-product-sold strong { display:block; }.platform-avto .ah-product-sold p { font-size:12px; line-height:1.7; }
+.platform-avto .ah-product-label { display:flex; height:100%; align-items:center; justify-content:center; flex-direction:column; gap:25px; }.platform-avto .ah-product-label .ah-eu-pill { font-size:20px; margin:10px; }
+.platform-avto .ah-product-compatibility p { font-size:12px; color:var(--ah-muted); margin-top:20px; }.platform-avto .ah-compatibility-table { margin-top:20px; }.platform-avto .ah-compatibility-table>div { display:grid; grid-template-columns:1.4fr .8fr 1fr 1fr; padding:18px 0; border-top:1px solid var(--ah-line); gap:10px; font-size:11px; }.platform-avto .ah-product-compatibility h3 { font-size:11px; margin-top:20px; }
+.platform-avto .ah-product-compare>div { display:flex; flex-direction:column; gap:12px; border-bottom:1px solid var(--ah-line); padding:18px 0; font-size:13px; }
+@media(hover:hover) { .platform-avto :is(.ah-product-card,.ah-parts-categories button):hover { transform:translateY(-3px); box-shadow:0 14px 30px -12px #0c1b3033; } }
+@media(max-width:1100px) {
+ .platform-avto .ah-parts-hero { grid-template-columns:1fr 240px; padding:28px; }
+ .platform-avto .ah-parts-categories { grid-template-columns:repeat(4,minmax(0,1fr)); }
+ .platform-avto .ah-parts-layout { grid-template-columns:220px minmax(0,1fr); gap:18px; }
+ .platform-avto .ah-product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .platform-avto .ah-parts-results-tools { grid-template-columns:1fr 1fr; }.platform-avto .ah-parts-results-tools input { grid-column:1/-1; }
+ .platform-avto .ah-catalog-lower { grid-template-columns:1fr; }.platform-avto .ah-product-specs { max-width:none; }
+ .platform-avto .ah-catalog-photo { padding:25px; }.platform-avto .ah-catalog-summary h1 { font-size:30px; }
+ .platform-avto .ah-catalog-price-heading strong { font-size:32px; }
+}
+@media(max-width:700px) {
+ .platform-avto :is(.ah-parts-page,.ah-catalog-page) { padding-top:20px; }
+ .platform-avto .ah-parts-hero { display:block; position:relative; padding:23px; }.platform-avto .ah-parts-hero h1 { font-size:34px; }.platform-avto .ah-parts-hero-art { display:none; }
+ .platform-avto .ah-parts-hero-copy>p { font-size:12px; }.platform-avto .ah-parts-modes button { font-size:10px; padding:7px 10px; }
+ .platform-avto .ah-parts-categories { gap:10px; }.platform-avto .ah-parts-categories button { padding:12px 9px; }.platform-avto .ah-parts-categories strong { font-size:10px; }
+ .platform-avto .ah-parts-layout { grid-template-columns:1fr; }.platform-avto .ah-parts-filters { padding:15px; }.platform-avto .ah-product-filter-form { display:none; }.platform-avto .ah-parts-filters.is-open .ah-product-filter-form { display:block; margin-top:20px; }
+ .platform-avto .ah-mobile-parts-filter { display:flex; width:100%; }.platform-avto .ah-parts-results>.ah-section-heading { flex-wrap:wrap; gap:12px; }
+ .platform-avto .ah-product-grid { gap:10px; }.platform-avto .ah-product-info { padding:12px; }.platform-avto .ah-product-info h3 { font-size:12px; }.platform-avto .ah-product-photo { padding:12px; aspect-ratio:1; }.platform-avto .ah-product-price { font-size:18px; }
+ .platform-avto .ah-product-grid.is-list .ah-product-card { grid-template-columns:130px 1fr; }.platform-avto .ah-product-grid.is-list .ah-product-photo { min-height:190px; }
+ .platform-avto .ah-catalog-hero { grid-template-columns:1fr; }.platform-avto .ah-catalog-photo { max-width:550px; }.platform-avto .ah-catalog-summary h1 { font-size:30px; }
+ .platform-avto .ah-catalog-price-card { padding:22px; }.platform-avto .ah-product-fit { flex-wrap:wrap; }.platform-avto .ah-product-fit button { margin-left:50px; }
+ .platform-avto .ah-catalog-thumbs button { width:90px; height:90px; }.platform-avto .ah-related-products .ah-product-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+ .platform-avto .ah-offer-table.is-part .ah-offer-row { grid-template-columns:1fr 1fr; }
+ .platform-avto .ah-offer-table-heading { display:none; }.platform-avto .ah-offer-row { grid-template-columns:1fr 1fr; gap:14px; padding:20px; }.platform-avto .ah-offer-shop { grid-column:1/-1; }.platform-avto .ah-offer-row>div:last-child { grid-column:1/-1; flex-direction:row; }.platform-avto .ah-offer-row>div:last-child a { flex:1; }
+ .platform-avto .ah-compatibility-table>div { grid-template-columns:1fr 1fr; }.platform-avto .ah-compatibility-table>div strong { grid-column:1/-1; }
+ .platform-avto .ah-catalog-lower { margin-top:20px; }.platform-avto .ah-eu-cards strong { font-size:20px; }.platform-avto .ah-eu-cards>div { padding:12px; }.platform-avto .ah-eu-cards small { display:block; margin:5px 0 0; font-size:8px; }
+}
+@media(prefers-reduced-motion:reduce) { .platform-avto :is(.ah-product-card,.ah-parts-categories button,.ah-product-switch input,.ah-product-switch input:before) { transition:none!important; transform:none!important; } }
+
+.platform-avto .ah-eu-grade-scale { display:flex; gap:5px; margin-top:14px; }
+.platform-avto .ah-eu-grade-scale span { flex:1; text-align:center; padding:5px 0; background:var(--grade-color); color:white; border-radius:7px; font-size:12px; font-weight:700; opacity:.4; }
+.platform-avto .ah-eu-grade-scale .is-selected { opacity:1; outline:2px solid var(--grade-color); outline-offset:1px; }

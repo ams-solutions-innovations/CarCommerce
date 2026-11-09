@@ -7,6 +7,14 @@ import { PLATFORM } from './config/platform.js';
 
 // Lazy imports — only loaded when needed
 const pageModules = {
+    'account-confirm': () => import('./pages/accounts.autohub.js').then(m => m.initAutoHubAccountsPage('confirm')),
+    'account-forgot': () => import('./pages/accounts.autohub.js').then(m => m.initAutoHubAccountsPage('forgot')),
+    'account-reset': () => import('./pages/accounts.autohub.js').then(m => m.initAutoHubAccountsPage('reset')),
+    onboarding: () => import('./pages/onboarding.autohub.js').then(m => m.initAutoHubOnboardingPage()),
+    'business-onboarding': () => import('./pages/business-onboarding.autohub.js').then(m => m.initAutoHubBusinessOnboardingPage()),
+    collections: () => import('./pages/collections.js').then(m => m.initCollectionsPage()),
+    boards: () => import('./pages/boards.js').then(m => m.initBoardsPage()),
+    'business-directory': () => import('./pages/business-directory.js').then(m => m.initBusinessDirectoryPage()),
     home: () => import('./pages/home.js').then(m => m.initHomePage()),
     oglasi: () => {
         if (window.PLATFORM_ID === 'navtika' || document.documentElement.dataset.platform === 'navtika' || (typeof PLATFORM !== 'undefined' && PLATFORM.id === 'navtika')) {
@@ -20,6 +28,12 @@ const pageModules = {
         }
         return import('./pages/advanced-search.js').then(m => m.initAdvancedSearchPage());
     },
+    'advanced-search-auctions': () => {
+        if (window.PLATFORM_ID === 'navtika' || document.documentElement.dataset.platform === 'navtika' || (typeof PLATFORM !== 'undefined' && PLATFORM.id === 'navtika')) {
+            return import('./pages/advanced-search.navtika.js').then(m => m.initAdvancedSearchAuctionsPage());
+        }
+        return import('./pages/advanced-search.js').then(m => m.initAdvancedSearchAuctionsPage());
+    },
     listing: () => {
         if (PLATFORM.id === 'navtika') {
             return import('./pages/listing.navtika.js').then(m => m.initNavtikaListingPage());
@@ -28,6 +42,8 @@ const pageModules = {
     },
     drazbe: () => import('./pages/drazbe.js').then(m => m.initDrazbePage()),
     'auction-listing': () => import('./pages/auction-listing.js').then(m => m.initAuctionListingPage()),
+    najem: () => import('./pages/najem.js').then(m => m.initNajemPage()),
+    'advanced-search-rental': () => import('./pages/advanced-search-rental.js').then(m => m.initAdvancedSearchRentalPage()),
     'gume-in-deli': () => import('./pages/gume-in-deli.js').then(m => m.initGumeInDeliPage()),
     'catalog-product': () => import('./pages/catalog-product.js').then(m => m.initCatalogProductPage()),
     'create-listing': () => import('./pages/create-listing.js').then(m => m.initCreateListingPage()),

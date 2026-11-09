@@ -704,6 +704,81 @@
       ]
     }
   },
+  "Benimar": {
+    "Tessoro": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Tessoro 440"
+        },
+        {
+          "trim": "Tessoro 463"
+        },
+        {
+          "trim": "Tessoro 481"
+        }
+      ]
+    },
+    "Mileo": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mileo 263"
+        },
+        {
+          "trim": "Mileo 297"
+        }
+      ]
+    },
+    "Benivan": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Benivan 120"
+        },
+        {
+          "trim": "Benivan 160"
+        }
+      ]
+    },
+    "Sport": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Sport 340"
+        }
+      ]
+    }
+  },
+  "Bravia": {
+    "Swan 599": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Swan 599 Trend"
+        },
+        {
+          "trim": "Swan 599 Elegance"
+        }
+      ]
+    },
+    "Swan 636": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Swan 636 Trend"
+        }
+      ]
+    },
+    "Swan 699": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Swan 699"
+        }
+      ]
+    }
+  },
   "Bürstner": {
     "380": {
       "type": "PocitniiskaPrikolica",
@@ -952,6 +1027,55 @@
         },
         {
           "trim": "Royal 360"
+        }
+      ]
+    }
+  },
+  "Carado": {
+    "CV": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "CV 540"
+        },
+        {
+          "trim": "CV 600"
+        },
+        {
+          "trim": "CV 640"
+        }
+      ]
+    },
+    "T-Series": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "T 338"
+        },
+        {
+          "trim": "T 447"
+        },
+        {
+          "trim": "T 448"
+        }
+      ]
+    },
+    "A-Series": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "A 361"
+        },
+        {
+          "trim": "A 464"
+        }
+      ]
+    },
+    "I-Series": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "I 447"
         }
       ]
     }
@@ -1497,6 +1621,46 @@
       ]
     }
   },
+  "Concorde": {
+    "Credo": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Credo 791 L"
+        },
+        {
+          "trim": "Credo 840 L"
+        }
+      ]
+    },
+    "Carver": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Carver 791 L"
+        },
+        {
+          "trim": "Carver 890 RRL"
+        }
+      ]
+    },
+    "Charisma": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Charisma 860 LI"
+        }
+      ]
+    },
+    "Liner": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Liner 990 GI"
+        }
+      ]
+    }
+  },
   "Dethleffs": {
     "Advantage": {
       "type": "Avtodom",
@@ -1706,6 +1870,38 @@
         },
         {
           "trim": "Touring 545"
+        }
+      ]
+    }
+  },
+  "Etrusco": {
+    "CV": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "CV 600 DB"
+        },
+        {
+          "trim": "CV 600 DF 4x4"
+        }
+      ]
+    },
+    "T-Series": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "T 6900 SB"
+        },
+        {
+          "trim": "T 7400 QBC"
+        }
+      ]
+    },
+    "I-Series": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "I 7400 SB"
         }
       ]
     }
@@ -2046,6 +2242,41 @@
       "variants": [
         {
           "trim": "Royal"
+        }
+      ]
+    }
+  },
+  "Giottiline": {
+    "Siena": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Siena 330"
+        },
+        {
+          "trim": "Siena 385"
+        },
+        {
+          "trim": "Siena 390"
+        }
+      ]
+    },
+    "GiottiVan": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "GiottiVan 54 T"
+        },
+        {
+          "trim": "GiottiVan 60 T"
+        }
+      ]
+    },
+    "Toscan": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Toscan 69 GC"
         }
       ]
     }
@@ -2489,6 +2720,35 @@
       ]
     }
   },
+  "Kabe": {
+    "Imperial": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Imperial i810"
+        },
+        {
+          "trim": "Imperial i860"
+        }
+      ]
+    },
+    "Royal": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Royal x780"
+        }
+      ]
+    },
+    "Classic": {
+      "type": "PocitniiskaPrikolica",
+      "variants": [
+        {
+          "trim": "Classic 520"
+        }
+      ]
+    }
+  },
   "Karmod": {
     "20": {
       "type": "MobilnaHisica",
@@ -2836,6 +3096,175 @@
       ]
     }
   },
+  "LMC": {
+    "Innovan": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Innovan 540"
+        },
+        {
+          "trim": "Innovan 600"
+        },
+        {
+          "trim": "Innovan 640"
+        }
+      ]
+    },
+    "Tourer": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Tourer T 662"
+        },
+        {
+          "trim": "Tourer T 732"
+        }
+      ]
+    },
+    "Cruiser": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Cruiser T 662"
+        }
+      ]
+    },
+    "Sassino": {
+      "type": "PocitniiskaPrikolica",
+      "variants": [
+        {
+          "trim": "Sassino 460"
+        }
+      ]
+    },
+    "Vivo": {
+      "type": "PocitniiskaPrikolica",
+      "variants": [
+        {
+          "trim": "Vivo 520"
+        }
+      ]
+    }
+  },
+  "McLouis": {
+    "Menfys": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Menfys 3"
+        },
+        {
+          "trim": "Menfys 4"
+        },
+        {
+          "trim": "Menfys Prestige"
+        }
+      ]
+    },
+    "Glamys": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Glamys 220"
+        },
+        {
+          "trim": "Glamys 322"
+        }
+      ]
+    },
+    "MC4": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "MC4 273"
+        },
+        {
+          "trim": "MC4 379"
+        }
+      ]
+    },
+    "Nevis": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Nevis 879"
+        }
+      ]
+    }
+  },
+  "Mega Mobil": {
+    "Mega Classic": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mega Classic 600"
+        }
+      ]
+    },
+    "Mega Sport": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mega Sport 640"
+        }
+      ]
+    },
+    "Mega Lounge": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mega Lounge 640"
+        }
+      ]
+    },
+    "Mega Re-Active": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mega Re-Active 600"
+        }
+      ]
+    }
+  },
+  "Mobilvetta": {
+    "Kea": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Kea P 67"
+        },
+        {
+          "trim": "Kea P 86"
+        },
+        {
+          "trim": "Kea I 86"
+        }
+      ]
+    },
+    "K-Yacht": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "K-Yacht Tekno Line 79"
+        },
+        {
+          "trim": "K-Yacht Tekno Line 86"
+        }
+      ]
+    },
+    "Admiral": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Admiral K 5.1"
+        },
+        {
+          "trim": "Admiral K 6.3"
+        }
+      ]
+    }
+  },
   "Morelo": {
     "Empire": {
       "type": "Avtodom",
@@ -3159,35 +3588,11 @@
         }
       ]
     },
-    "80dF": {
-      "type": "Avtodom",
-      "variants": [
-        {
-          "trim": "80dF"
-        }
-      ]
-    },
-    "8F": {
-      "type": "Avtodom",
-      "variants": [
-        {
-          "trim": "8F"
-        }
-      ]
-    },
     "900": {
       "type": "Avtodom",
       "variants": [
         {
           "trim": "900"
-        }
-      ]
-    },
-    "90dF": {
-      "type": "Avtodom",
-      "variants": [
-        {
-          "trim": "90dF"
         }
       ]
     },
@@ -3204,6 +3609,30 @@
       "variants": [
         {
           "trim": "990"
+        }
+      ]
+    },
+    "80dF": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "80dF"
+        }
+      ]
+    },
+    "8F": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "8F"
+        }
+      ]
+    },
+    "90dF": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "90dF"
         }
       ]
     },
@@ -3251,6 +3680,55 @@
       "variants": [
         {
           "trim": "Série 10"
+        }
+      ]
+    }
+  },
+  "Rimor": {
+    "Seal": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Seal 50"
+        },
+        {
+          "trim": "Seal 69 P"
+        },
+        {
+          "trim": "Seal 95 Plus"
+        }
+      ]
+    },
+    "Evo": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Evo 66 Plus"
+        },
+        {
+          "trim": "Evo 77 Plus"
+        }
+      ]
+    },
+    "Kilig": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Kilig 4"
+        },
+        {
+          "trim": "Kilig 50"
+        }
+      ]
+    },
+    "Horus": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Horus 38"
+        },
+        {
+          "trim": "Horus 45"
         }
       ]
     }
@@ -3315,6 +3793,105 @@
         },
         {
           "trim": "Zion 2"
+        }
+      ]
+    }
+  },
+  "Robeta": {
+    "Helios": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Helios 599"
+        }
+      ]
+    },
+    "Kronos": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Kronos 599"
+        }
+      ]
+    },
+    "Apollo": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Apollo 636"
+        }
+      ]
+    },
+    "Dionysus": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Dionysus 540"
+        }
+      ]
+    },
+    "Ares": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Ares 540"
+        }
+      ]
+    },
+    "Adonis": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Adonis 599 4x4"
+        }
+      ]
+    }
+  },
+  "Roller Team": {
+    "Kronos": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Kronos 265"
+        },
+        {
+          "trim": "Kronos 284"
+        },
+        {
+          "trim": "Kronos 290"
+        }
+      ]
+    },
+    "Zefiro": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Zefiro 265"
+        },
+        {
+          "trim": "Zefiro 284"
+        }
+      ]
+    },
+    "Livingstone": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Livingstone 2"
+        },
+        {
+          "trim": "Livingstone 5"
+        },
+        {
+          "trim": "Livingstone Advance"
+        }
+      ]
+    },
+    "Granduca": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Granduca 287"
         }
       ]
     }
@@ -3620,6 +4197,35 @@
       ]
     }
   },
+  "Tourne": {
+    "Mobil 6.0": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mobil 6.0 standard"
+        },
+        {
+          "trim": "Mobil 6.0 4x4"
+        }
+      ]
+    },
+    "Mobil 6.4": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Mobil 6.4"
+        }
+      ]
+    },
+    "Edition Black": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "Black Edition"
+        }
+      ]
+    }
+  },
   "Trigano": {
     "Camplair": {
       "type": "SotorskaPrikolica",
@@ -3813,6 +4419,63 @@
         },
         {
           "trim": "Westfalia Amundsen"
+        }
+      ]
+    }
+  },
+  "Weinsberg": {
+    "CaraBus": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "CaraBus 540"
+        },
+        {
+          "trim": "CaraBus 600"
+        },
+        {
+          "trim": "CaraBus 630"
+        }
+      ]
+    },
+    "CaraTour": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "CaraTour 540"
+        },
+        {
+          "trim": "CaraTour 600"
+        }
+      ]
+    },
+    "CaraCompact": {
+      "type": "Avtodom",
+      "variants": [
+        {
+          "trim": "CaraCompact Suite"
+        },
+        {
+          "trim": "CaraCompact Pepper"
+        }
+      ]
+    },
+    "CaraOne": {
+      "type": "PocitniiskaPrikolica",
+      "variants": [
+        {
+          "trim": "CaraOne 390"
+        },
+        {
+          "trim": "CaraOne 480"
+        }
+      ]
+    },
+    "CaraCito": {
+      "type": "PocitniiskaPrikolica",
+      "variants": [
+        {
+          "trim": "CaraCito 470"
         }
       ]
     }

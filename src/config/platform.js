@@ -12,8 +12,8 @@
 const PLATFORMS = {
     avto: {
         id: 'avto',
-        brandName: 'AutoHub',
-        brandMark: 'A',
+        brandName: 'Carcommerce',
+        brandMark: 'C',
         tld: '.si',
         domain: 'mojavto.si',
         siblingUrl: 'https://mojanavtika.si',
@@ -24,10 +24,10 @@ const PLATFORMS = {
         hasGlobalRentalToggle: false,
         colors: {
             primaryStart: '#2563eb', // blue-600
-            primaryEnd: '#4f46e5',   // indigo-600
+            primaryEnd: '#1d4ed8',
             logoAccent: '#2563eb',
-            cta: '#10b981',          // green login/CTA gradient start
-            ctaEnd: '#059669',
+            cta: '#fb923c',
+            ctaEnd: '#f97316',
         },
         company: {
             name: 'AMS Solutions d.o.o.',
@@ -69,7 +69,7 @@ const PLATFORMS = {
 };
 
 // Resolve the active platform id from the build-time env (default: avto).
-const PLATFORM_ID = (import.meta.env.VITE_PLATFORM || 'avto');
+const PLATFORM_ID = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_PLATFORM) || 'avto';
 
 /** The active platform configuration object. */
 export const PLATFORM = PLATFORMS[PLATFORM_ID] || PLATFORMS.avto;

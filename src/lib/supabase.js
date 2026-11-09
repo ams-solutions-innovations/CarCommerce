@@ -3,10 +3,12 @@
 // The session (JWT) is persisted in localStorage and auto-refreshed.
 import { createClient } from '@supabase/supabase-js';
 import { ENV } from './env.js';
+import { authStorage } from './authStorage.js';
 
 export const supabase = createClient(ENV.supabaseUrl, ENV.supabaseAnonKey, {
   auth: {
     persistSession: true,
+    storage: authStorage,
     autoRefreshToken: true,
     detectSessionInUrl: true, // OAuth (Google) + email-link redirects
   },

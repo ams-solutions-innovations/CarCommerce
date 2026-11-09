@@ -25,6 +25,7 @@ const MAX_VEHICLES = 3;
 // Per-category form state — saved when switching tabs, restored on return.
 const _catState = {};
 
+export function initAdvancedSearchAuctionsPage() { initNavtikaSearchPage({ isAuctions: true }); }
 export function initAdvancedSearchPage() {
     initNavtikaSearchPage();
 }
@@ -51,7 +52,7 @@ function renderSearchModePills() {
     });
 }
 
-export function initNavtikaSearchPage() {
+export function initNavtikaSearchPage(options = {}) {
     console.log('[NavtikaSearch] init');
     initCustomSelects();
 
@@ -59,8 +60,8 @@ export function initNavtikaSearchPage() {
     excludedVehicles = [];
 
     const params = parseHashParams();
-    searchMode = params.get('mode') === 'drazbe' ? 'drazbe' : 'oglasi';
-    renderSearchModePills();
+    searchMode = (options.isAuctions || window.location.pathname.endsWith('/iskanje-drazbe') || params.get('mode') === 'drazbe') ? 'drazbe' : 'oglasi';
+    // Search mode is now determined by route (/iskanje vs /iskanje-drazbe)
     const ctx = {
         cat: params.get('cat') || Object.values(MAIN_CATEGORIES)[0].slug,
         sub: params.get('sub') || '',
@@ -476,6 +477,17 @@ function bindAccordions() {
 
         const isPersistent = acc.classList.contains('persistent-open');
         const body = acc.querySelector('.adv-acc-body');
+
+        // Only persistent accordions (Osnovni podatki) start open by default
+        if (isPersistent) {
+            trig.setAttribute('aria-expanded', 'true');
+            acc.setAttribute('aria-expanded', 'true');
+            if (body) body.style.display = 'flex';
+        } else {
+            trig.setAttribute('aria-expanded', 'false');
+            acc.setAttribute('aria-expanded', 'false');
+            if (body) body.style.display = 'none';
+        }
 
         const toggleAccordion = () => {
             if (isPersistent) return;

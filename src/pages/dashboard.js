@@ -1,6 +1,7 @@
 // Dashboard page — MojAvto.si
 // Shows after login — user's listings, stats, quick actions
 import QRCode from 'qrcode';
+import { PLATFORM } from '../config/platform.js';
 import { getUserListings, deleteListing } from '../services/listingService.js';
 import { navigateTo } from '../router.js';
 import {
@@ -23,6 +24,7 @@ function isVerifiedBusiness(user) {
 }
 
 export async function initDashboardPage() {
+  if(PLATFORM.id==='avto')return import('./dashboard.autohub.js').then(module=>module.initAutoHubDashboardPage());
   const container = document.getElementById('app-container');
   if (!container) return;
 
@@ -289,11 +291,11 @@ function showRemoveListingPopup(listingId, listingTitle) {
 }
 
 // ── Bookings section ──────────────────────────────────────────
-function renderBookingsSection(userId) {
+async function renderBookingsSection(userId) {
     const container = document.getElementById('bookings-container');
     if (!container) return;
 
-    const bookings = getBookingsForUser(userId);
+    const bookings = await getBookingsForUser(userId);
 
     if (bookings.length === 0) {
         container.innerHTML = `
@@ -309,12 +311,12 @@ function renderBookingsSection(userId) {
     const sorted = [...bookings].sort((a, b) => {
         const order = { pending: 0, confirmed: 1, completed: 2, cancelled: 3 };
         if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
-        return b.date?.localeCompare(a.date);
+        return (b.date || '').localeCompare(a.date || '');
     });
 
     container.innerHTML = sorted.map(b => {
         const { label, cls } = getStatusInfo(b.status);
-        const services = b.services.map(s => serviceLabels[s] || s).join(' · ');
+        const services = (b.services || []).map(s => serviceLabels[s] || s).join(' · ');
         const statusColors = {
             'status-pending':   { bg: '#fffbeb', color: '#d97706', border: '#fde68a' },
             'status-confirmed': { bg: '#eff6ff', color: '#2563eb', border: '#bfdbfe' },
@@ -352,20 +354,20 @@ function renderBookingsSection(userId) {
     }).join('');
 
     // Global cancel handler
-    window._cancelBooking = (bookingId, uid) => {
+    window._cancelBooking = async (bookingId, uid) => {
         if (!confirm(t('dashboard_cancel_booking_confirm'))) return;
-        cancelBooking(uid, bookingId);
-        renderBookingsSection(uid);
-        renderServiceHistorySection(uid);
+        await cancelBooking(uid, bookingId);
+        await renderBookingsSection(uid);
+        await renderServiceHistorySection(uid);
     };
 }
 
 // ── Service history section ───────────────────────────────────
-function renderServiceHistorySection(userId) {
+async function renderServiceHistorySection(userId) {
     const container = document.getElementById('service-history-container');
     if (!container) return;
 
-    const completed = getBookingsForUser(userId).filter(b => b.status === 'completed');
+    const completed = (await getBookingsForUser(userId)).filter(b => b.status === 'completed');
 
     if (completed.length === 0) {
         container.innerHTML = `
@@ -376,10 +378,10 @@ function renderServiceHistorySection(userId) {
         return;
     }
 
-    const sorted = [...completed].sort((a, b) => b.date?.localeCompare(a.date));
+    const sorted = [...completed].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
 
     container.innerHTML = sorted.map(b => {
-        const services = b.services.map(s => serviceLabels[s] || s).join(' · ');
+        const services = (b.services || []).map(s => serviceLabels[s] || s).join(' · ');
         return `
         <div class="dashboard-booking-card" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
             <div style="width:40px;height:40px;border-radius:0.75rem;background:linear-gradient(135deg,#16a34a,#15803d);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">✓</div>

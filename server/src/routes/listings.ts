@@ -16,6 +16,7 @@ import { isProd } from '../config/env.js';
 const listingInput = z
   .object({
     platform: z.enum(['avto', 'navtika']),
+    requestId: z.string().uuid().optional(),
     itemType: z.enum(['vehicle', 'parts', 'auction', 'oprema']).default('vehicle'),
     title: boundedText(3, LIMITS.listingTitle),
     description: boundedText(0, LIMITS.listingDescription).optional(),
@@ -27,6 +28,13 @@ const listingInput = z
     data: z.record(z.unknown()).default({}), // category-specific fields
   })
   .strip();
+
+// Metrics, payment grants and ownership are maintained by their server flows.
+function listingData(input: Record<string, unknown>) {
+  const data = { ...input };
+  for (const key of ['promotion', 'isPremium', 'viewDaily', 'viewCount', 'favoriteCount', 'contactCount', 'authorId', 'endsAt', 'currentBid', 'owner_id', 'status']) delete data[key];
+  return data;
+}
 
 // Build the flat document Typesense indexes from a listing row.
 function toSearchDoc(row: Record<string, unknown>) {
@@ -66,9 +74,10 @@ export const listingRoutes: FastifyPluginAsync = async (app) => {
     }
     const input = listingInput.parse(req.body);
     const db = supabaseForUser(req.accessToken!); // RLS enforces owner_id = auth.uid()
-    const { data, error } = await db
+    let { data, error } = await db
       .from('listings')
       .insert({
+        ...(input.requestId ? { id: input.requestId } : {}),
         owner_id: req.user!.id,
         platform: input.platform,
         item_type: input.itemType,
@@ -79,17 +88,41 @@ export const listingRoutes: FastifyPluginAsync = async (app) => {
         year: input.year,
         price: input.price,
         images: input.images,
-        data: input.data,
+        data: listingData(input.data),
         status: 'active',
       })
       .select('*')
       .single();
+    if (error?.code === '23505' && input.requestId) {
+      const { data: existing } = await db.from('listings').select('*').eq('id', input.requestId).eq('owner_id', req.user!.id).maybeSingle();
+      if (!existing || existing.status !== 'active') return reply.code(409).send({ error: 'The request cannot be repeated for this listing', statusCode: 409 });
+      const retried = await db.from('listings').update({ title: input.title, description: input.description, brand: input.brand, model: input.model, year: input.year, price: input.price, images: input.images, data: { ...existing.data, ...listingData(input.data) } }).eq('id', input.requestId).eq('owner_id', req.user!.id).select('*').single();
+      data = retried.data; error = retried.error;
+    }
     if (error) return reply.code(400).send({ error: error.message, statusCode: 400 });
     await indexListing(toSearchDoc(data));
     return reply.code(201).send(data);
   });
 
   // Delete (auth). Explicit ownership check (#2 IDOR) on top of RLS, then audit.
+  app.put('/listings/:id', { preHandler: app.requireAuth }, async (req, reply) => {
+    const { id } = z.object({ id: z.string().uuid() }).strip().parse(req.params);
+    const input = listingInput.partial().extend({ status: z.literal('sold').optional() }).strip().parse(req.body);
+    await assertOwner('listings', id, req.user!.id);
+    const db = supabaseForUser(req.accessToken!);
+    const { data: existing, error: readError } = await db.from('listings').select('*').eq('id', id).eq('owner_id', req.user!.id).single();
+    if (readError || !existing) return reply.code(404).send({ error: 'Listing not found', statusCode: 404 });
+    const columns: Record<string, unknown> = {};
+    for (const key of ['title', 'description', 'brand', 'model', 'year', 'price', 'images'] as const) if (input[key] !== undefined) columns[key] = input[key];
+    columns.data = { ...existing.data, ...listingData(input.data || {}) };
+    if (input.status === 'sold') { columns.status = 'sold'; columns.data = { ...columns.data as Record<string, unknown>, soldAt: new Date().toISOString() }; }
+    const { data, error } = await db.from('listings').update(columns).eq('id', id).eq('owner_id', req.user!.id).select('*').single();
+    if (error || !data) return reply.code(400).send({ error: error?.message || 'Update failed', statusCode: 400 });
+    if (data.status === 'active') await indexListing(toSearchDoc(data)); else await removeListingFromIndex(id);
+    await audit({ actorId: req.user!.id, action: 'listing.update', targetType: 'listing', targetId: id });
+    return data;
+  });
+
   app.delete('/listings/:id', { preHandler: app.requireAuth }, async (req, reply) => {
     const { id } = z.object({ id: z.string().uuid() }).strip().parse(req.params);
     await assertOwner('listings', id, req.user!.id); // throws 403/404

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <path d="M50 6 L88 20 L88 54 C88 74, 50 94, 50 94 C50 94, 12 74, 12 54 L12 20 Z" fill="#c8102e"/>
+    <!-- Greyhound dog silhouette -->
+    <path d="M44 26 C46 22, 52 22, 56 25 C62 28, 68 32, 64 38 C60 44, 52 42, 48 48 C44 54, 46 62, 50 72 L42 72 C38 60, 36 52, 40 44 C42 40, 38 34, 44 26 Z" fill="#ffffff"/>
+    <circle cx="54" cy="27" r="2" fill="#c8102e"/>
+  </svg>

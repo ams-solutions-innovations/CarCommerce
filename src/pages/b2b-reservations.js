@@ -1,6 +1,11 @@
 // b2b-reservations.js — Provider-side booking management
 import { mountB2BShell } from '../layouts/b2b-layout.js';
 import { listMyBookings, updateBookingStatus, confirmBookingSlot, blockSlot, listPendingTireOrders, confirmTireOrderReceival } from '../services/b2bService.js';
+import { serviceLabels } from '../data/businesses.js';
+
+// Booking services are stored as ids; show the human label when one is known.
+const svcLabel = (id) => serviceLabels?.[id] || id;
+const servicesText = (b) => Array.isArray(b.services) && b.services.length ? b.services.map(svcLabel).join(', ') : (b.serviceId ? svcLabel(b.serviceId) : '—');
 
 const STATUS_META = {
     pending:   { label: 'Čaka potrditve', color: '#d97706', bg: '#fffbeb' },
@@ -289,7 +294,7 @@ function renderList(bookings) {
 
 function rowHtml(b) {
     const meta = STATUS_META[b.status] || { label: b.status, color: '#64748b', bg: '#f1f5f9' };
-    const services = Array.isArray(b.services) ? b.services.join(', ') : (b.serviceId || '—');
+    const services = servicesText(b);
     const price = b.total_price !== undefined ? b.total_price : b.totalPrice;
     const priceStr = price ? price + ' €' : '—';
     const slots = b.proposed_slots || b.proposedSlots || [];
@@ -344,7 +349,7 @@ function renderCalendar(bookings) {
                             return `
                             <div class="b2b-cal-slot" style="border-left:4px solid ${meta.color};background:${meta.bg};">
                                 <div><strong>${esc(b.time || 'cel dan')}</strong> · ${esc(b.customerName || '—')}</div>
-                                <div class="b2b-cell-sub">${esc(Array.isArray(b.services) ? b.services.join(', ') : b.serviceId || '')}</div>
+                                <div class="b2b-cell-sub">${esc(servicesText(b) === '—' ? '' : servicesText(b))}</div>
                             </div>`;
                         }).join('')}
                     </div>
@@ -356,8 +361,9 @@ function renderCalendar(bookings) {
 
 function renderTireOrderCard(order) {
     const td = order.tireData || {};
-    const submittedLabel = order.submittedAt?.toDate
-        ? order.submittedAt.toDate().toLocaleString('sl-SI')
+    const submittedDate = order.submittedAt ? new Date(order.submittedAt) : null;
+    const submittedLabel = submittedDate && !isNaN(submittedDate)
+        ? submittedDate.toLocaleString('sl-SI')
         : '—';
     return `
         <div class="b2b-tire-order-card" data-order-id="${order.id}">

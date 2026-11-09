@@ -3,6 +3,7 @@
 
 import { supabase } from '../lib/supabase.js';
 import { key as lsKey } from '../config/storageKeys.js';
+import { mutateProfilePrefs } from './profilePrefsService.js';
 
 const STORAGE_KEY = lsKey('tco_preferences');
 
@@ -31,19 +32,17 @@ export async function saveTCOPreferences(preferences) {
     const validated = {
         age: Math.max(16, Math.min(120, preferences.age || 35)),
         annualMiles: Math.max(100, Math.min(200000, preferences.annualMiles || 15000)),
-        state: preferences.state || 'SI',
+        state: preferences.state || preferences.region || 'SI',
+        region: preferences.region || preferences.state || 'SI',
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(validated));
 
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-        try {
-            const { data } = await supabase.from('profiles').select('prefs').eq('id', user.id).single();
-            const prefs = data?.prefs || {};
-            await supabase.from('profiles').upsert({ id: user.id, prefs: { ...prefs, tco: validated } }, { onConflict: 'id' });
-        } catch (e) {
-            console.error('[TCOPreferences] Could not save to Supabase:', e.message);
-        }
+        // profiles rows are created by the signup trigger and RLS only allows the
+        // owner to UPDATE them (there is no INSERT policy), so this must be an
+        // update, not an upsert.
+        await mutateProfilePrefs(user.id,prefs=>({...prefs,tco:validated}));
     }
     return validated;
 }

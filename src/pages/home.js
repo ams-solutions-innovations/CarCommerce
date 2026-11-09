@@ -8,6 +8,7 @@ import {
     getPowerPill, 
     getConsumptionPill, 
     getTransmissionPill,
+    getChargingPills,
     getYearPill,
     getKmPill,
     getDisplacementPill
@@ -35,7 +36,11 @@ export async function initHomePage() {
         return m.initNavtikaHomePage();
     }
 
-    // Setup rotating sponsored ads
+    if (PLATFORM.id === 'avto') {
+        const autoHub = await import('./home.autohub.js');
+        return autoHub.initAutoHubHomePage();
+    }
+    // Legacy implementation retained for reference during the migration.
     setupRotatingAds();
 
     // Initialize search form immediately — doesn't need listings data
@@ -151,6 +156,7 @@ function setupRotatingAds() {
                 </div>
                 <div class="spec-row centered">
                     ${getConsumptionPill(car)}
+                    ${getChargingPills(car)}
                 </div>
             </div>`;
 
@@ -269,6 +275,8 @@ function renderListingsSection(containerId, sectionId, listings, hideIfEmpty = f
                         <div class="spec-row centered">
                             ${getFuelPill(listing)}
                             ${getTransmissionPill(listing)}
+                            ${getConsumptionPill(listing)}
+                            ${getChargingPills(listing)}
                         </div>
                     </div>
                     <div class="sponsored-price">${price}</div>
@@ -543,15 +551,55 @@ function setupSearchForm() {
         });
     }
 
-    // Search-mode pills (Išči oglase / Išči dražbe) — drive the submit target.
+    // Search-mode pills (Išči oglase / Išči dražbe / Najem) — drive the submit target and dynamic fields.
     let homeSearchMode = 'oglasi';
     const modePills = document.getElementById('homeSearchMode');
+
+    function updateHomeSearchMode(mode) {
+        homeSearchMode = mode;
+        const activeTab = document.querySelector('.tab-btn.active');
+        const cat = activeTab ? activeTab.getAttribute('data-category') : 'avto';
+        const catSlug = cat === 'motor' ? 'moto' : (cat === 'gospodarska' ? 'gospodarska' : 'avto');
+        const advLinkEl = document.getElementById('homeAdvancedSearchLink');
+        if (advLinkEl) {
+            const advTarget = homeSearchMode === 'drazbe' ? '/iskanje-drazbe' : (homeSearchMode === 'najem' ? '/iskanje-najem' : '/iskanje');
+            advLinkEl.href = `${advTarget}?cat=${catSlug}`;
+        }
+
+        const mileageGroup = document.getElementById('group-home-mileage');
+        const auctionTypeGroup = document.getElementById('group-home-auction-type');
+        const rentalDurationGroup = document.getElementById('group-home-rental-duration');
+        const priceLabel = document.getElementById('home-price-to-label');
+        const priceInput = document.getElementById('home-price-to');
+
+        if (homeSearchMode === 'drazbe') {
+            if (mileageGroup) mileageGroup.style.display = 'none';
+            if (auctionTypeGroup) auctionTypeGroup.style.display = '';
+            if (rentalDurationGroup) rentalDurationGroup.style.display = 'none';
+            if (priceLabel) priceLabel.textContent = 'Cena (do €)';
+            if (priceInput) priceInput.placeholder = 'Brez omejitve';
+        } else if (homeSearchMode === 'najem') {
+            if (mileageGroup) mileageGroup.style.display = 'none';
+            if (auctionTypeGroup) auctionTypeGroup.style.display = 'none';
+            if (rentalDurationGroup) rentalDurationGroup.style.display = '';
+            if (priceLabel) priceLabel.textContent = 'Cena na dan (€/dan)';
+            if (priceInput) priceInput.placeholder = 'npr. 50 €/dan';
+        } else {
+            if (mileageGroup) mileageGroup.style.display = '';
+            if (auctionTypeGroup) auctionTypeGroup.style.display = 'none';
+            if (rentalDurationGroup) rentalDurationGroup.style.display = 'none';
+            if (priceLabel) priceLabel.textContent = t('form_price_to', 'Price (up to)');
+            if (priceInput) priceInput.placeholder = t('no_limit', 'Brez omejitve');
+        }
+    }
+
     if (modePills) {
         modePills.querySelectorAll('.home-search-mode-pill').forEach(pill => {
             pill.addEventListener('click', () => {
-                homeSearchMode = pill.dataset.searchMode;
+                const mode = pill.dataset.searchMode;
                 modePills.querySelectorAll('.home-search-mode-pill')
                     .forEach(p => p.classList.toggle('active', p === pill));
+                updateHomeSearchMode(mode);
             });
         });
     }
@@ -575,6 +623,8 @@ function setupSearchForm() {
             // Reset remaining selects
             fireChange('home-reg-from');
             fireChange('home-mileage-to');
+            fireChange('home-auction-type');
+            fireChange('home-rental-duration');
             fireChange('home-fuel-type');
             // Reset country — its change listener clears + disables region
             fireChange('home-country');
@@ -601,17 +651,29 @@ function setupSearchForm() {
             const country = document.getElementById('home-country')?.value || '';
             const region = document.getElementById('home-region')?.value || '';
 
+            const auctionType = document.getElementById('home-auction-type')?.value || '';
+            const rentalDuration = document.getElementById('home-rental-duration')?.value || '';
+
             let query = `?cat=${catSlug}`;
             if (make) query += `&make=${encodeURIComponent(make)}`;
             if (model) query += `&model=${encodeURIComponent(model)}`;
             if (variant) query += `&variant=${encodeURIComponent(variant)}`;
             if (year) query += `&yearFrom=${year}`;
-            if (mileage) query += `&mileageTo=${mileage}`;
-            if (price) query += `&priceTo=${price}`;
+
+            if (homeSearchMode === 'drazbe') {
+                if (auctionType) query += `&aucType=${encodeURIComponent(auctionType)}`;
+                if (price) query += `&priceTo=${price}`;
+            } else if (homeSearchMode === 'najem') {
+                if (rentalDuration) query += `&duration=${encodeURIComponent(rentalDuration)}`;
+                if (price) query += `&priceDay=${price}`;
+            } else {
+                if (mileage) query += `&mileageTo=${mileage}`;
+                if (price) query += `&priceTo=${price}`;
+            }
             if (country) query += `&country=${encodeURIComponent(country)}`;
             if (region) query += `&region=${encodeURIComponent(region)}`;
 
-            const target = homeSearchMode === 'drazbe' ? '/drazbe' : '/oglasi';
+            const target = homeSearchMode === 'drazbe' ? '/drazbe' : (homeSearchMode === 'najem' ? '/najem' : '/oglasi');
             navigateTo(`${target}${query}`);
         });
     }
@@ -642,6 +704,13 @@ function setupSearchForm() {
                 } else {
                     bodyTypeGroup.style.display = 'flex';
                 }
+            }
+
+            const catSlug = category === 'motor' ? 'moto' : (category === 'gospodarska' ? 'gospodarska' : 'avto');
+            const advLinkEl = document.getElementById('homeAdvancedSearchLink');
+            if (advLinkEl) {
+                const advTarget = homeSearchMode === 'drazbe' ? '/iskanje-drazbe' : (homeSearchMode === 'najem' ? '/iskanje-najem' : '/iskanje');
+                advLinkEl.href = `${advTarget}?cat=${catSlug}`;
             }
         });
     });

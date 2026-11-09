@@ -1,0 +1,3555 @@
+/* ════════════════════════════════════════════════════════════════════════════
+   Auctions (Dražbe) — board + detail page + bid/contract widgets
+   Reuses the platform primary color tokens (--color-primary-start/-end).
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Auction info bar (inside listing card content area) ─────────────────────*/
+.auction-card-info-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.55rem 0.85rem;
+    margin: 0.25rem 0 0.1rem;
+    background: rgba(37,99,235,0.07);
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 0.75rem;
+    flex-wrap: wrap;
+}
+body.dark-mode .auction-card-info-bar {
+    background: rgba(37,99,235,0.13);
+    border-color: rgba(37,99,235,0.3);
+}
+.auction-card-timer-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #dc2626;
+    white-space: nowrap;
+}
+.auction-card-timer-wrap i { width: 15px; height: 15px; flex-shrink: 0; }
+.auction-card-timer-wrap .drazba-card-timer {
+    position: static;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+    border-radius: 0;
+    backdrop-filter: none;
+}
+.auction-card-timer-wrap .drazba-card-timer.ending-soon { animation: drazbaPulse 1.4s infinite; }
+.auction-card-bid-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    flex: 1;
+    flex-wrap: wrap;
+}
+.auction-card-bid-label {
+    font-size: 0.72rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+body.dark-mode .auction-card-bid-label { color: #94a3b8; }
+.auction-card-bid-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-primary-start);
+    white-space: nowrap;
+}
+.auction-card-bid-count {
+    font-size: 0.72rem;
+    color: #64748b;
+    white-space: nowrap;
+}
+.drazba-card-live-inline {
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    color: #fff;
+    background: rgba(220,38,38,0.92);
+    padding: 0.2rem 0.5rem;
+    border-radius: 99px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* ── Board page ──────────────────────────────────────────────────────────────*/
+.drazbe-page {
+    max-width: 1200px;
+    margin: 2.5rem auto;
+    padding: 0 1rem;
+}
+.drazbe-hero { text-align: center; margin-bottom: 1.5rem; }
+.drazbe-title {
+    font-size: clamp(1.6rem, 4vw, 2.4rem);
+    font-weight: 800;
+    margin: 0 0 0.4rem;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+.drazbe-sub { color: #64748b; margin: 0; font-size: 1rem; }
+body.dark-mode .drazbe-sub { color: #94a3b8; }
+
+.drazbe-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+.drazbe-count { font-weight: 700; color: #475569; }
+body.dark-mode .drazbe-count { color: #cbd5e1; }
+.drazbe-filter-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--color-primary-start);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+.drazbe-filter-link i { width: 16px; height: 16px; }
+
+.drazbe-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+.drazbe-loading, .drazbe-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #64748b;
+}
+.drazbe-empty p { margin: 0.25rem 0; font-size: 1.05rem; }
+.drazbe-empty-sub { font-size: 0.9rem !important; color: #94a3b8; }
+
+/* ── Auction card ────────────────────────────────────────────────────────────*/
+.drazba-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.07);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+body.dark-mode .drazba-card { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+.drazba-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
+
+.drazba-card-img { position: relative; aspect-ratio: 16/10; overflow: hidden; }
+.drazba-card-img img { width: 100%; height: 100%; object-fit: cover; }
+.drazba-card-timer {
+    position: absolute;
+    bottom: 0.6rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(15,23,42,0.82);
+    color: #fff;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 0.3rem 0.65rem;
+    border-radius: 99px;
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+}
+.drazba-card-timer.ending-soon { background: rgba(220,38,38,0.92); animation: drazbaPulse 1.4s infinite; }
+.drazba-card-timer.ended { background: rgba(100,116,139,0.92); }
+@keyframes drazbaPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+.drazba-card-live {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    background: rgba(220,38,38,0.92);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    padding: 0.25rem 0.55rem;
+    border-radius: 99px;
+}
+
+.drazba-card-body { padding: 0.9rem 1rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.drazba-card-title { font-size: 1.05rem; font-weight: 700; margin: 0; }
+.drazba-card-meta { display: flex; flex-wrap: wrap; gap: 0.5rem; font-size: 0.8rem; color: #64748b; }
+.drazba-card-meta span::after { content: '·'; margin-left: 0.5rem; color: #cbd5e1; }
+.drazba-card-meta span:last-child::after { content: ''; }
+
+.drazba-card-bid {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 0.25rem;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(0,0,0,0.06);
+}
+body.dark-mode .drazba-card-bid { border-top-color: rgba(255,255,255,0.08); }
+.drazba-bid-label { display: block; font-size: 0.72rem; color: #94a3b8; }
+.drazba-bid-value { font-size: 1.25rem; font-weight: 800; color: var(--color-primary-start); }
+.drazba-bid-stats { display: flex; gap: 0.6rem; font-size: 0.82rem; font-weight: 600; color: #64748b; }
+
+/* ── Newsletter widget (board + detail) ──────────────────────────────────────*/
+.drazbe-newsletter-wrap { margin-top: 2.5rem; }
+.auction-newsletter {
+    background: linear-gradient(135deg, rgba(37,99,235,0.06), rgba(79,70,229,0.04));
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 1.25rem;
+    padding: 1.5rem 1.75rem;
+}
+body.dark-mode .auction-newsletter { background: rgba(37,99,235,0.1); }
+.an-head { display: flex; gap: 0.85rem; align-items: flex-start; margin-bottom: 1rem; }
+.an-icon { font-size: 1.6rem; }
+.an-title { font-weight: 800; margin: 0; font-size: 1.1rem; }
+.an-sub { margin: 0.2rem 0 0; color: #64748b; font-size: 0.88rem; }
+.an-form { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.an-input {
+    flex: 1;
+    min-width: 160px;
+    height: 44px;
+    border: 1px solid rgba(0,0,0,0.12);
+    border-radius: 0.75rem;
+    padding: 0 1rem;
+    font-size: 0.92rem;
+    background: #fff;
+}
+body.dark-mode .an-input { background: rgba(15,23,42,0.5); border-color: rgba(255,255,255,0.12); color: #f1f5f9; }
+.an-submit {
+    height: 44px;
+    padding: 0 1.6rem;
+    border: none;
+    border-radius: 0.75rem;
+    background: var(--color-primary-start);
+    color: #fff;
+    font-weight: 700;
+    cursor: pointer;
+}
+.an-status { margin: 0.75rem 0 0; font-size: 0.85rem; font-weight: 600; }
+.an-status.ok { color: #16a34a; }
+.an-status.err { color: #ef4444; }
+
+/* ── Detail page: auction sidebar ────────────────────────────────────────────*/
+.auction-box {
+    border: 1.5px solid rgba(37,99,235,0.2);
+    border-radius: 1.25rem;
+    padding: 1.4rem;
+    background: #fff;
+}
+body.dark-mode .auction-box { background: #1e293b; border-color: rgba(37,99,235,0.35); }
+.auction-countdown {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 0.25rem;
+}
+body.dark-mode .auction-countdown { color: #f1f5f9; }
+.auction-countdown .ac-timer-val.ending-soon { color: #dc2626; }
+.auction-countdown .ac-timer-val.ended { color: #64748b; }
+.auction-countdown-label { font-size: 0.78rem; color: #94a3b8; margin-bottom: 1rem; }
+
+.auction-current {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+.auction-current-label { font-size: 0.8rem; color: #64748b; }
+.auction-current-value { font-size: 1.9rem; font-weight: 800; color: var(--color-primary-start); }
+.auction-meta-row { display: flex; gap: 1.25rem; font-size: 0.85rem; color: #475569; margin-bottom: 1rem; }
+body.dark-mode .auction-meta-row { color: #cbd5e1; }
+.auction-reserve { font-size: 0.8rem; margin-bottom: 1rem; font-weight: 600; }
+.auction-reserve.met { color: #16a34a; }
+.auction-reserve.unmet { color: #f59e0b; }
+
+.auction-bid-form { display: flex; flex-direction: column; gap: 0.6rem; }
+.auction-bid-input-row { display: flex; flex-direction: column; gap: 0.5rem; }
+.auction-bid-input {
+    flex: 1;
+    height: 48px;
+    border: 1.5px solid rgba(0,0,0,0.14);
+    border-radius: 0.75rem;
+    padding: 0 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-align: center;
+    background: #fff;
+}
+body.dark-mode .auction-bid-input { background: rgba(15,23,42,0.5); border-color: rgba(255,255,255,0.14); color: #f1f5f9; }
+.auction-bid-btn {
+    height: 48px;
+    border: none;
+    border-radius: 0.75rem;
+    padding: 0 1.5rem;
+    background: var(--color-primary-start);
+    color: #fff;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    white-space: nowrap;
+    width: 100%;
+}
+.auction-bid-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.auction-bid-hint { font-size: 0.78rem; color: #94a3b8; }
+.auction-bid-notify { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; color: #475569; }
+body.dark-mode .auction-bid-notify { color: #cbd5e1; }
+.auction-bid-status { font-size: 0.85rem; font-weight: 600; min-height: 1.2em; }
+.auction-bid-status.ok { color: #16a34a; }
+.auction-bid-status.err { color: #ef4444; }
+
+/* ── Chart ──────────────────────────────────────────────────────────────────*/
+.auction-chart-section { margin-top: 1.5rem; }
+.auction-chart-section h3 { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+.auction-chart-canvas { width: 100%; height: 240px; display: block; }
+.auction-chart-legend { display: flex; gap: 1.25rem; font-size: 0.78rem; color: #64748b; margin-top: 0.5rem; }
+.auction-chart-legend .swatch { display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 0.35rem; vertical-align: middle; }
+
+/* ── Bid history ─────────────────────────────────────────────────────────────*/
+.auction-bid-history { margin-top: 1.5rem; }
+.auction-bid-history h3 { font-size: 1rem; font-weight: 700; margin: 0 0 0.75rem; }
+.bid-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.88rem;
+}
+body.dark-mode .bid-row { border-bottom-color: rgba(255,255,255,0.07); }
+.bid-row .bid-amount { font-weight: 700; color: var(--color-primary-start); }
+.bid-row .bid-name { color: #475569; }
+.bid-row .bid-time { color: #94a3b8; font-size: 0.78rem; }
+
+/* ── Bid contract modal ──────────────────────────────────────────────────────*/
+.auction-modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.6);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 9999;
+    padding: 1rem;
+}
+.auction-modal {
+    background: #fff;
+    border-radius: 1.25rem;
+    max-width: 540px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+body.dark-mode .auction-modal { background: #1e293b; }
+.auction-modal h2 { margin: 0 0 0.5rem; font-size: 1.25rem; }
+.auction-modal-sub { color: #64748b; font-size: 0.88rem; margin: 0 0 1rem; }
+.auction-modal-actions { display: flex; gap: 0.6rem; justify-content: flex-end; margin-top: 1.25rem; }
+.auction-modal-cancel {
+    background: transparent; border: 1px solid rgba(0,0,0,0.15);
+    border-radius: 0.75rem; padding: 0.65rem 1.25rem; font-weight: 600; cursor: pointer; color: #475569;
+}
+.auction-modal-confirm {
+    background: var(--color-primary-start); border: none; color: #fff;
+    border-radius: 0.75rem; padding: 0.65rem 1.5rem; font-weight: 700; cursor: pointer;
+}
+.auction-modal-confirm:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (max-width: 600px) {
+    .auction-bid-input-row { flex-direction: column; }
+    .auction-bid-btn { width: 100%; }
+}
+
+/* ── Anti-snip badge (detail sidebar) ───────────────────────────────────────*/
+.auction-snip-badge {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 1rem;
+    padding: 0.6rem 0.8rem;
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.18);
+    border-radius: 0.75rem;
+    font-size: 0.78rem;
+    color: #1d4ed8;
+    line-height: 1.4;
+}
+body.dark-mode .auction-snip-badge {
+    background: rgba(37,99,235,0.14);
+    border-color: rgba(37,99,235,0.32);
+    color: #93c5fd;
+}
+
+/* Flash when auction is inside the anti-snip window */
+.auction-countdown-label.snip-active {
+    color: #dc2626 !important;
+    font-weight: 700 !important;
+    animation: drazbaPulse 1.4s infinite;
+}
+
+/* ── Silent auction type badge ───────────────────────────────────────────────*/
+.auction-type-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.75rem;
+    margin-bottom: 0.75rem;
+    background: rgba(100,116,139,0.08);
+    border: 1px solid rgba(100,116,139,0.22);
+    border-radius: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+body.dark-mode .auction-type-badge {
+    background: rgba(100,116,139,0.15);
+    border-color: rgba(100,116,139,0.35);
+    color: #94a3b8;
+}
+
+/* ── Proxy (pre-bid) section ─────────────────────────────────────────────────*/
+.auction-proxy-section {
+    border: 1px dashed rgba(37,99,235,0.3);
+    border-radius: 0.75rem;
+    padding: 0.75rem 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: rgba(37,99,235,0.03);
+}
+body.dark-mode .auction-proxy-section {
+    background: rgba(37,99,235,0.07);
+    border-color: rgba(37,99,235,0.35);
+}
+.auction-proxy-label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1d4ed8;
+}
+body.dark-mode .auction-proxy-label { color: #93c5fd; }
+.auction-proxy-row { display: flex; gap: 0.5rem; }
+.auction-proxy-input { font-size: 0.95rem !important; height: 40px !important; text-align: left !important; }
+.auction-proxy-hint { font-size: 0.72rem; color: #94a3b8; line-height: 1.4; }
+
+/* Proxy tag inside bid history */
+.bid-proxy-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: rgba(37,99,235,0.1);
+    color: #2563eb;
+    border-radius: 99px;
+    padding: 0.1rem 0.45rem;
+    margin-left: 0.35rem;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+body.dark-mode .bid-proxy-tag { background: rgba(37,99,235,0.2); color: #93c5fd; }
+
+/* Hidden bid amounts in silent auctions */
+.bid-amount--hidden {
+    color: #cbd5e1 !important;
+    letter-spacing: 0.15em;
+}
+
+/* ── Success fee info strip ──────────────────────────────────────────────────*/
+.auction-fee-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+    padding: 0.55rem 0.75rem;
+    background: rgba(22,163,74,0.06);
+    border: 1px solid rgba(22,163,74,0.2);
+    border-radius: 0.65rem;
+    font-size: 0.78rem;
+    color: #15803d;
+    line-height: 1.4;
+}
+body.dark-mode .auction-fee-info {
+    background: rgba(22,163,74,0.1);
+    border-color: rgba(22,163,74,0.3);
+    color: #4ade80;
+}
+.auction-fee-note { color: #94a3b8; margin-left: 0.25rem; }
+
+/* ── Create-listing: auction policy badge ────────────────────────────────────*/
+.cl-auction-policy-badge {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    background: rgba(37,99,235,0.06);
+    border: 1px solid rgba(37,99,235,0.2);
+    border-radius: 0.75rem;
+    font-size: 0.82rem;
+    color: #1d4ed8;
+    line-height: 1.5;
+    margin-bottom: 0.25rem;
+}
+body.dark-mode .cl-auction-policy-badge {
+    background: rgba(37,99,235,0.12);
+    border-color: rgba(37,99,235,0.3);
+    color: #93c5fd;
+}
+
+/* ── Create-listing: success fee note ───────────────────────────────────────*/
+.cl-auction-fee-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.65rem 0.9rem;
+    background: rgba(22,163,74,0.05);
+    border: 1px solid rgba(22,163,74,0.18);
+    border-radius: 0.75rem;
+    font-size: 0.82rem;
+    color: #15803d;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+}
+body.dark-mode .cl-auction-fee-note {
+    background: rgba(22,163,74,0.1);
+    border-color: rgba(22,163,74,0.28);
+    color: #4ade80;
+}
+
+/* ── "Kmalu na voljo" (coming soon) disclosure ─────────────────────────────── */
+.cl-auction-soon {
+    margin-top: 1.1rem;
+    border: 1px dashed rgba(100,116,139,0.35);
+    border-radius: 0.75rem;
+    padding: 0.5rem 0.9rem;
+    background: rgba(148,163,184,0.06);
+}
+.cl-auction-soon > summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.88rem;
+    color: #475569;
+    list-style: none;
+}
+.cl-auction-soon > summary::-webkit-details-marker { display: none; }
+.cl-soon-list {
+    list-style: none;
+    margin: 0.6rem 0 0.2rem;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.cl-soon-list li {
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.45;
+}
+.cl-soon-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    padding: 0.12rem 0.4rem;
+    margin-right: 0.4rem;
+    border-radius: 9999px;
+    background: rgba(148,163,184,0.25);
+    color: #475569;
+    vertical-align: middle;
+}
+body.dark-mode .cl-auction-soon { border-color: rgba(148,163,184,0.3); background: rgba(148,163,184,0.08); }
+body.dark-mode .cl-auction-soon > summary { color: #cbd5e1; }
+body.dark-mode .cl-soon-list li { color: #94a3b8; }
+body.dark-mode .cl-soon-badge { background: rgba(148,163,184,0.2); color: #cbd5e1; }
+
+/* ── Auction-type / commercial badges on listing cards ─────────────────────── */
+.drazba-badges { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.35rem; }
+.drazba-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.66rem;
+    font-weight: 700;
+    padding: 0.16rem 0.46rem;
+    border-radius: 9999px;
+    line-height: 1.3;
+    white-space: nowrap;
+}
+.drazba-badge--type    { background: rgba(37,99,235,0.12);  color: #1d4ed8; }
+.drazba-badge--binding { background: rgba(22,163,74,0.14);  color: #15803d; }
+.drazba-badge--cash    { background: rgba(202,138,4,0.16);  color: #a16207; }
+body.dark-mode .drazba-badge--type    { background: rgba(37,99,235,0.22);  color: #93c5fd; }
+body.dark-mode .drazba-badge--binding { background: rgba(22,163,74,0.22);  color: #4ade80; }
+body.dark-mode .drazba-badge--cash    { background: rgba(202,138,4,0.24);  color: #fcd34d; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   AUTOHUB 2.0 AUCTIONS DESIGN SYSTEM (DRAŽBE)
+   Styles extracted & adapted from:
+   - DrazbeDeska.dc.html (Auctions Board)
+   - DrazbaOglas.dc.html (Single Auction Page)
+   - DrazbaStanja.dc.html (9 Auction States & Modals)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── 1. Foundational Containers & Glass Elements ──────────────────────────── */
+.card {
+    background: #fff;
+    border-radius: 24px;
+    border: 1px solid rgba(12, 27, 48, 0.05);
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.05), 0 12px 32px -14px rgba(12, 27, 48, 0.16);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+body.dark-mode .card {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3), 0 12px 32px -14px rgba(0, 0, 0, 0.55);
+    color: #f1f5f9;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.86);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.95);
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.05), 0 14px 36px -14px rgba(12, 27, 48, 0.22);
+}
+body.dark-mode .glass {
+    background: rgba(30, 41, 59, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 14px 36px -14px rgba(0, 0, 0, 0.65);
+    color: #f1f5f9;
+}
+
+.d {
+    font-family: 'Manrope', 'Inter', system-ui, -apple-system, sans-serif;
+}
+.num {
+    font-variant-numeric: tabular-nums;
+}
+.i {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex: none;
+}
+
+/* ── 2. Primary Action Buttons & Pills ─────────────────────────────────────── */
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    border: 1px solid #dbe5f1;
+    background: #fff;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0c1b30;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.pill:hover {
+    border-color: #b9cdea;
+    background: #f6f9fd;
+}
+body.dark-mode .pill {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f1f5f9;
+}
+body.dark-mode .pill:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-blue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 9999px;
+    border: 0;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    box-shadow: 0 8px 18px -8px rgba(37, 99, 235, 0.7);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.btn-blue:hover {
+    background: #1d4ed8;
+    box-shadow: 0 10px 22px -6px rgba(37, 99, 235, 0.8);
+    transform: translateY(-1px);
+}
+
+.btn-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 28px;
+    border-radius: 9999px;
+    border: 0;
+    background: linear-gradient(180deg, #fb923c, #f97316);
+    color: #0b1f3f;
+    font-weight: 800;
+    font-size: 16px;
+    white-space: nowrap;
+    box-shadow: 0 12px 24px -10px rgba(249, 115, 22, 0.65);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.btn-cta:hover {
+    background: linear-gradient(180deg, #fdab6a, #fb7f2f);
+    box-shadow: 0 14px 28px -8px rgba(249, 115, 22, 0.75);
+    transform: translateY(-1px);
+}
+
+.ibtn, .ib2 {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid #dbe5f1;
+    background: #fff;
+    color: #0c1b30;
+    padding: 0;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.ibtn { width: 44px; height: 44px; }
+.ib2 { width: 36px; height: 36px; }
+.ibtn:hover, .ib2:hover {
+    border-color: #b9cdea;
+    background: #f6f9fd;
+}
+.ibtn.on, .ib2.on {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+.ib2 .i { width: 16px; height: 16px; }
+body.dark-mode .ibtn,
+body.dark-mode .ib2 {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+}
+body.dark-mode .ibtn:hover,
+body.dark-mode .ib2:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.22);
+    color: #f1f5f9;
+}
+body.dark-mode .ibtn.on,
+body.dark-mode .ib2.on {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+
+/* ── 3. Filters, Chips & Brand Chips ───────────────────────────────────────── */
+.chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    border: 1px solid #d5e0ee;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #33445c;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.chip:hover {
+    border-color: #a9c0e3;
+    background: #f6f9fd;
+}
+.chip.on {
+    background: #e6eefc;
+    border-color: #9db9ee;
+    color: #1d4ed8;
+}
+.chip .ct {
+    font-size: 12px;
+    font-weight: 500;
+    color: #5a6b83;
+    font-variant-numeric: tabular-nums;
+}
+.chip.on .ct {
+    color: #3b63c4;
+}
+body.dark-mode .chip {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+}
+body.dark-mode .chip:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .chip.on {
+    background: rgba(37, 99, 235, 0.2);
+    border-color: #3b82f6;
+    color: #93c5fd;
+}
+body.dark-mode .chip .ct { color: #94a3b8; }
+body.dark-mode .chip.on .ct { color: #bfdbfe; }
+
+/* Brand chips with logo and gradient tint */
+.bchip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 40px;
+    padding: 0 12px 0 16px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #0c1b30;
+    border: 1px solid rgba(var(--rgb, 37, 99, 235), 0.45);
+    background: linear-gradient(90deg, rgba(var(--rgb, 37, 99, 235), 0.28) 0%, rgba(var(--rgb, 37, 99, 235), 0.05) 100%), #fff;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.bchip:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(var(--rgb, 37, 99, 235), 0.2);
+}
+.bchip img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex: none;
+}
+body.dark-mode .bchip {
+    background: linear-gradient(90deg, rgba(var(--rgb, 37, 99, 235), 0.35) 0%, rgba(var(--rgb, 37, 99, 235), 0.12) 100%), #1e293b;
+    color: #f1f5f9;
+    border-color: rgba(var(--rgb, 37, 99, 235), 0.55);
+}
+
+/* Toggle Switches */
+.tsw {
+    width: 48px;
+    height: 28px;
+    border-radius: 9999px;
+    background: #cbd5e1;
+    position: relative;
+    flex: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.tsw::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(12, 27, 48, 0.3);
+    transition: left 0.2s ease;
+}
+.tsw.on {
+    background: #10b981;
+}
+.tsw.on::after {
+    left: 23px;
+}
+body.dark-mode .tsw {
+    background: #475569;
+}
+body.dark-mode .tsw.on {
+    background: #10b981;
+}
+
+/* Secondary toggle switches */
+.sw {
+    width: 40px;
+    height: 24px;
+    border-radius: 9999px;
+    border: 0;
+    background: #c3d1e5;
+    position: relative;
+    padding: 0;
+    flex: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.sw::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(12, 27, 48, 0.3);
+    transition: left 0.2s ease;
+}
+.sw[aria-checked="true"], .sw.on {
+    background: #2563eb;
+}
+.sw[aria-checked="true"]::after, .sw.on::after {
+    left: 19px;
+}
+body.dark-mode .sw {
+    background: #475569;
+}
+body.dark-mode .sw[aria-checked="true"],
+body.dark-mode .sw.on {
+    background: #2563eb;
+}
+
+.tg {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 44px;
+    font-size: 14px;
+    font-weight: 500;
+}
+.tg .ct {
+    margin-left: auto;
+    font-size: 12px;
+    color: #5a6b83;
+    font-variant-numeric: tabular-nums;
+}
+body.dark-mode .tg .ct { color: #94a3b8; }
+
+.bt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 6px 10px;
+    border-radius: 18px;
+    border: 1px solid #d5e0ee;
+    background: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    color: #33445c;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.bt:hover {
+    border-color: #a9c0e3;
+    background: #f6f9fd;
+}
+.bt.on {
+    background: #e6eefc;
+    border-color: #9db9ee;
+    color: #1d4ed8;
+}
+body.dark-mode .bt {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+}
+body.dark-mode .bt:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .bt.on {
+    background: rgba(37, 99, 235, 0.22);
+    border-color: #3b82f6;
+    color: #93c5fd;
+}
+
+/* ── 4. Price Slider & Histogram Bars ─────────────────────────────────────── */
+.sl {
+    position: relative;
+    height: 28px;
+    margin: 0 8px;
+}
+.sl-t {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 12px;
+    height: 4px;
+    border-radius: 9999px;
+    background: #d9e5f5;
+}
+body.dark-mode .sl-t {
+    background: #334155;
+}
+.sl-f {
+    position: absolute;
+    top: 12px;
+    height: 4px;
+    border-radius: 9999px;
+    background: #2563eb;
+}
+.handle {
+    position: absolute;
+    top: 4px;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #2563eb;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+    padding: 0;
+    cursor: grab;
+    z-index: 2;
+    transition: transform 0.15s ease;
+}
+.handle:hover, .handle:focus-visible {
+    transform: scale(1.15);
+}
+.handle:active {
+    cursor: grabbing;
+}
+body.dark-mode .handle {
+    background: #0f172a;
+    border-color: #60a5fa;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+
+.tk {
+    display: flex;
+    justify-content: space-between;
+    margin: 2px 8px 0;
+    font-size: 11.5px;
+    color: #5a6b83;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+body.dark-mode .tk { color: #94a3b8; }
+
+/* Histogram component */
+.az-hist-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 76px;
+    padding: 0 8px;
+}
+.az-hist-bar {
+    flex: 1;
+    background: #c9d9f2;
+    border-radius: 3px 3px 0 0;
+    transition: background 0.15s ease;
+}
+.az-hist-bar.active {
+    background: #2563eb;
+}
+body.dark-mode .az-hist-bar {
+    background: #334155;
+}
+body.dark-mode .az-hist-bar.active {
+    background: #3b82f6;
+}
+
+/* Filter sections */
+.sec {
+    padding: 20px 22px;
+    border-bottom: 1px solid #e8eef6;
+}
+body.dark-mode .sec {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+.sh {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+.sh .t {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+}
+.sh .rs {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d4ed8;
+    text-decoration: none;
+    cursor: pointer;
+}
+.sh .rs:hover {
+    text-decoration: underline;
+}
+body.dark-mode .sh .rs {
+    color: #60a5fa;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 22px;
+    border-bottom: 1px solid #e8eef6;
+}
+body.dark-mode .row {
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+.row .t {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+}
+.row .v {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: #5a6b83;
+}
+.row .v.on {
+    color: #1d4ed8;
+}
+body.dark-mode .row .v { color: #94a3b8; }
+body.dark-mode .row .v.on { color: #60a5fa; }
+
+.fld {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    height: 48px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    border: 1px solid #d5e0ee;
+    background: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    color: #0c1b30;
+    text-align: left;
+    transition: border-color 0.18s ease;
+}
+.fld.sm { height: 44px; }
+.fld:hover, .fld:focus-within {
+    border-color: #a9c0e3;
+}
+.fld .ph { color: #5f7089; }
+body.dark-mode .fld {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f1f5f9;
+}
+body.dark-mode .fld:hover,
+body.dark-mode .fld:focus-within {
+    border-color: rgba(255, 255, 255, 0.25);
+}
+body.dark-mode .fld .ph { color: #94a3b8; }
+
+.seg {
+    display: inline-flex;
+    gap: 2px;
+    padding: 4px;
+    border-radius: 9999px;
+    background: #eaf0f8;
+}
+.seg button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 16px;
+    border-radius: 9999px;
+    border: 0;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14px;
+    color: #4a5b73;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.seg button.on {
+    background: #fff;
+    color: #1d4ed8;
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.08), 0 4px 10px -4px rgba(12, 27, 48, 0.16);
+}
+body.dark-mode .seg {
+    background: #0f172a;
+}
+body.dark-mode .seg button {
+    color: #94a3b8;
+}
+body.dark-mode .seg button.on {
+    background: #1e293b;
+    color: #93c5fd;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 10px -4px rgba(0, 0, 0, 0.5);
+}
+
+.lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #5a6b83;
+    margin: 0 0 4px 12px;
+    text-transform: uppercase;
+}
+body.dark-mode .lbl { color: #94a3b8; }
+.dv {
+    height: 1px;
+    background: #e8eef6;
+    margin: 0 -24px;
+}
+body.dark-mode .dv { background: rgba(255, 255, 255, 0.08); }
+
+/* ── 5. Auction Type Selection Cards (.az-ty) ──────────────────────────────── */
+.az-ty {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 24px;
+    border: 1.5px solid transparent;
+    text-align: left;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.05), 0 12px 32px -14px rgba(12, 27, 48, 0.16);
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+.az-ty:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(12, 27, 48, 0.2);
+}
+.az-ty.on {
+    border-color: #2563eb;
+    background: linear-gradient(180deg, #f3f7ff, #fff);
+}
+.az-ty .ic {
+    width: 44px;
+    height: 44px;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    background: #e6eefc;
+    color: #2563eb;
+}
+.az-ty .ic .i {
+    width: 22px;
+    height: 22px;
+}
+.az-ty.sil .ic {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+.az-ty.pre .ic {
+    background: #fff1e0;
+    color: #c2410c;
+}
+.az-ty.all .ic {
+    background: #0b1f3f;
+    color: #fff;
+}
+.az-ty b {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.012em;
+}
+.az-ty b em {
+    font-style: normal;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 9999px;
+    background: #eaf0f8;
+    color: #33445c;
+}
+.az-ty.on b em {
+    background: #2563eb;
+    color: #fff;
+}
+.az-ty p {
+    font-size: 12.5px;
+    color: #5a6b83;
+    margin-top: 4px;
+    line-height: 1.45;
+}
+
+body.dark-mode .az-ty {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #f1f5f9;
+}
+body.dark-mode .az-ty.on {
+    border-color: #3b82f6;
+    background: linear-gradient(180deg, rgba(37, 99, 235, 0.16), #1e293b);
+}
+body.dark-mode .az-ty b em {
+    background: #334155;
+    color: #cbd5e1;
+}
+body.dark-mode .az-ty.on b em {
+    background: #2563eb;
+    color: #fff;
+}
+body.dark-mode .az-ty p {
+    color: #94a3b8;
+}
+
+.az-tg {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 0;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #26364d;
+}
+.az-tg small {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #5a6b83;
+    margin-top: 1px;
+}
+.az-tg .tsw { margin-left: auto; }
+body.dark-mode .az-tg { color: #cbd5e1; }
+body.dark-mode .az-tg small { color: #94a3b8; }
+
+.az-cnt {
+    margin-left: auto;
+    font-size: 12px;
+    color: #5a6b83;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+body.dark-mode .az-cnt { color: #94a3b8; }
+
+.az-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    font-size: 13.5px;
+    color: #33445c;
+    line-height: 1.5;
+}
+.az-info .ic {
+    width: 34px;
+    height: 34px;
+    border-radius: 12px;
+    background: #e6eefc;
+    color: #2563eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+.az-info .ic .i { width: 17px; height: 17px; }
+.az-info b {
+    display: block;
+    font-weight: 800;
+    color: #0c1b30;
+    font-size: 14px;
+}
+body.dark-mode .az-info { color: #cbd5e1; }
+body.dark-mode .az-info b { color: #f1f5f9; }
+body.dark-mode .az-info .ic {
+    background: rgba(37, 99, 235, 0.2);
+    color: #60a5fa;
+}
+
+.az-nl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+}
+.az-nl .fld { flex: 1 1 170px; width: auto; }
+
+/* ════════════════════════════════════════════════════════════════════════════
+   6. VEHICLE SPEC PILLS ARCHITECTURE (Board & Detail)
+   CRUCIAL USER REQUIREMENT:
+   On auction cards on the board, vehicle specs (year, mileage, power kW/hp,
+   fuel, transmission, EV range) MUST be rendered as PILLS (rounded pill badges
+   with SVG icons, e.g. .az-spec-pill or .sp with rounded corners border-radius: 9999px,
+   padding, clean typography, tabular numbers, icon + label), just like normal listings.
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* Pill container row */
+.az-specs,
+.lc-specs,
+.lc-s.az-pills {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+
+/* Base Pill element - covers .az-spec-pill, .sp, and child spans */
+.az-spec-pill,
+.sp,
+.lc-s.az-pills span,
+.lc-specs span,
+.lc .lc-s span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 11px;
+    border-radius: 9999px;
+    background: #f1f6fd;
+    border: 1px solid rgba(12, 27, 48, 0.05);
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #33445c;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.az-spec-pill:hover,
+.sp:hover,
+.lc-s.az-pills span:hover,
+.lc .lc-s span:hover {
+    background: #e6eefc;
+    border-color: #b9cdea;
+    color: #0c1b30;
+}
+
+/* Pill Icons */
+.az-spec-pill .i,
+.az-spec-pill svg,
+.sp .i,
+.sp svg,
+.lc-s.az-pills span .i,
+.lc-s.az-pills span svg,
+.lc .lc-s span .i,
+.lc .lc-s span svg {
+    width: 14px;
+    height: 14px;
+    color: #2563eb;
+    stroke-width: 1.8;
+    fill: none;
+    stroke: currentColor;
+    flex: none;
+}
+
+.az-spec-pill i,
+.sp i,
+.lc-s.az-pills span i,
+.lc .lc-s span i {
+    font-style: normal;
+    font-weight: 500;
+    color: #5a6b83;
+}
+
+/* Fuel & EV specific color accents */
+.az-spec-pill.ev,
+.sp.ev,
+.lc-s.ev span,
+.lc-s.az-pills span.ev,
+.lc .lc-s.ev span,
+.az-spec-pill.fuel-electric,
+.sp.fuel-electric {
+    background: #e6f6f2;
+    border-color: rgba(15, 118, 110, 0.15);
+    color: #0b5c53;
+}
+.az-spec-pill.ev .i,
+.az-spec-pill.ev svg,
+.sp.ev .i,
+.sp.ev svg,
+.lc-s.ev span .i,
+.lc-s.ev span svg,
+.lc .lc-s.ev span .i,
+.lc .lc-s.ev span svg {
+    color: #0f766e;
+}
+
+.az-spec-pill.hybrid,
+.sp.hybrid,
+.az-spec-pill.fuel-hybrid,
+.sp.fuel-hybrid {
+    background: #ecfdf5;
+    border-color: rgba(5, 150, 105, 0.15);
+    color: #047857;
+}
+.az-spec-pill.hybrid .i,
+.sp.hybrid .i {
+    color: #059669;
+}
+
+.az-spec-pill.diesel,
+.sp.diesel,
+.az-spec-pill.fuel-diesel,
+.sp.fuel-diesel {
+    background: #f1f5f9;
+    border-color: rgba(71, 85, 105, 0.15);
+    color: #334155;
+}
+.az-spec-pill.diesel .i,
+.sp.diesel .i {
+    color: #475569;
+}
+
+.az-spec-pill.petrol,
+.sp.petrol,
+.az-spec-pill.fuel-petrol,
+.sp.fuel-petrol,
+.az-spec-pill.benzin,
+.sp.benzin {
+    background: #fef2f2;
+    border-color: rgba(220, 38, 38, 0.15);
+    color: #991b1b;
+}
+.az-spec-pill.petrol .i,
+.sp.petrol .i,
+.az-spec-pill.benzin .i,
+.sp.benzin .i {
+    color: #dc2626;
+}
+
+.az-spec-pill.cng,
+.sp.cng,
+.az-spec-pill.lpg,
+.sp.lpg {
+    background: #f0fdf4;
+    border-color: rgba(22, 101, 52, 0.15);
+    color: #166534;
+}
+.az-spec-pill.cng .i,
+.sp.cng .i,
+.az-spec-pill.lpg .i,
+.sp.lpg .i {
+    color: #15803d;
+}
+
+/* Dark mode for vehicle spec pills */
+body.dark-mode .az-spec-pill,
+body.dark-mode .sp,
+body.dark-mode .lc-s.az-pills span,
+body.dark-mode .lc-specs span,
+body.dark-mode .lc .lc-s span {
+    background: rgba(30, 41, 59, 0.7);
+    border-color: rgba(255, 255, 255, 0.09);
+    color: #cbd5e1;
+}
+body.dark-mode .az-spec-pill:hover,
+body.dark-mode .sp:hover,
+body.dark-mode .lc-s.az-pills span:hover,
+body.dark-mode .lc .lc-s span:hover {
+    background: rgba(51, 65, 85, 0.85);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #f1f5f9;
+}
+body.dark-mode .az-spec-pill .i,
+body.dark-mode .sp .i,
+body.dark-mode .lc-s.az-pills span .i,
+body.dark-mode .lc .lc-s span .i {
+    color: #60a5fa;
+}
+body.dark-mode .az-spec-pill i,
+body.dark-mode .sp i,
+body.dark-mode .lc-s.az-pills span i,
+body.dark-mode .lc .lc-s span i {
+    color: #94a3b8;
+}
+body.dark-mode .az-spec-pill.ev,
+body.dark-mode .sp.ev,
+body.dark-mode .lc-s.ev span,
+body.dark-mode .lc .lc-s.ev span {
+    background: rgba(15, 118, 110, 0.22);
+    border-color: rgba(45, 212, 191, 0.25);
+    color: #5eead4;
+}
+body.dark-mode .az-spec-pill.ev .i,
+body.dark-mode .sp.ev .i,
+body.dark-mode .lc-s.ev span .i,
+body.dark-mode .lc .lc-s.ev span .i {
+    color: #2dd4bf;
+}
+body.dark-mode .az-spec-pill.hybrid,
+body.dark-mode .sp.hybrid {
+    background: rgba(5, 150, 105, 0.2);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #6ee7b7;
+}
+body.dark-mode .az-spec-pill.hybrid .i,
+body.dark-mode .sp.hybrid .i {
+    color: #34d399;
+}
+body.dark-mode .az-spec-pill.petrol,
+body.dark-mode .sp.petrol,
+body.dark-mode .az-spec-pill.benzin,
+body.dark-mode .sp.benzin {
+    background: rgba(220, 38, 38, 0.2);
+    border-color: rgba(248, 113, 113, 0.25);
+    color: #fca5a5;
+}
+body.dark-mode .az-spec-pill.petrol .i,
+body.dark-mode .sp.petrol .i,
+body.dark-mode .az-spec-pill.benzin .i,
+body.dark-mode .sp.benzin .i {
+    color: #f87171;
+}
+
+/* ── 7. Auction Listing Card Layout (.lc, .az-c) ───────────────────────────── */
+.lc {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px 16px;
+    padding: 10px;
+    border-radius: 22px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.lc:hover {
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.05), 0 18px 38px -14px rgba(12, 27, 48, 0.24);
+    transform: translateY(-2px);
+}
+body.dark-mode .lc:hover {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35), 0 18px 38px -14px rgba(0, 0, 0, 0.65);
+}
+
+.az-c.hot {
+    box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.38), 0 18px 38px -16px rgba(220, 38, 38, 0.35);
+}
+body.dark-mode .az-c.hot {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5), 0 18px 38px -16px rgba(239, 68, 68, 0.4);
+}
+
+.lc-ph {
+    position: relative;
+    flex: 0 0 196px;
+    max-width: 100%;
+    aspect-ratio: 4/3;
+    border-radius: 15px;
+    overflow: hidden;
+    background: #0c1b30;
+}
+.lc-ph img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    object-position: 50% 50%;
+}
+.lc-ph .bd {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 9999px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+}
+.lc-ph .cm {
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 22px;
+    padding: 0 8px;
+    border-radius: 9999px;
+    background: rgba(8, 22, 45, 0.7);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+}
+
+/* Timer Badge on Card Photo */
+.az-tm {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 26px;
+    padding: 0 10px;
+    border-radius: 9999px;
+    background: rgba(8, 22, 45, 0.84);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+}
+.az-tm .i { width: 13px; height: 13px; }
+.az-tm.warn { background: #f59e0b; color: #2d1a00; }
+.az-tm.hot { background: #dc2626; color: #fff; animation: drazbaPulse 1.4s infinite; }
+.az-tm.soft { background: #fff; color: #0c1b30; }
+
+/* Live Indicator Badge */
+.az-lv {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 22px;
+    padding: 0 9px;
+    border-radius: 9999px;
+    background: #fff;
+    color: #dc2626;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+}
+.az-lv::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #dc2626;
+    animation: drazbaPulse 1.2s infinite;
+}
+
+/* Card Body */
+.lc-b {
+    flex: 1 1 280px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 2px 0;
+}
+.lc-t {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.lc-t .lg {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    flex: none;
+}
+.lc-t .ttl {
+    font-size: 17px;
+    font-weight: 800;
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.sb2 {
+    font-size: 12.5px;
+    color: #5a6b83;
+    margin-top: 1px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body.dark-mode .sb2 { color: #94a3b8; }
+
+/* Badges row */
+.az-bds {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.az-bd {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    height: 24px;
+    padding: 0 10px;
+    border-radius: 9999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.az-bd .i { width: 12px; height: 12px; }
+.az-bd.liv { background: #e6eefc; color: #1d4ed8; }
+.az-bd.sil { background: #ede9fe; color: #6d28d9; }
+.az-bd.pre { background: #fff1e0; color: #c2410c; }
+.az-bd.bi  { background: #e0f4ef; color: #0f766e; }
+.az-bd.ca  { background: #fff6dc; color: #8a5a06; }
+body.dark-mode .az-bd.liv { background: rgba(37, 99, 235, 0.22); color: #93c5fd; }
+body.dark-mode .az-bd.sil { background: rgba(109, 40, 217, 0.22); color: #c4b5fd; }
+body.dark-mode .az-bd.pre { background: rgba(194, 65, 12, 0.22);  color: #fdba74; }
+body.dark-mode .az-bd.bi  { background: rgba(15, 118, 110, 0.22); color: #5eead4; }
+body.dark-mode .az-bd.ca  { background: rgba(202, 138, 4, 0.22);  color: #fde047; }
+
+/* Auction metrics stats row */
+.az-s {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #33445c;
+}
+.az-s span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+.az-s .i {
+    width: 15px;
+    height: 15px;
+    color: #2563eb;
+}
+.az-s b {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+body.dark-mode .az-s { color: #cbd5e1; }
+body.dark-mode .az-s .i { color: #60a5fa; }
+body.dark-mode .az-s b { color: #f1f5f9; }
+
+/* Reserve Price Status */
+.az-rs {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.az-rs .i { width: 15px; height: 15px; }
+.az-rs.ok { color: #0f766e; }
+.az-rs.no { color: #b45309; }
+.az-rs.hd { color: #6b7b93; }
+body.dark-mode .az-rs.ok { color: #2dd4bf; }
+body.dark-mode .az-rs.no { color: #fbbf24; }
+body.dark-mode .az-rs.hd { color: #94a3b8; }
+
+/* Warning note */
+.az-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: 12px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 12px;
+    font-weight: 700;
+}
+.az-note .i { width: 14px; height: 14px; }
+body.dark-mode .az-note {
+    background: rgba(185, 28, 28, 0.2);
+    color: #fca5a5;
+}
+
+/* Card Right Column (Bidding / CTA) */
+.az-r {
+    flex: 0 0 230px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    padding: 4px 6px 4px 16px;
+    border-left: 1px dashed #d5e0ee;
+}
+body.dark-mode .az-r {
+    border-left-color: rgba(255, 255, 255, 0.1);
+}
+.az-r .lb {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #6b7b93;
+}
+body.dark-mode .az-r .lb { color: #94a3b8; }
+.az-r .pr {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+body.dark-mode .az-r .pr { color: #f1f5f9; }
+.az-r .sub {
+    font-size: 12.5px;
+    color: #5a6b83;
+    font-weight: 500;
+}
+.az-r .sub b {
+    color: #33445c;
+    font-weight: 700;
+}
+body.dark-mode .az-r .sub { color: #94a3b8; }
+body.dark-mode .az-r .sub b { color: #cbd5e1; }
+.az-r .btn-cta {
+    width: 100%;
+    height: 46px;
+    font-size: 14.5px;
+    padding: 0 14px;
+}
+.az-r .acts {
+    margin-top: auto;
+    display: flex;
+    gap: 6px;
+    justify-content: flex-end;
+}
+
+/* Silent auction hidden price badge */
+.az-hid {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: #f3f0ff;
+    color: #5b21b6;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+.az-hid .i { width: 20px; height: 20px; flex: none; }
+body.dark-mode .az-hid {
+    background: rgba(109, 40, 217, 0.2);
+    color: #c4b5fd;
+}
+
+/* Additional listing card elements */
+.lc-m { display: flex; align-items: center; gap: 10px; font-size: 12px; white-space: nowrap; }
+.lc-m b { font-weight: 700; }
+.lc-m em { font-style: normal; font-weight: 600; color: #5a6b83; }
+.mt {
+    position: relative;
+    flex: 0 1 120px;
+    min-width: 70px;
+    height: 5px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #0f766e 0%, #cbd5e1 50%, #c2410c 100%);
+}
+.mt span {
+    position: absolute;
+    top: -4px;
+    width: 13px;
+    height: 13px;
+    margin-left: -6.5px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #0c1b30;
+}
+body.dark-mode .mt span {
+    background: #0f172a;
+    border-color: #f1f5f9;
+}
+.lc-f { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 8px; margin-top: auto; font-size: 12.5px; color: #33445c; }
+.lc-f .dl { display: inline-flex; align-items: center; gap: 6px; margin-right: 4px; white-space: nowrap; }
+.lc-f .dl .i { width: 15px; height: 15px; }
+.lc-f .dl b { font-weight: 600; }
+.lc-f .dl span { color: #5a6b83; }
+body.dark-mode .lc-f { color: #cbd5e1; }
+body.dark-mode .lc-f .dl span { color: #94a3b8; }
+
+.t2 {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 22px;
+    padding: 0 9px;
+    border-radius: 9999px;
+    border: 1px solid #d5e0ee;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #33445c;
+    white-space: nowrap;
+}
+.t2 .i { width: 12px; height: 12px; color: #0f766e; }
+.t2.m { padding: 0 8px; color: #5a6b83; }
+body.dark-mode .t2 {
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+}
+body.dark-mode .t2 .i { color: #2dd4bf; }
+
+.lc-r {
+    flex: 0 0 132px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 2px 4px 2px 0;
+    text-align: right;
+}
+.lc-r .pr {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+.lc-r .old {
+    font-size: 13px;
+    color: #5a6b83;
+    text-decoration: line-through;
+    margin-top: 2px;
+}
+.acts { display: flex; gap: 6px; }
+
+/* ── 8. Popover for Pinboards / Folders ─────────────────────────────────────── */
+.pop {
+    position: absolute;
+    z-index: 30;
+    right: 6px;
+    top: 172px;
+    width: 292px;
+    background: #fff;
+    border-radius: 22px;
+    padding: 14px;
+    border: 1px solid rgba(12, 27, 48, 0.06);
+    box-shadow: 0 2px 4px rgba(12, 27, 48, 0.06), 0 28px 56px -18px rgba(11, 31, 63, 0.45);
+    text-align: left;
+}
+.pop .arr {
+    position: absolute;
+    top: -7px;
+    right: 96px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    transform: rotate(45deg);
+    border-left: 1px solid rgba(12, 27, 48, 0.06);
+    border-top: 1px solid rgba(12, 27, 48, 0.06);
+    border-radius: 3px 0 0 0;
+}
+body.dark-mode .pop {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 28px 56px -18px rgba(0, 0, 0, 0.7);
+    color: #f1f5f9;
+}
+body.dark-mode .pop .arr {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.pop .ph2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+.pop .ph2 .d {
+    font-weight: 800;
+    font-size: 15px;
+}
+.pr1 {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    height: 38px;
+    padding: 0 10px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.pr1:hover { background: #f6f9fd; }
+.pr1.on { background: #f1f6fd; }
+.pr1 .ct {
+    margin-left: auto;
+    font-size: 12px;
+    color: #5a6b83;
+    font-weight: 500;
+}
+body.dark-mode .pr1:hover { background: #334155; }
+body.dark-mode .pr1.on { background: rgba(37, 99, 235, 0.2); }
+body.dark-mode .pr1 .ct { color: #94a3b8; }
+
+.cbx {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 1.5px solid #9fb2cf;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    transition: all 0.15s ease;
+}
+.cbx.on {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+}
+.cbx .i { width: 12px; height: 12px; stroke-width: 3; }
+body.dark-mode .cbx {
+    background: #0f172a;
+    border-color: #64748b;
+}
+body.dark-mode .cbx.on {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+.pacts {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.pnew, .pdesk {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    height: 40px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.pnew {
+    border: 1px dashed #9fb2cf;
+    background: transparent;
+    color: #1d4ed8;
+}
+.pnew:hover {
+    background: #f6f9fd;
+    border-color: #2563eb;
+}
+.pdesk {
+    border: 0;
+    background: #e6eefc;
+    color: #1d4ed8;
+}
+.pdesk:hover {
+    background: #dbe5f1;
+}
+.pnew .i, .pdesk .i { width: 16px; height: 16px; }
+body.dark-mode .pnew {
+    border-color: #475569;
+    color: #93c5fd;
+}
+body.dark-mode .pnew:hover {
+    background: #334155;
+    border-color: #60a5fa;
+}
+body.dark-mode .pdesk {
+    background: rgba(37, 99, 235, 0.2);
+    color: #93c5fd;
+}
+body.dark-mode .pdesk:hover {
+    background: rgba(37, 99, 235, 0.35);
+}
+
+/* Promo banner */
+.promo-h {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px 16px;
+    padding: 14px 18px;
+    border-radius: 22px;
+    border: 1px solid rgba(37, 99, 235, 0.25);
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.16) 0%, rgba(37, 99, 235, 0.04) 70%), #fff;
+}
+.promo-h .ic {
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    background: #2563eb;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    box-shadow: 0 10px 20px -8px rgba(37, 99, 235, 0.7);
+}
+.promo-h .ic .i { width: 20px; height: 20px; }
+.promo-h h3 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.012em;
+}
+.promo-h p { font-size: 13px; color: #4a5b73; margin-top: 2px; }
+body.dark-mode .promo-h {
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.22) 0%, rgba(37, 99, 235, 0.06) 70%), #1e293b;
+    border-color: rgba(37, 99, 235, 0.4);
+}
+body.dark-mode .promo-h p { color: #94a3b8; }
+
+/* ── 9. Single Auction Page Components (DrazbaOglas.dc.html) ───────────────── */
+/* Countdown Tiles */
+.az-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+.az-tiles div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 12px 4px 9px;
+    border-radius: 16px;
+    background: #0b1f3f;
+    color: #fff;
+}
+.az-tiles b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 30px;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    font-variant-numeric: tabular-nums;
+}
+.az-tiles span {
+    font-size: 11px;
+    font-weight: 600;
+    color: #9db0cb;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.az-tiles.hot div {
+    background: #b91c1c;
+    animation: drazbaPulse 1.4s infinite;
+}
+.az-tiles.hot span { color: #fecaca; }
+
+.az-tiles.sm div {
+    padding: 9px 4px 7px;
+    border-radius: 14px;
+}
+.az-tiles.sm b {
+    font-size: 24px;
+}
+
+/* Large Current Price Display */
+.az-bg {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 44px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+body.dark-mode .az-bg { color: #f1f5f9; }
+
+/* Status Chips */
+.az-ch {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.az-ch .i { width: 14px; height: 14px; }
+.az-ch.g { background: #d9f2ee; color: #0b5c53; }
+.az-ch.a { background: #fff1e0; color: #9a3d0a; }
+.az-ch.r { background: #fee2e2; color: #b91c1c; }
+.az-ch.b { background: #e6eefc; color: #1d4ed8; }
+.az-ch.v { background: #ede9fe; color: #6d28d9; }
+body.dark-mode .az-ch.g { background: rgba(11, 92, 83, 0.25); color: #5eead4; }
+body.dark-mode .az-ch.a { background: rgba(154, 61, 10, 0.25); color: #fdba74; }
+body.dark-mode .az-ch.r { background: rgba(185, 28, 28, 0.25); color: #fca5a5; }
+body.dark-mode .az-ch.b { background: rgba(29, 78, 216, 0.25); color: #93c5fd; }
+body.dark-mode .az-ch.v { background: rgba(109, 40, 217, 0.25); color: #c4b5fd; }
+
+/* Bid Input Box */
+.az-in {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 62px;
+    padding: 0 22px;
+    border-radius: 9999px;
+    border: 2px solid #2563eb;
+    background: #fff;
+    box-shadow: 0 0 0 5px rgba(37, 99, 235, 0.12);
+}
+.az-in b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+.az-in small {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5a6b83;
+}
+body.dark-mode .az-in {
+    background: #1e293b;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 5px rgba(59, 130, 246, 0.2);
+}
+body.dark-mode .az-in b { color: #f1f5f9; }
+body.dark-mode .az-in small { color: #94a3b8; }
+
+/* Quick Bid Step Buttons */
+.az-qs {
+    display: flex;
+    gap: 8px;
+}
+.az-qs button {
+    flex: 1;
+    height: 38px;
+    border-radius: 9999px;
+    border: 1px solid #d5e0ee;
+    background: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    color: #33445c;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+.az-qs button:hover {
+    border-color: #a9c0e3;
+    background: #f6f9fd;
+}
+.az-qs button.on {
+    background: #e6eefc;
+    border-color: #9db9ee;
+    color: #1d4ed8;
+}
+body.dark-mode .az-qs button {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #cbd5e1;
+}
+body.dark-mode .az-qs button:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.22);
+}
+body.dark-mode .az-qs button.on {
+    background: rgba(37, 99, 235, 0.22);
+    border-color: #3b82f6;
+    color: #93c5fd;
+}
+
+/* Proxy (Auto-bid) Box */
+.az-pro {
+    padding: 14px 16px;
+    border-radius: 20px;
+    background: #f6f9fd;
+    border: 1px solid #e3ecf7;
+}
+.az-pro .h {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 14px;
+}
+.az-pro .h .i {
+    width: 17px;
+    height: 17px;
+    color: #d97706;
+}
+.az-pro p {
+    font-size: 12.5px;
+    color: #5a6b83;
+    margin-top: 6px;
+    line-height: 1.45;
+}
+.az-pro .tsw { margin-left: auto; }
+body.dark-mode .az-pro {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .az-pro p { color: #94a3b8; }
+
+/* Notification row */
+.az-nt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #26364d;
+    line-height: 1.35;
+}
+.az-nt .tsw { margin-left: auto; }
+.az-nt .fld { width: 132px; height: 38px; padding: 0 14px; font-size: 13px; }
+body.dark-mode .az-nt { color: #cbd5e1; }
+
+/* Sniper Protection Badge */
+.az-snip {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #e8f6f3;
+    color: #0b5c53;
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.45;
+}
+.az-snip .i {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    margin-top: 1px;
+}
+body.dark-mode .az-snip {
+    background: rgba(11, 92, 83, 0.22);
+    color: #5eead4;
+}
+
+/* Buyer 3% Premium Breakdown */
+.az-fee {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: #f6f9fd;
+    border: 1px solid #e3ecf7;
+    font-size: 13px;
+    color: #33445c;
+}
+.az-fee div {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+.az-fee b {
+    margin-left: auto;
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    color: #0c1b30;
+}
+.az-fee .t {
+    padding-top: 8px;
+    border-top: 1px dashed #cfdbec;
+    font-weight: 700;
+}
+.az-fee .t b { font-size: 15px; }
+.az-fee small { font-size: 11.5px; color: #5a6b83; }
+body.dark-mode .az-fee {
+    background: rgba(15, 23, 42, 0.6);
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+}
+body.dark-mode .az-fee b { color: #f1f5f9; }
+body.dark-mode .az-fee .t { border-top-color: rgba(255, 255, 255, 0.12); }
+body.dark-mode .az-fee small { color: #94a3b8; }
+
+/* Market comparison meter */
+.az-mt {
+    position: relative;
+    height: 6px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #0f766e 0%, #cbd5e1 50%, #c2410c 100%);
+}
+.az-mt span {
+    position: absolute;
+    top: -4px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid #0c1b30;
+}
+body.dark-mode .az-mt span {
+    background: #0f172a;
+    border-color: #f1f5f9;
+}
+
+/* Bid History Item */
+.az-bh {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    border-radius: 18px;
+    border: 1px solid #e8eef6;
+    background: #fbfdff;
+    transition: background 0.15s ease;
+}
+.az-bh.top {
+    background: linear-gradient(90deg, #e6f6f2 0%, #fbfdff 80%);
+    border-color: #bfe5dd;
+}
+.az-bh .av {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    flex: none;
+}
+.az-bh .nm {
+    font-weight: 700;
+    font-size: 14.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    color: #0c1b30;
+}
+.az-bh .bgx {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 9999px;
+    background: #fff4e6;
+    color: #c2410c;
+}
+.az-bh .bgx.me {
+    background: #2563eb;
+    color: #fff;
+}
+.az-bh .bgx.lead {
+    background: #0f766e;
+    color: #fff;
+}
+.az-bh .tm {
+    font-size: 12.5px;
+    color: #5a6b83;
+    margin-top: 1px;
+}
+.az-bh .am {
+    margin-left: 18px;
+    min-width: 104px;
+    text-align: right;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+.az-bh .up {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    color: #0f766e;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+body.dark-mode .az-bh {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .az-bh.top {
+    background: linear-gradient(90deg, rgba(15, 118, 110, 0.25) 0%, #1e293b 80%);
+    border-color: rgba(45, 212, 191, 0.35);
+}
+body.dark-mode .az-bh .nm { color: #f1f5f9; }
+body.dark-mode .az-bh .tm { color: #94a3b8; }
+body.dark-mode .az-bh .am { color: #f1f5f9; }
+body.dark-mode .az-bh .up { color: #2dd4bf; }
+
+/* Auction Terms Conditions Checklist */
+.az-cd {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid #eef3fa;
+}
+.az-cd:last-child {
+    border-bottom: 0;
+}
+.az-cd .ic {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+    background: #e6f6f2;
+    color: #0f766e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+.az-cd .ic.no {
+    background: #f1f5f9;
+    color: #7b8ba4;
+}
+.az-cd .ic .i { width: 19px; height: 19px; }
+.az-cd b {
+    display: block;
+    font-weight: 800;
+    font-size: 14.5px;
+    color: #0c1b30;
+}
+.az-cd p {
+    font-size: 13px;
+    color: #5a6b83;
+    margin-top: 2px;
+    line-height: 1.45;
+}
+.az-cd .rt {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 13px;
+    white-space: nowrap;
+}
+body.dark-mode .az-cd { border-bottom-color: rgba(255, 255, 255, 0.08); }
+body.dark-mode .az-cd .ic {
+    background: rgba(15, 118, 110, 0.22);
+    color: #5eead4;
+}
+body.dark-mode .az-cd .ic.no {
+    background: rgba(255, 255, 255, 0.08);
+    color: #94a3b8;
+}
+body.dark-mode .az-cd b { color: #f1f5f9; }
+body.dark-mode .az-cd p { color: #94a3b8; }
+
+/* Fact Grid (Key facts about vehicle on auction page) */
+.fact {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+}
+.fact .ic {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #fff1e6;
+    color: #c2410c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+.fact .ic .i { width: 22px; height: 22px; }
+.fact .k {
+    font-size: 12px;
+    color: #5a6b83;
+    font-weight: 500;
+}
+.fact .v {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    margin-top: 2px;
+    color: #0c1b30;
+}
+body.dark-mode .fact .ic {
+    background: rgba(194, 65, 12, 0.22);
+    color: #fdba74;
+}
+body.dark-mode .fact .k { color: #94a3b8; }
+body.dark-mode .fact .v { color: #f1f5f9; }
+
+/* Mini preview auction cards */
+.az-mn {
+    display: block;
+    border-radius: 22px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid rgba(12, 27, 48, 0.05);
+    box-shadow: 0 1px 2px rgba(12, 27, 48, 0.05), 0 12px 32px -14px rgba(12, 27, 48, 0.16);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.2s ease;
+}
+.az-mn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(12, 27, 48, 0.22);
+}
+.az-mn .ph {
+    position: relative;
+    aspect-ratio: 16/10;
+    background: #0c1b30;
+    overflow: hidden;
+}
+.az-mn .ph img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.az-mn .bd2 {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.az-mn .bd2 b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 15.5px;
+    letter-spacing: -0.01em;
+}
+.az-mn .bd2 .s {
+    font-size: 12.5px;
+    color: #5a6b83;
+}
+.az-mn .bd2 .p {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 8px;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+}
+.az-mn .bd2 .p small {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: #5a6b83;
+    letter-spacing: 0;
+}
+body.dark-mode .az-mn {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+body.dark-mode .az-mn .bd2 .s { color: #94a3b8; }
+body.dark-mode .az-mn .bd2 .p small { color: #94a3b8; }
+
+/* ── 10. 9 Auction States & Modals (DrazbaStanja.dc.html) ─────────────────── */
+/* Base State Banner */
+.az-st {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.az-st b {
+    display: block;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    margin-bottom: 1px;
+}
+.az-st .ic {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+}
+.az-st .ic .i { width: 19px; height: 19px; }
+
+/* 1. OK (Won / Highest bidder) */
+.az-st.ok { background: #e6f6f2; color: #0b5c53; }
+.az-st.ok .ic { background: #0f766e; color: #fff; }
+
+/* 2. BAD (Outbid / Below reserve) */
+.az-st.bad { background: #fff1e0; color: #9a3d0a; }
+.az-st.bad .ic { background: #f97316; color: #fff; }
+
+/* 3. HOT (Ending soon / Sniper extension) */
+.az-st.hot { background: #fee2e2; color: #991b1b; }
+.az-st.hot .ic { background: #dc2626; color: #fff; }
+
+/* 4. SIL (Silent auction sealed bid) */
+.az-st.sil { background: #f3f0ff; color: #5b21b6; }
+.az-st.sil .ic { background: #7c3aed; color: #fff; }
+
+/* 5. PRE (Pre-bidding phase active) */
+.az-st.pre { background: #fff1e0; color: #9a3d0a; }
+.az-st.pre .ic { background: #f97316; color: #fff; }
+
+/* 6. NT (Auction finished / not sold / reserve unmet) */
+.az-st.nt { background: #f1f5f9; color: #33445c; }
+.az-st.nt .ic { background: #64748b; color: #fff; }
+
+/* Dark mode for auction state banners */
+body.dark-mode .az-st.ok  { background: rgba(15, 118, 110, 0.22); color: #5eead4; }
+body.dark-mode .az-st.bad { background: rgba(249, 115, 22, 0.22); color: #fdba74; }
+body.dark-mode .az-st.hot { background: rgba(220, 38, 38, 0.22);  color: #fca5a5; }
+body.dark-mode .az-st.sil { background: rgba(124, 58, 237, 0.22); color: #c4b5fd; }
+body.dark-mode .az-st.pre { background: rgba(249, 115, 22, 0.22); color: #fdba74; }
+body.dark-mode .az-st.nt  { background: rgba(100, 116, 139, 0.22); color: #cbd5e1; }
+
+/* Sniper Extension Toast Banner */
+.az-toast {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: #0b1f3f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 18px 32px -14px rgba(11, 31, 63, 0.6);
+}
+.az-toast .i {
+    width: 18px;
+    height: 18px;
+    color: #5eead4;
+    flex: none;
+}
+.az-toast b {
+    color: #fbbf6a;
+}
+body.dark-mode .az-toast {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 18px 32px -14px rgba(0, 0, 0, 0.7);
+}
+
+/* Digital Signature Pad Container */
+.az-pad {
+    position: relative;
+    height: 130px;
+    border-radius: 18px;
+    border: 2px dashed #b9cdea;
+    background: #fbfdff;
+    overflow: hidden;
+}
+.az-pad small {
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #7b8ba4;
+    user-select: none;
+}
+.az-pad a {
+    position: absolute;
+    right: 14px;
+    top: 9px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #1d4ed8;
+    text-decoration: none;
+    cursor: pointer;
+    z-index: 5;
+}
+.az-pad a:hover {
+    text-decoration: underline;
+}
+.az-pad svg.sg, .az-pad canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+body.dark-mode .az-pad {
+    background: #0f172a;
+    border-color: rgba(255, 255, 255, 0.18);
+}
+body.dark-mode .az-pad small { color: #94a3b8; }
+body.dark-mode .az-pad a { color: #60a5fa; }
+
+/* Won Auction Celebration Card */
+.az-win {
+    border-radius: 22px;
+    padding: 22px 22px 20px;
+    background: linear-gradient(120deg, #0b1f3f 0%, #12346b 60%, #1d4ed8 130%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 12px 32px -10px rgba(29, 78, 216, 0.45);
+}
+.az-win b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 25px;
+    letter-spacing: -0.02em;
+}
+.az-win span {
+    font-size: 13px;
+    color: #b9c9e3;
+}
+
+/* Timeline / Process Steps */
+.az-ph {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+.az-ph .s {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    position: relative;
+}
+.az-ph .s:last-child {
+    padding-bottom: 0;
+}
+.az-ph .s i {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #cfdbec;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    font-style: normal;
+    font-size: 13px;
+    font-weight: 800;
+    color: #7b8ba4;
+    z-index: 1;
+}
+.az-ph .s::before {
+    content: "";
+    position: absolute;
+    left: 14px;
+    top: 30px;
+    bottom: 0;
+    width: 2px;
+    background: #e3ecf7;
+}
+.az-ph .s:last-child::before {
+    display: none;
+}
+.az-ph .s.on i {
+    background: #f97316;
+    border-color: #f97316;
+    color: #fff;
+}
+.az-ph .s b {
+    font-size: 14px;
+    font-weight: 800;
+    display: block;
+    color: #0c1b30;
+}
+.az-ph .s span {
+    font-size: 12.5px;
+    color: #5a6b83;
+    line-height: 1.4;
+}
+.az-ph .s.on b {
+    color: #c2410c;
+}
+.az-ph .s.dn i {
+    background: #0f766e;
+    border-color: #0f766e;
+    color: #fff;
+}
+.az-ph .s.dn::before {
+    background: #0f766e;
+}
+.az-ph .s i .i { width: 15px; height: 15px; }
+
+body.dark-mode .az-ph .s i {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #94a3b8;
+}
+body.dark-mode .az-ph .s::before { background: rgba(255, 255, 255, 0.1); }
+body.dark-mode .az-ph .s b { color: #f1f5f9; }
+body.dark-mode .az-ph .s span { color: #94a3b8; }
+body.dark-mode .az-ph .s.on b { color: #fb923c; }
+
+/* My Bid Box */
+.az-mine {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: #f6f9fd;
+    border: 1px solid #e3ecf7;
+    font-size: 13px;
+    color: #33445c;
+}
+.az-mine b {
+    white-space: nowrap;
+    margin-left: auto;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 17px;
+    color: #0c1b30;
+    font-variant-numeric: tabular-nums;
+}
+.az-mine .i {
+    width: 17px;
+    height: 17px;
+    color: #7c3aed;
+}
+body.dark-mode .az-mine {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+}
+body.dark-mode .az-mine b { color: #f1f5f9; }
+
+/* Purchase Commitment Modal / Backdrop */
+.az-bdp {
+    background: linear-gradient(135deg, #5b6b86 0%, #7d8ba3 100%);
+    border-radius: 28px;
+    padding: 26px 22px;
+    display: flex;
+}
+.az-md {
+    background: #fff;
+    border-radius: 24px;
+    padding: 24px 24px 22px;
+    width: 100%;
+    box-shadow: 0 2px 6px rgba(12, 27, 48, 0.12), 0 32px 60px -18px rgba(11, 31, 63, 0.5);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+.az-md h3 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+    color: #0c1b30;
+}
+.az-md .seg button {
+    padding: 0 10px;
+    font-size: 13px;
+    gap: 6px;
+}
+.az-md .seg button .i { width: 16px; height: 16px; }
+body.dark-mode .az-md {
+    background: #1e293b;
+    color: #f1f5f9;
+}
+body.dark-mode .az-md h3 { color: #f1f5f9; }
+
+/* Terms agreement checkbox */
+.az-cb {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 13px;
+    color: #33445c;
+    line-height: 1.45;
+}
+.az-cb i {
+    width: 20px;
+    height: 20px;
+    border-radius: 7px;
+    background: #2563eb;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    margin-top: 1px;
+}
+.az-cb i .i { width: 13px; height: 13px; stroke-width: 3; }
+body.dark-mode .az-cb { color: #cbd5e1; }
+
+/* Celebration Circle Checkmark */
+.az-ok {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #0f766e;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 10px #d9f2ee;
+    align-self: center;
+    margin: 8px 0 6px;
+}
+.az-ok .i { width: 34px; height: 34px; stroke-width: 2.6; }
+body.dark-mode .az-ok {
+    box-shadow: 0 0 0 10px rgba(15, 118, 110, 0.25);
+}
+
+/* Vehicle summary row in modals */
+.az-vrow {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.az-vrow .th {
+    width: 92px;
+    height: 62px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #0c1b30;
+    flex: none;
+}
+.az-vrow .th img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.az-vrow b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 16px;
+    display: block;
+    color: #0c1b30;
+}
+.az-vrow span { font-size: 12.5px; color: #5a6b83; }
+body.dark-mode .az-vrow b { color: #f1f5f9; }
+body.dark-mode .az-vrow span { color: #94a3b8; }
+
+/* Current bid block */
+.az-cur {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 12px;
+}
+.az-cur .lb {
+    width: 100%;
+    font-size: 11.5px;
+    font-weight: 800;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #6b7b93;
+}
+.az-cur b {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 38px;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    color: #0c1b30;
+}
+body.dark-mode .az-cur .lb { color: #94a3b8; }
+body.dark-mode .az-cur b { color: #f1f5f9; }
+
+/* Section label with numbered badge */
+.az-lb {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin: 0 4px 12px;
+}
+.az-lb b {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.015em;
+    color: #0c1b30;
+}
+.az-lb b i {
+    font-style: normal;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #0b1f3f;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.az-lb span {
+    font-size: 13px;
+    color: #5a6b83;
+    line-height: 1.45;
+}
+body.dark-mode .az-lb b { color: #f1f5f9; }
+body.dark-mode .az-lb b i { background: #3b82f6; color: #fff; }
+body.dark-mode .az-lb span { color: #94a3b8; }
+
+/* Section divider */
+.az-sec {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6b7b93;
+    margin: 44px 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+.az-sec::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: #d5e0ee;
+}
+body.dark-mode .az-sec { color: #94a3b8; }
+body.dark-mode .az-sec::after { background: rgba(255, 255, 255, 0.1); }
+
+.az-pn {
+    padding: 22px 22px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ── 11. Navigation & Dropdown Menu Support (Prototype compatibility) ──────── */
+.nv {
+    position: relative;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 68px;
+    padding: 10px 14px 10px 26px;
+    border-radius: 9999px;
+    flex-wrap: nowrap;
+}
+.nv-logo { display: flex; align-items: center; flex: none; }
+.nv-links { display: flex; align-items: center; gap: 4px; flex: 1; justify-content: center; min-width: 0; }
+.nv-item { position: relative; }
+.nv-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    border: 1px solid transparent;
+    background: transparent;
+    font-weight: 600;
+    font-size: 14.5px;
+    color: #5a6b83;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+}
+.nv-link .i { width: 17px; height: 17px; opacity: 0.75; }
+.nv-link:hover { background: rgba(255, 255, 255, 0.75); color: #0c1b30; }
+.nv-link.on {
+    background: #fff;
+    color: #1d4ed8;
+    border-color: rgba(12, 27, 48, 0.05);
+    box-shadow: 0 4px 15px -3px rgba(37, 99, 235, 0.18);
+}
+.nv-link.on .i { opacity: 1; }
+.nv-link .car { width: 14px; height: 14px; opacity: 0.6; }
+.nv-actions { display: flex; align-items: center; gap: 10px; flex: none; }
+.nv-add {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    height: 40px;
+    min-width: 40px;
+    max-width: 40px;
+    padding: 0;
+    border-radius: 9999px;
+    border: 0;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    flex: none;
+    box-shadow: 0 10px 20px -6px rgba(37, 99, 235, 0.45);
+    text-decoration: none;
+    transition: max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s cubic-bezier(0.4, 0, 0.2, 1), gap 0.35s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, transform 0.3s ease;
+}
+.nv-add .i { width: 18px; height: 18px; stroke-width: 2.2; }
+.nv-add span {
+    display: inline-block;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    margin: 0;
+    transition: opacity 0.2s ease 0.05s, max-width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.nv-add:hover, .nv-add:focus-visible {
+    max-width: 190px;
+    padding: 0 18px 0 12px;
+    gap: 8px;
+    transform: translateY(-1px);
+    box-shadow: 0 12px 25px -6px rgba(37, 99, 235, 0.55);
+}
+.nv-add:hover span, .nv-add:focus-visible span { opacity: 1; max-width: 150px; }
+.nv-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 14px;
+    border-radius: 9999px;
+    border: 1px solid #dbe5f1;
+    background: #fff;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #0c1b30;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.nv-btn:hover { border-color: #b9cdea; background: #f6f9fd; }
+.nv-btn.c { width: 40px; padding: 0; justify-content: center; }
+.nv-btn .i { width: 17px; height: 17px; }
+.nv-burger { display: none; }
+
+.um { position: relative; }
+.um-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 12px 0 5px;
+    border-radius: 9999px;
+    border: 1px solid #dbe5f1;
+    background: #fff;
+    font-weight: 600;
+    font-size: 13.5px;
+    color: #0c1b30;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.um-btn:hover, .um:focus-within .um-btn { border-color: #b9cdea; background: #f6f9fd; }
+.um-btn .i { width: 15px; height: 15px; color: #5a6b83; }
+.um-av {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+    color: #fff;
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 13px;
+    flex: none;
+}
+.um-av.big { width: 42px; height: 42px; font-size: 16px; }
+.um-dot {
+    position: absolute;
+    top: -1px;
+    right: -1px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #f97316;
+    border: 2px solid #fff;
+}
+.dd, .mm { display: none; position: absolute; top: 100%; padding-top: 10px; z-index: 100; }
+.dd { right: 0; width: 308px; }
+.mm { left: 50%; margin-left: -120px; width: 240px; }
+.um:hover .dd, .um:focus-within .dd, .dd.open, .nv-item:hover .mm, .nv-item:focus-within .mm { display: block; }
+.dd .in, .mm .in {
+    background: #fff;
+    border: 1px solid rgba(12, 27, 48, 0.08);
+    border-radius: 26px;
+    padding: 8px;
+    box-shadow: 0 28px 52px -16px rgba(12, 27, 48, 0.4), 0 2px 8px rgba(12, 27, 48, 0.06);
+}
+.dd-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 18px;
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.14) 0%, rgba(37, 99, 235, 0.02) 100%);
+}
+.dd-head b { display: block; font-family: 'Manrope', 'Inter', sans-serif; font-weight: 800; font-size: 15px; }
+.dd-head span.e { display: block; font-size: 12px; color: #5a6b83; margin-top: 1px; }
+.dd-cap {
+    padding: 12px 12px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #6b7b93;
+}
+.dd-r {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 42px;
+    padding: 0 10px 0 8px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #26364d;
+    width: 100%;
+    border: 0;
+    background: transparent;
+    text-align: left;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.dd-r:hover { background: #f1f6fd; }
+.dd-r.cur { background: #e6eefc; color: #1d4ed8; }
+.dd-r .ic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 10px;
+    background: #eef4fd;
+    color: #2563eb;
+    flex: none;
+}
+.dd-r.cur .ic { background: #2563eb; color: #fff; }
+.dd-r .ic .i { width: 16px; height: 16px; }
+.dd-r .ct {
+    margin-left: auto;
+    min-width: 22px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 9999px;
+    background: #eaf0f8;
+    color: #33445c;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+}
+.dd-r.cur .ct { background: #fff; color: #1d4ed8; }
+.dd-r .ct.hot { background: #f97316; color: #fff; }
+.dd-sep { height: 1px; background: #e8eef6; margin: 8px 6px; }
+.dd-r.out { color: #b91c1c; }
+.dd-r.out .ic { background: #fdecec; color: #b91c1c; }
+.mm .dd-r .ic { background: #f1f6fd; }
+
+@media (max-width: 1023px) {
+    .nv-links { display: none; }
+    .nv-burger { display: inline-flex; }
+    .nv-name { display: none; }
+    .um-btn { padding: 0 10px 0 5px; }
+    .nv-sl { display: none; }
+}
+
+/* Dark mode for navigation elements */
+body.dark-mode .nv-link:hover { background: rgba(51, 65, 85, 0.7); color: #f1f5f9; }
+body.dark-mode .nv-link.on {
+    background: #1e293b;
+    color: #93c5fd;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px -3px rgba(37, 99, 235, 0.3);
+}
+body.dark-mode .nv-btn,
+body.dark-mode .um-btn {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f1f5f9;
+}
+body.dark-mode .nv-btn:hover,
+body.dark-mode .um-btn:hover {
+    background: #334155;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .dd .in,
+body.dark-mode .mm .in {
+    background: #1e293b;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 28px 52px -16px rgba(0, 0, 0, 0.7), 0 2px 8px rgba(0, 0, 0, 0.3);
+    color: #f1f5f9;
+}
+body.dark-mode .dd-head {
+    background: linear-gradient(90deg, rgba(37, 99, 235, 0.25) 0%, rgba(37, 99, 235, 0.05) 100%);
+}
+body.dark-mode .dd-head span.e { color: #94a3b8; }
+body.dark-mode .dd-cap { color: #94a3b8; }
+body.dark-mode .dd-r { color: #cbd5e1; }
+body.dark-mode .dd-r:hover { background: #334155; }
+body.dark-mode .dd-r.cur { background: rgba(37, 99, 235, 0.25); color: #93c5fd; }
+body.dark-mode .dd-r .ic { background: rgba(37, 99, 235, 0.2); color: #60a5fa; }
+body.dark-mode .dd-r.cur .ic { background: #2563eb; color: #fff; }
+body.dark-mode .dd-r .ct { background: #0f172a; color: #cbd5e1; }
+body.dark-mode .dd-sep { background: rgba(255, 255, 255, 0.08); }
+
+/* Additional Tab and Typography Utilities */
+.tab {
+    display: inline-flex;
+    align-items: center;
+    height: 42px;
+    padding: 0 18px;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5b73;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+.tab:hover { background: #eef3fa; color: #0c1b30; }
+.tab.on { background: #0b1f3f; color: #fff; }
+body.dark-mode .tab { color: #94a3b8; }
+body.dark-mode .tab:hover { background: #334155; color: #f1f5f9; }
+body.dark-mode .tab.on { background: #3b82f6; color: #fff; }
+
+.h3 {
+    font-family: 'Manrope', 'Inter', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: -0.015em;
+    color: #0c1b30;
+}
+body.dark-mode .h3 { color: #f1f5f9; }

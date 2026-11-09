@@ -1,0 +1,126 @@
+.platform-avto.ah-auth-route #header,.platform-avto.ah-auth-route #footer{display:none!important}
+.platform-avto.ah-auth-route{padding-top:0!important;background:radial-gradient(ellipse at 50% 0,#dae8fa,#e9f1fa 85%)}
+.platform-avto.ah-auth-route #app-container{padding-top:0!important;margin-top:0!important;min-height:100vh}
+.platform-avto .ah-account-page,.platform-avto .ah-onboarding-page{max-width:1280px;margin:auto;padding:24px 40px 64px;color:var(--ah-ink);font-family:Inter,sans-serif}
+.platform-avto .ah-account-top{display:flex;gap:12px;align-items:center;height:48px;margin-bottom:14px}
+.platform-avto .ah-account-top>a:first-child img{width:146px;height:34px;object-fit:contain}
+.platform-avto .ah-account-top>span:empty{flex:1}
+.platform-avto .ah-account-layout{display:grid;grid-template-columns:535fr 640fr;gap:24px;align-items:stretch}
+.platform-avto .ah-account-story{background:radial-gradient(ellipse at 100% 0,#264b7d,transparent 48%),linear-gradient(145deg,#0e203c,#133972 75%,#1d40a4);border-radius:36px;padding:40px;position:relative;overflow:hidden;color:white;min-height:700px}
+.platform-avto .ah-account-story>.ah-tag{background:#253449;color:#f9d386;border:0}
+.platform-avto .ah-account-story h2{font-family:Manrope,Inter,sans-serif;font-size:34px;font-weight:800;line-height:1.17;letter-spacing:-1.1px;margin:25px 0 16px;max-width:420px}
+.platform-avto .ah-account-story h2 em{color:#ffb84d;font-style:normal}
+.platform-avto .ah-account-story>p{color:#bac4d2;font-size:14px;line-height:1.75;max-width:370px}
+.platform-avto .ah-account-benefits{display:grid;gap:15px;margin-top:26px}
+.platform-avto .ah-account-benefits>div{display:flex;align-items:center;gap:12px;font-size:13px}
+.platform-avto .ah-account-benefits>div>span{display:grid;place-items:center;width:36px;height:36px;border-radius:12px;background:#253247;color:#ffbd59}
+.platform-avto .ah-account-story-note{position:relative;z-index:1;display:flex;align-items:center;gap:10px;color:#aab8ca;font-size:12px;margin-top:24px}
+.platform-avto .ah-account-car{display:block;width:100%;max-width:100%;height:250px;object-fit:cover;margin:24px 0 0}
+.platform-avto .ah-account-panel{padding:36px 44px;background:#fff;border-radius:36px;border:1px solid #e8ebef;box-shadow:0 14px 40px #15233705;animation:ah-account-enter 280ms ease-out both;min-width:0}
+.platform-avto :is(.ah-account-panel,.ah-onboarding-card) h1{font-family:Manrope,Inter,sans-serif;font-size:30px;font-weight:800;letter-spacing:-.9px;line-height:1.25;margin:18px 0 12px}
+.platform-avto :is(.ah-account-panel,.ah-onboarding-card)>p{color:#6d7888;line-height:1.65;font-size:13px}
+.platform-avto .ah-account-types{display:flex;gap:6px;background:#eef3fb;border:1px solid #dae6f6;border-radius:30px;padding:6px;margin-bottom:22px}
+.platform-avto .ah-account-types button{flex:1;min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:24px;background:transparent;color:#6b7686;cursor:pointer;font-size:13px;font-weight:700;transition:background 160ms,color 160ms,box-shadow 160ms}
+.platform-avto .ah-account-types button[aria-selected=true],.platform-avto .ah-account-types button[aria-pressed=true]{background:#2563eb;color:white;box-shadow:0 4px 10px #2563eb2b}
+.platform-avto .ah-account-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;border:1px solid #e0e5eb;border-radius:24px;background:#fff;min-height:48px;font-size:13px;font-weight:650;cursor:pointer;margin-top:24px;transition:background 160ms,transform 160ms}
+.platform-avto .ah-account-google:hover{background:#f7f9fb;transform:translateY(-1px)}
+.platform-avto .ah-google-mark{width:20px;height:20px;flex-shrink:0}
+.platform-avto .ah-account-divider{display:flex;align-items:center;gap:14px;color:#99a1ad;font-size:11px;margin:21px 0}
+.platform-avto .ah-account-divider:before,.platform-avto .ah-account-divider:after{content:'';height:1px;background:#e8ecf0;flex:1}
+.platform-avto .ah-account-field{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:650;color:#485465;margin:16px 0}
+.platform-avto .ah-account-panel .ah-account-field{margin:22px 0}
+.platform-avto .ah-account-benefits>div>div{display:flex;flex-direction:column;gap:5px}
+.platform-avto .ah-account-benefits small{font-size:12px;line-height:1.6;color:#afc7e8}
+.platform-avto .ah-account-field>span{display:flex;align-items:center;border:1px solid #e1e6ed;background:#f8f9fb;border-radius:24px;padding:0 15px;gap:10px;transition:border-color 160ms,box-shadow 160ms}
+.platform-avto .ah-account-field>span:focus-within{border-color:#1761c4;box-shadow:0 0 0 3px #1761c412}
+.platform-avto .ah-account-field>span>svg{width:18px;height:18px;color:#8793a3;flex-shrink:0}
+.platform-avto .ah-account-field input,.platform-avto .ah-account-field select,.platform-avto .ah-account-field textarea{width:100%;min-width:0;min-height:46px;background:#f8f9fb;border:1px solid #e1e6ed;border-radius:24px;padding:12px 16px;color:#1e2a3c;font:400 13px Inter,sans-serif;box-shadow:none}
+.platform-avto .ah-account-field>span>input{background:transparent!important;border:0!important;padding:12px 0;outline:0;box-shadow:none!important;border-radius:0!important}
+.platform-avto .ah-account-field>span>button{display:grid;place-items:center;border:0;background:transparent;width:32px;height:42px;color:#8a94a3;cursor:pointer;flex-shrink:0}
+.platform-avto .ah-account-field textarea{border-radius:18px;resize:vertical}
+.platform-avto .ah-account-strength{display:flex;align-items:center;gap:14px;margin-top:-4px;font-size:11px;color:#8190a2}
+.platform-avto .ah-account-strength>div{display:flex;gap:4px;flex:1}
+.platform-avto .ah-account-strength i{flex:1;height:4px;border-radius:4px;background:#e8ecf0;transition:background 180ms}
+.platform-avto .ah-account-strength i.is-filled{background:#f3af47}
+.platform-avto .ah-account-consent{display:flex;align-items:flex-start;gap:10px;font-size:11px;line-height:1.7;color:#687586;margin:18px 0}
+.platform-avto .ah-account-consent input{width:16px;height:16px;margin-top:2px;flex-shrink:0;accent-color:#165abd}
+.platform-avto :is(.ah-account-panel,.ah-onboarding-card) a:not([class]){color:#165abd;text-decoration:none}
+.platform-avto .ah-account-switch{display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:12px;color:#536173;margin:20px 0}
+.platform-avto .ah-account-switch input{appearance:none;width:38px;height:22px;background:#d8dfe7;border:0;border-radius:20px;position:relative;cursor:pointer;flex-shrink:0;transition:background 160ms}
+.platform-avto .ah-account-switch input:before{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:white;border-radius:50%;transition:transform 160ms}
+.platform-avto .ah-account-switch input:checked{background:#1761c4}
+.platform-avto .ah-account-switch input:checked:before{transform:translateX(16px)}
+.platform-avto .ah-account-panel .ah-orange-button{width:100%;display:flex;justify-content:center;min-height:52px;border:0;border-radius:26px;color:#102039;background:linear-gradient(#ff943a,#ff7918);box-shadow:0 7px 16px #ff84182b;font-weight:750;font-size:13px;cursor:pointer;margin-top:20px}
+.platform-avto .ah-account-forgot{display:block;text-align:right;font-size:11px;color:#1761c4;margin-top:-5px}
+.platform-avto .ah-account-bottom{display:block;font-size:11px;text-align:center;color:#7d8897;margin-top:22px;line-height:1.6}
+.platform-avto .ah-account-bottom a{font-weight:700}
+.platform-avto .ah-account-magic,.platform-avto .ah-account-business-link{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:11px;color:#68788c;margin-top:16px;border:0;background:none;cursor:pointer;min-height:40px;text-decoration:none}
+.platform-avto .ah-account-error,.platform-avto [data-intro-error],.platform-avto [data-business-error]{background:#fff1ef;color:#a52a20!important;border:1px solid #f4d1cc;padding:12px 14px;border-radius:14px;font-size:12px;line-height:1.5}
+.platform-avto :is([data-account-status],[data-intro-status],[data-business-status]){font-size:12px;color:#176b51;line-height:1.5}
+.platform-avto .ah-account-state-icon,.platform-avto .ah-business-status-icon{display:grid;place-items:center;width:64px;height:64px;background:#edf4ff;color:#1761c4;border-radius:22px;margin:20px 0}
+.platform-avto .ah-account-state-icon svg,.platform-avto .ah-business-status-icon svg{width:28px;height:28px}
+.platform-avto .ah-account-email{display:block;overflow-wrap:anywhere;margin:24px 0;color:#1a2b40}
+.platform-avto .ah-account-panel form+[class=ah-pill]{display:inline-flex;margin-top:20px}
+.platform-avto .ah-onboarding-page:not(.is-welcome){max-width:1000px}
+.platform-avto .ah-onboarding-progress{margin:0 0 26px;font-size:11px;color:#718092;position:relative}
+.platform-avto .ah-onboarding-progress>[data-intro-skip]{float:right}
+.platform-avto .ah-onboarding-progress>div{display:flex;margin-top:22px;gap:12px}
+.platform-avto .ah-onboarding-progress>div>span{flex:1;font-size:11px;color:#8a95a4;min-width:0}
+.platform-avto .ah-onboarding-progress i{display:block;height:4px;border-radius:4px;background:#e1e6ed;margin-bottom:9px}
+.platform-avto .ah-onboarding-progress .is-complete{color:#315b93}
+.platform-avto .ah-onboarding-progress .is-complete i{background:#1761c4}
+.platform-avto .ah-onboarding-card{background:#fff;border:1px solid #e6ebf0;border-radius:28px;padding:30px 36px;animation:ah-account-enter 220ms ease-out both}
+.platform-avto .ah-onboarding-card h1{margin-top:0}
+.platform-avto .ah-onboarding-card h3{font-size:13px;margin:24px 0 14px;color:#334155}
+.platform-avto .ah-onboarding-intents{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:26px 0}
+.platform-avto .ah-onboarding-intent{display:flex;flex-direction:column;align-items:flex-start;position:relative;gap:10px;padding:20px 18px;text-align:left;min-height:155px;background:#fafbfd;border:1px solid #e3e8ef;border-radius:20px;cursor:pointer;color:#243449;transition:border-color 160ms,background 160ms,transform 160ms}
+.platform-avto .ah-onboarding-intent:hover{transform:translateY(-2px);border-color:#a7bddb}
+.platform-avto .ah-onboarding-intent>span{display:grid;place-items:center;background:#edf1f7;color:#526783;width:38px;height:38px;border-radius:13px}
+.platform-avto .ah-onboarding-intent strong{font-size:13px}
+.platform-avto .ah-onboarding-intent small{font-size:11px;line-height:1.6;color:#8090a1}
+.platform-avto .ah-onboarding-intent i{position:absolute;right:16px;top:16px;border:1px solid #d8dfe8;width:19px;height:19px;border-radius:50%;display:grid;place-items:center;color:#fff}
+.platform-avto .ah-onboarding-intent i svg{width:12px;height:12px}
+.platform-avto .ah-onboarding-intent[aria-pressed=true]{background:#f0f6ff;border-color:#1761c4}
+.platform-avto .ah-onboarding-intent[aria-pressed=true] i{background:#1761c4;border-color:#1761c4}
+.platform-avto .ah-onboarding-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 20px}
+.platform-avto .ah-onboarding-navigation{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #edf0f4;margin-top:26px;padding-top:22px}
+.platform-avto .ah-onboarding-navigation button{min-height:46px}
+.platform-avto .ah-onboarding-bodies{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.platform-avto .ah-onboarding-bodies button{border:1px solid #e3e8ef;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:100px;background:#fafbfd;font-size:11px;cursor:pointer;transition:background 160ms,border-color 160ms}
+.platform-avto .ah-onboarding-bodies img{width:105px;max-width:90%;height:46px;object-fit:contain}
+.platform-avto .ah-onboarding-bodies button[aria-pressed=true],.platform-avto .ah-onboarding-pills [aria-pressed=true]{border-color:#1761c4;background:#edf4ff;color:#1761c4}
+.platform-avto .ah-onboarding-pills{display:flex;flex-wrap:wrap;gap:8px}
+.platform-avto .ah-onboarding-match-count{display:flex;align-items:center;gap:12px;padding:18px;border-radius:18px;background:#edf5ff;font-size:12px;color:#536c8f;margin-top:20px}
+.platform-avto .ah-onboarding-match-count strong{font-size:22px;color:#1761c4}
+.platform-avto .ah-onboarding-search-summary{background:#f5f8fc;border:1px solid #e2e9f2;border-radius:20px;padding:22px;margin:24px 0;font-size:13px;line-height:1.7}
+.platform-avto .ah-onboarding-search-summary>svg{vertical-align:middle;margin-right:10px}
+.platform-avto .ah-onboarding-search-summary p,.platform-avto .ah-onboarding-note{font-size:12px;line-height:1.7;color:#758397}
+.platform-avto .ah-onboarding-result-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin:22px 0 32px}
+.platform-avto .ah-onboarding-checklist{display:flex;flex-direction:column;gap:12px;padding:22px 0}
+.platform-avto .ah-onboarding-checklist>a,.platform-avto .ah-onboarding-checklist>button{display:flex;gap:12px;align-items:center;background:#f7f9fc;border:1px solid #e6ebf1;padding:16px 18px;border-radius:16px;color:#2c4667;font-size:13px;text-decoration:none;cursor:pointer;text-align:left}
+.platform-avto .ah-onboarding-checklist :is(a,button)>span{flex:1}
+.platform-avto .ah-onboarding-tour{padding:24px;background:#eef4ff;border-radius:24px;font-size:13px;color:#536a8c}
+.platform-avto .ah-onboarding-welcome{text-align:center;padding:20px 0 35px}
+.platform-avto .ah-onboarding-welcome .ah-actions{justify-content:center;margin-top:25px;flex-wrap:wrap}
+.platform-avto .ah-onboarding-welcome h1{font-size:38px;margin:22px 0 14px}
+.platform-avto .ah-onboarding-card.is-welcome{background:transparent;border:0;padding:0;box-shadow:none}
+.platform-avto .ah-business-completeness{display:flex;align-items:center;gap:14px;padding:20px;background:#edf5ff;border-radius:18px;font-size:12px;color:#526d91}
+.platform-avto .ah-business-completeness progress{flex:1;height:8px;accent-color:#1761c4}
+.platform-avto .ah-business-profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.platform-avto .ah-business-preview{border:1px solid #e0e7ee;border-radius:24px;overflow:hidden;align-self:start;display:flex;flex-direction:column;gap:12px;padding-bottom:24px}
+.platform-avto .ah-business-preview>strong,.platform-avto .ah-business-preview>p,.platform-avto .ah-business-preview>small,.platform-avto .ah-business-preview>svg{margin:0 24px}
+.platform-avto .ah-business-preview-cover{width:100%;height:150px;object-fit:cover;background:linear-gradient(130deg,#172840,#31629a)}
+.platform-avto .ah-business-preview-logo{width:64px;height:64px;object-fit:contain;border-radius:16px;margin:0 24px}
+.platform-avto .ah-business-preview small{font-size:11px;color:#8894a4}
+.platform-avto .ah-business-templates{display:flex;flex-direction:column;gap:10px;margin:24px 0}
+.platform-avto .ah-business-template{display:grid;grid-template-columns:1fr 100px 110px;gap:15px;align-items:center;padding:16px;border:1px solid #e4e9ef;border-radius:16px;background:#fafbfd}
+.platform-avto .ah-business-template label{display:flex;align-items:center;gap:8px;font-size:12px;min-width:0}
+.platform-avto .ah-business-template label:not(:first-child){flex-direction:column;align-items:flex-start;font-size:10px;color:#788699}
+.platform-avto .ah-business-template input[type=number]{width:100%;padding:10px;border:1px solid #e0e7ef;border-radius:12px;background:#fff;font-size:12px;color:#273a52}
+.platform-avto .ah-business-template small{display:block;color:#277650;font-size:10px;margin-top:4px}
+.platform-avto :is(.ah-account-page,.ah-onboarding-page) button:disabled{opacity:.55;cursor:wait;transform:none}
+.platform-avto :is(.ah-account-page,.ah-onboarding-page) :is(button,a,input,select,textarea):focus-visible{outline:3px solid #7eb3fa;outline-offset:3px}
+@keyframes ah-account-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:1050px){.platform-avto .ah-account-panel{padding:26px}.platform-avto .ah-account-story{padding:28px}.platform-avto .ah-account-story h2{font-size:36px}.platform-avto .ah-account-car{width:calc(100% + 56px);margin:24px -28px -28px}.platform-avto .ah-account-layout{grid-template-columns:1fr 1.2fr;gap:18px}}
+@media(max-width:700px){.platform-avto .ah-account-page,.platform-avto .ah-onboarding-page{padding:18px 16px 38px}.platform-avto .ah-account-top{margin-bottom:24px}.platform-avto .ah-account-top>a:first-child img{width:125px}.platform-avto .ah-account-layout{display:flex;flex-direction:column-reverse;gap:22px}.platform-avto .ah-account-panel{padding:24px;border-radius:26px}.platform-avto .ah-account-story{min-height:0;border-radius:26px;padding:28px}.platform-avto .ah-account-story h2{font-size:32px}.platform-avto .ah-account-car{height:180px}.platform-avto .ah-account-benefits{grid-template-columns:1fr 1fr;gap:15px 8px}.platform-avto .ah-account-benefits strong{font-size:11px}.platform-avto .ah-account-benefits>div>span{width:30px;height:30px;flex-shrink:0}.platform-avto .ah-onboarding-card{padding:24px 18px;border-radius:24px}.platform-avto .ah-onboarding-intents{grid-template-columns:1fr 1fr;gap:10px}.platform-avto .ah-onboarding-intent{padding:16px 12px;min-height:165px}.platform-avto .ah-onboarding-intent strong{font-size:12px}.platform-avto .ah-onboarding-intent i{top:12px;right:12px}.platform-avto .ah-onboarding-fields{gap:0 12px}.platform-avto .ah-onboarding-bodies{grid-template-columns:repeat(2,minmax(0,1fr))}.platform-avto .ah-onboarding-progress>div{gap:7px}.platform-avto .ah-onboarding-progress>div>span{font-size:9px;overflow-wrap:anywhere}.platform-avto .ah-onboarding-result-grid,.platform-avto .ah-business-profile-grid{grid-template-columns:1fr}.platform-avto .ah-business-template{grid-template-columns:1fr 1fr;gap:12px}.platform-avto .ah-business-template label:first-child{grid-column:1/-1}.platform-avto .ah-onboarding-welcome h1{font-size:30px}.platform-avto .ah-onboarding-card h1{font-size:26px}.platform-avto .ah-business-completeness{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.platform-avto :is(.ah-account-page,.ah-onboarding-page) *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

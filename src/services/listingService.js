@@ -17,9 +17,10 @@ function normalizeListingRow(row) {
         ...d,
         // Indexed columns win over anything in data
         id: row.id,
+        ownerId: row.owner_id,
         status: row.status,
         platform: row.platform,
-        itemType: row.item_type ?? d.itemType ?? 'vehicle',
+        itemType: row.item_type==='parts' ? d.itemType||'part' : row.item_type ?? d.itemType ?? 'vehicle',
         title: row.title ?? d.title ?? '',
         description: row.description ?? d.description ?? '',
         make: row.brand ?? d.make ?? '',
@@ -53,7 +54,7 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
         tire: ['priceEur', 'tireSize', 'tireSeason', 'vehicleCategory'],
         oprema: ['priceEur', 'equipmentType', 'vehicleCategory'],
     };
-    const missing = (requiredByType[itemType] || requiredByType.vehicle).filter(k => !draft[k]);
+    const missing = (requiredByType[itemType] || requiredByType.vehicle).filter(k => !draft[k]&&!(k==='priceEur'&&draft.callForPrice));
     if (missing.length) throw new Error(`Missing key fields: ${missing.join(', ')}.`);
 
     const [exteriorUrls, interiorUrls] = await Promise.all([
@@ -76,6 +77,7 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
     // All extra fields go into data — rendered via normalizeListingRow
     const data = {
         itemType,
+        vin: draft.vin || '',
         vehicleCategory: draft.vehicleCategory || (itemType === 'vehicle' ? (draft.category || 'avto') : ''),
         category: itemType === 'vehicle' ? (draft.category || 'avto') : (draft.vehicleCategory || 'avto'),
         subcategory: draft.subcategory || '',
@@ -137,6 +139,13 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
         fuelL100kmHighway: draft.fuelL100kmHighway ? Number(draft.fuelL100kmHighway) : null,
         batteryKwh: draft.batteryKwh ? Number(draft.batteryKwh) : null,
         rangeKm: draft.rangeKm ? Number(draft.rangeKm) : null,
+        batteryHealth: draft.batteryHealth ? Number(draft.batteryHealth) : null,
+        consumptionKwh100: draft.consumptionKwh100 ? Number(draft.consumptionKwh100) : null,
+        chargeAcKw: draft.chargeAcKw ? Number(draft.chargeAcKw) : null,
+        chargeDcKw: draft.chargeDcKw ? Number(draft.chargeDcKw) : null,
+        chargeTimeMinutes: draft.chargeTimeMinutes ? Number(draft.chargeTimeMinutes) : null,
+        connectors: Array.isArray(draft.connectors) ? draft.connectors : [],
+        connector: Array.isArray(draft.connectors) ? draft.connectors[0] || null : null,
         towingKg: draft.towingKg ? Number(draft.towingKg) : null,
         partGroup: draft.partGroup || '',
         partType: draft.partType || '',
@@ -205,8 +214,9 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
     };
 
     const newListing = await api.post('/api/listings', {
+        requestId: draft._requestId ||= crypto.randomUUID(),
         platform: PLATFORM.id,
-        itemType,
+        itemType: ['part','tire'].includes(itemType)?'parts':itemType,
         title,
         description: draft.description || '',
         brand: draft.make || draft.brand || '',
@@ -218,6 +228,7 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
     });
 
     const newId = newListing.id;
+    if(!newId)throw new Error('Objava ni vrnila identifikatorja oglasa.');
 
     // Auction sibling
     if (draft.entryType === 'auction') {
@@ -233,10 +244,10 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
                 cashAllowed: !!draft.cashAllowed,
                 sellerContract: draft.sellerContract || null,
             });
-            const endsAtMs = Date.now() + days * 24 * 60 * 60 * 1000;
-            await supabase.from('listings').update({ data: { ...data, endsAt: new Date(endsAtMs).toISOString() } }).eq('id', newId);
         } catch (err) {
             console.error('[listingService] auction creation failed', err);
+            err.listingId=newId;
+            throw err;
         }
     }
 
@@ -260,11 +271,13 @@ export async function createListing(draft, exteriorFiles, interiorFiles, user) {
 
 // ── Update listing ────────────────────────────────────────────────────────────
 export async function updateListing(listingId, updates) {
-    // Merge partial updates into data jsonb
-    const { data: row } = await supabase.from('listings').select('data').eq('id', listingId).single();
-    const merged = { ...(row?.data || {}), ...updates };
-    await supabase.from('listings').update({ data: merged, updated_at: new Date().toISOString() }).eq('id', listingId);
+    const body={data:updates};
+    for(const [field,column] of [['make','brand'],['model','model'],['title','title'],['description','description'],['year','year'],['priceEur','price']])if(updates[field]!==undefined&&!(field==='year'&&updates[field]==null))body[column]=updates[field];
+    if(updates.images)body.images=[...(updates.images.exterior||[]),...(updates.images.interior||[])];
+    return api.put(`/api/listings/${encodeURIComponent(listingId)}`,body);
 }
+
+export async function getOwnedListingById(id){const {data:userData,error:authError}=await supabase.auth.getUser();if(authError||!userData?.user)throw new Error('Za urejanje se prijavite.');const {data,error}=await supabase.from('listings').select('*').eq('id',id).eq('owner_id',userData.user.id).eq('platform',PLATFORM.id).maybeSingle();if(error)throw error;if(!data)throw new Error('Oglas ne obstaja ali ni vaš.');return normalizeListingRow(data);}
 
 // ── View tracking ──────────────────────────────────────────────────────────────
 const VIEW_TS_PREFIX = lsKey('views') + '_';
@@ -342,21 +355,56 @@ export function getListingViewStats(listing) {
 }
 
 // ── Get all listings ──────────────────────────────────────────────────────────
-export async function getListings() {
+export async function getPartsListings() {
+    const { data,error }=await supabase.from('listings').select('*').eq('platform',PLATFORM.id).eq('status','active').in('item_type',['parts','oprema']).order('created_at',{ascending:false}).limit(96);
+    if(error)throw error;
+    return [...(data||[]).map(normalizeListingRow),...SAMPLE_LISTINGS.filter(item=>['tire','part','oprema'].includes(item.itemType))];
+}
+export async function getRentalListings() {
+    let all = [];
+    try {
+        all = await Promise.race([
+            getListings(),
+            new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 600))
+        ]);
+    } catch (e) {
+        all = [];
+    }
+    let rentals = (all || []).filter(l =>
+        (l.listingType === 'rental' || l.isRental === true) &&
+        (l.status === undefined || l.status === 'active')
+    );
+    if (!rentals.length) {
+        rentals = (sampleCars || []).filter(l =>
+            (l.listingType === 'rental' || l.isRental === true) &&
+            (l.status === undefined || l.status === 'active')
+        );
+    }
+    return rentals;
+}
+
+export async function getListings({strict=false}={}) {
     let listings = [];
     try {
-        const { data } = await supabase
+        const fetchPromise = supabase
             .from('listings')
             .select('*')
             .eq('platform', PLATFORM.id)
             .eq('status', 'active')
             .order('created_at', { ascending: false })
             .limit(48);
+        const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 800));
+        const { data, error } = await Promise.race([fetchPromise, timeoutPromise]);
+        if(error) throw error;
         listings = (data || []).map(normalizeListingRow);
     } catch (err) {
+        if(strict) throw err;
         console.warn('[getListings] Supabase error, using sample data only.', err);
     }
-    return sortByPromotion([...listings, ...SAMPLE_LISTINGS]);
+    const fallbackList = SAMPLE_LISTINGS && SAMPLE_LISTINGS.length
+        ? SAMPLE_LISTINGS
+        : (PLATFORM.id === 'navtika' ? [...sampleBoats, ...sampleAuctionBoats] : [...sampleCars, ...sampleAuctionCars]);
+    return sortByPromotion(listings.length > 0 ? listings : fallbackList);
 }
 
 // ── Paginated listings ────────────────────────────────────────────────────────
@@ -390,23 +438,19 @@ export async function getListingsPaged({ lastDoc = null, pageSize = 24 } = {}) {
 
 // ── Get user listings ─────────────────────────────────────────────────────────
 export async function getUserListings(userId) {
-    const { data } = await supabase
+    const { data,error } = await supabase
         .from('listings')
         .select('*')
         .eq('owner_id', userId)
         .order('created_at', { ascending: false });
+    if(error)throw error;
     return (data || []).map(normalizeListingRow);
 }
 
 // ── Delete listing ────────────────────────────────────────────────────────────
 export async function deleteListing(listingId, action = 'removed') {
     if (action === 'sold') {
-        const { data: row } = await supabase.from('listings').select('data').eq('id', listingId).single();
-        await supabase.from('listings').update({
-            status: 'sold',
-            data: { ...(row?.data || {}), soldAt: new Date().toISOString() },
-            updated_at: new Date().toISOString(),
-        }).eq('id', listingId);
+        await api.put(`/api/listings/${encodeURIComponent(listingId)}`,{status:'sold'});
     } else {
         await api.del(`/api/listings/${listingId}`);
     }
@@ -423,7 +467,8 @@ const SAMPLE_LISTINGS = import.meta.env.DEV
 
 // ── Get single listing ────────────────────────────────────────────────────────
 export async function getListingById(listingId) {
-    const sample = SAMPLE_LISTINGS.find(c => c.id === listingId);
+    const allSamples = PLATFORM.id === 'navtika' ? [...sampleBoats, ...sampleAuctionBoats] : [...sampleCars, ...sampleAuctionCars];
+    const sample = allSamples.find(c => c.id === listingId);
     if (sample) return sample;
     const row = await api.get(`/api/listings/${listingId}`, { auth: false });
     return normalizeListingRow(row);

@@ -5,6 +5,7 @@
 
 import { supabase } from '../lib/supabase.js';
 import { api } from '../lib/apiClient.js';
+import { PLATFORM } from '../config/platform.js';
 import { sampleAuctionState } from '../data/sampleAuctions.js';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -117,12 +118,13 @@ export function isAuctionActive(auction) {
 export async function createAuction(listingId, opts) {
     const result = await api.post('/api/auctions', {
         listingId,
-        startPriceEur: opts.startPriceEur,
+        platform:PLATFORM.id,
+        startPrice: Number(opts.startPriceEur)||0,
         durationDays: opts.durationDays || 7,
         auctionType: normalizeAuctionType(opts.auctionType),
-        reservePriceEur: opts.reservePriceEur ?? null,
-        bindingContract: true,
-        cashAllowed: true,
+        ...(opts.reservePriceEur!=null?{reservePrice:Number(opts.reservePriceEur)}:{}),
+        bindingContract: !!opts.bindingContract,
+        cashAllowed: !!opts.bindingContract&&!!opts.cashAllowed,
         sellerContract: opts.sellerContract || null,
     });
     return result?.id ?? listingId;

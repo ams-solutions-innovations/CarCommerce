@@ -113,11 +113,14 @@
             body.dark-mode #sidebarFiltersForm .year-selects-wrapper .custom-select-option:not(.selected) { color: #ffffff !important; }
             @media (min-width: 1025px) {
                 #filtersCard {
-                    overflow-y: auto !important;
-                    max-height: calc(100vh - 8rem) !important;
+                    overflow-y: visible !important;
+                    max-height: none !important;
+                    height: auto !important;
                 }
                 .filters-card-inner {
                     overflow: visible !important;
+                    max-height: none !important;
+                    height: auto !important;
                 }
             }
 
@@ -184,9 +187,14 @@
 
         <div class="oglasi-sidebar-card glass-card" id="filtersCard">
             <div class="filters-card-inner" style="min-height: 0; overflow: hidden;">
-                <div class="sidebar-filters-header" style="display:flex; justify-content:center; align-items:center; gap:0.4rem; margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.4rem;">
-                    <i data-lucide="sliders-horizontal" style="width:16px; height:16px; flex-shrink:0;"></i>
-                    <h3 style="margin:0; font-size:1.1rem; font-weight:700;" data-i18n-key="sidebar_filters_title">Filtri</h3>
+                <div class="sidebar-filters-header" style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; margin-bottom:0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); padding-bottom:0.4rem;">
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <i data-lucide="sliders-horizontal" style="width:16px; height:16px; flex-shrink:0;"></i>
+                        <h3 style="margin:0; font-size:1.1rem; font-weight:700;" data-i18n-key="sidebar_filters_title">Filtri</h3>
+                    </div>
+                    <button type="button" id="sidebarCollapseAllBtn" class="ah-sidebar-collapse-all-btn" aria-label="Skrči vse" data-collapsed="false">
+                        <span class="ah-collapse-label" data-i18n-key="collapse_all">Skrči vse</span>
+                    </button>
                 </div>
 
                 <form id="sidebarFiltersForm" style="display:flex; flex-direction:column; gap:0.6rem;">
@@ -261,6 +269,16 @@
                             <div class="sidebar-active-pills" id="activeBodyType"></div>
                         </div>
 
+                        <!-- Stanje vozila -->
+                        <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-dark);">Stanje vozila</label>
+                            <div class="adv-chip-group" style="display:flex; flex-wrap:wrap; gap:0.4rem; justify-content:center;">
+                                <label class="adv-chip" style="font-size:0.75rem; padding:0.35rem 0.75rem;"><input type="checkbox" name="condition" value="Novo vozilo"> Novo vozilo</label>
+                                <label class="adv-chip" style="font-size:0.75rem; padding:0.35rem 0.75rem;"><input type="checkbox" name="condition" value="Rabljeno"> Rabljeno</label>
+                                <label class="adv-chip" style="font-size:0.75rem; padding:0.35rem 0.75rem;"><input type="checkbox" name="condition" value="Testno vozilo"> Testno vozilo</label>
+                            </div>
+                        </div>
+
                         <!-- Toggles -->
                         <div class="form-group" style="display:flex; flex-direction:column; gap:0.6rem; margin-top:0.25rem;">
                             <label class="adv-chip" style="font-size:0.8rem; padding:0.4rem 0.75rem; display:flex; align-items:center; gap:0.5rem; cursor:pointer; width:fit-content; border:1px solid rgba(0,0,0,0.08); border-radius:999px;">
@@ -296,6 +314,27 @@
                                     <option value="">Do</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <!-- Prevoženi km do -->
+                        <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-dark);">Prevoženi km do</label>
+                            <select id="sidebarMileageTo" name="mileageTo" class="glass-select">
+                                <option value="">Brez omejitve</option>
+                                <option value="10000">do 10.000 km</option>
+                                <option value="25000">do 25.000 km</option>
+                                <option value="50000">do 50.000 km</option>
+                                <option value="100000">do 100.000 km</option>
+                                <option value="150000">do 150.000 km</option>
+                                <option value="200000">do 200.000 km</option>
+                            </select>
+                            <div class="sidebar-active-pills" id="activeMileage"></div>
+                        </div>
+
+                        <!-- Cena od -->
+                        <div class="form-group" style="display:flex; flex-direction:column; gap:0.4rem;">
+                            <label style="font-size:0.85rem; font-weight:600; color:var(--text-dark);">Cena od (€)</label>
+                            <input type="text" id="sidebarPriceFrom" name="priceFrom" placeholder="npr. 5.000 €" class="pill-input js-format-number" style="width:100%; box-sizing:border-box;" inputmode="numeric">
                         </div>
 
                         <!-- Cena do -->
@@ -516,9 +555,9 @@
                     </div>
                 </div>
 
-                <div style="margin-top: 0.5rem; padding-bottom: 0.25rem; display: flex; justify-content: center;">
-                    <button type="button" id="sidebarResetBtn" class="pill-btn" style="width: 100%; justify-content: center; background: #dc2626; color: #fff; border: none; border-radius: 999px; font-weight: 700; gap: 0.5rem; box-shadow: 0 4px 12px rgba(220,38,38,0.3);" data-i18n-key="sidebar_reset">
-                        <i data-lucide="x-circle" style="width:16px;height:16px;"></i> Počisti vse
+                <div class="ah-sidebar-footer">
+                    <button type="button" id="sidebarResetBtn" class="pill-btn">
+                        <span data-i18n-key="sidebar_reset">Ponastavi</span>
                     </button>
                 </div>
             </form>
@@ -539,9 +578,9 @@
     <!-- ═══ MAIN: Rezultati ═══════════════════════════════════ -->
     <main class="oglasi-main">
         <div class="results-header">
-            <h1>Search Results <span>(1,471 vehicles)</span></h1>
+            <h1><span class="ah-results-title" data-i18n-key="ah_search_results">Rezultati iskanja</span> <span class="ah-results-count"></span></h1>
             <div class="sort-wrap">
-                <span class="sort-label">Sort by:</span>
+                <span class="sort-label" data-i18n-key="ah_sort_by">Razvrsti:</span>
                 <div class="pill-select-wrapper">
                     <select class="pill-input" id="sortSelect" data-no-search="true">
                         <option value="">Privzeto</option>
@@ -549,6 +588,7 @@
                         <option value="price-desc">Cena: najvišja</option>
                         <option value="year-desc">Letnik: najnovejši</option>
                         <option value="km-asc">Kilometrina: najnižja</option>
+                        <option value="power-desc">Moč motorja: najvišja</option>
                     </select>
                 </div>
                 <button class="legend-btn" id="legendBtn" title="Icon legend">
@@ -654,88 +694,234 @@
         </div>
     </div>
 
-<!-- Legend popup (icons reference) -->
+<!-- Legend popup (icons reference + customizable card fields) -->
 <div class="legend-overlay" id="legendOverlay">
-    <div class="legend-card" style="max-width:320px; padding:1rem 1.25rem 1.25rem;">
-        <div class="legend-card-header" style="margin-bottom:0.75rem;">
-            <h3 style="font-size:1rem;">Legenda ikon</h3>
-            <button class="legend-close-btn" id="legendCloseBtn" aria-label="Close">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M18 6 6 18M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-
-        <!-- Fuel types compact grid -->
-        <p class="legend-section-title" style="font-size:0.7rem; margin-bottom:0.4rem; text-align:center;">Gorivo</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.3rem 0.75rem; margin-bottom:0.75rem;">
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-P" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="fuel" style="width:10px;height:10px;"></i> B</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">Bencin</span>
+    <div class="legend-card ah-legend-card">
+        <div class="legend-card-header">
+            <div>
+                <h3>Legenda oznak in prikaz na oglasih</h3>
+                <p class="legend-card-sub">Označite s kljukico podatke, ki jih želite prikazati na karticah oglasov</p>
             </div>
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-D" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="fuel" style="width:10px;height:10px;"></i> D</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">Dizel</span>
-            </div>
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-H" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="zap" style="width:10px;height:10px;"></i> H</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">Hibrid</span>
-            </div>
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-HB" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="zap" style="width:10px;height:10px;"></i> HB</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">Plug-in hibrid</span>
-            </div>
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-E" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="zap" style="width:10px;height:10px;"></i> E</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">Električno</span>
-            </div>
-            <div class="legend-row" style="gap:0.4rem; justify-content:center;">
-                <span class="legend-pill-demo fuel-pill-LPG" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="help-circle" style="width:10px;height:10px;"></i> LPG</span>
-                <span class="legend-row-desc" style="font-size:0.78rem;">LPG / Plin</span>
+            <div class="legend-header-actions">
+                <button type="button" class="legend-reset-btn" id="legendResetDefaultsBtn" title="Ponastavi prikaz na privzete nastavitve">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                    </svg>
+                    <span>Ponastavi na privzeto</span>
+                </button>
+                <button type="button" class="legend-close-btn" id="legendCloseBtn" aria-label="Zapri">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 6 6 18M6 6l12 12" />
+                    </svg>
+                </button>
             </div>
         </div>
 
-        <!-- Technical data compact grid -->
-        <p class="legend-section-title" style="font-size:0.7rem; margin-bottom:0.4rem; text-align:center;">Tehnični podatki</p>
-        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.3rem 0.5rem; margin-bottom:0.75rem;">
-            <div class="legend-row" style="gap:0.35rem; flex-direction:column; align-items:center;">
-                <span class="legend-pill-demo" style="font-size:0.68rem; padding:0.15rem 0.4rem; background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.3);color:#4f46e5;"><i data-lucide="zap" style="width:10px;height:10px;"></i> <span id="powerToggleLabel">kW</span></span>
-                <span class="legend-row-desc" style="font-size:0.72rem; text-align:center;">Moč motorja</span>
+        <div class="legend-card-body">
+            <!-- GORIVO IN POGON -->
+            <div class="legend-section">
+                <div class="legend-section-head">
+                    <h4 class="legend-section-title">Gorivo in pogon</h4>
+                    <label class="legend-section-toggle" title="Prikaži ali skrij vrsto goriva na oglasu">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span>Prikaži vrsto goriva</span>
+                    </label>
+                </div>
+                <div class="legend-grid">
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22h12M4 9h10m0 13V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18m10-9h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9l-4-4"/></svg>Bencin</span>
+                        <span class="legend-item-desc">Bencinski motor</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22h12M4 9h10m0 13V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18m10-9h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9l-4-4"/></svg>Dizel</span>
+                        <span class="legend-item-desc">Dizelski motor</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg>Hibrid</span>
+                        <span class="legend-item-desc">Klasični ali priključni hibrid</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m13 2-9 12h7l-1 8 10-13h-7Z"/></svg>Elektrika</span>
+                        <span class="legend-item-desc">100% električni pogon (BEV)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fuel" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 22h12M4 9h10m0 13V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v18m10-9h2a2 2 0 0 1 2 2v2a2 2 0 0 0 4 0V9l-4-4"/></svg>LPG / Plin</span>
+                        <span class="legend-item-desc">Avtoplin (LPG / CNG)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="driveType">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="6" r="2.2"/><circle cx="18" cy="6" r="2.2"/><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="18" r="2.2"/><path d="M8.2 6h7.6M8.2 18h7.6M12 6v12"/></svg>4x4 / Pogon</span>
+                        <span class="legend-item-desc">Pogon (4x4, Spredaj, Zadaj)</span>
+                    </label>
+                </div>
             </div>
-            <div class="legend-row" style="gap:0.35rem; flex-direction:column; align-items:center;">
-                <span class="legend-pill-demo consumption-pill" style="font-size:0.68rem; padding:0.15rem 0.4rem;"><i data-lucide="droplet" style="width:10px;height:10px;"></i> l/100</span>
-                <span class="legend-row-desc" style="font-size:0.72rem; text-align:center;">Poraba</span>
+
+            <!-- TEHNIČNI PODATKI (IZBIRA PRIKAZA NA OGLASU) -->
+            <div class="legend-section">
+                <div class="legend-section-head">
+                    <h4 class="legend-section-title">Tehnični podatki (izbira prikaza na oglasu)</h4>
+                </div>
+                <div class="legend-grid">
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="year" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4m8-4v4M3 10h18"/></svg>2024</span>
+                        <span class="legend-item-desc">Letnik vozila</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="mileage" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 14 4-4M3.34 19a10 10 0 1 1 17.32 0"/></svg>28.500 km</span>
+                        <span class="legend-item-desc">Prevoženi kilometri</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="transmission" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="6" cy="5.5" r="2"/><circle cx="18" cy="5.5" r="2"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="18.5" r="2"/><path d="M6 7.5v9m12-9v9M6 12h12"/></svg>Avtomatski</span>
+                        <span class="legend-item-desc">Tip menjalnika (ročni / avt.)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="power" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec power-pill" id="powerToggleLabelPill" style="cursor:pointer;" title="Kliknite za preklop enote"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m12 14 4-4M3.34 19a10 10 0 1 1 17.32 0"/></svg><span id="powerToggleLabel">KM</span></span>
+                        <span class="legend-item-desc">Moč motorja (KM / kW)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="consumptionCombined" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c-4 6-8 10-8 14a8 8 0 0 0 16 0c0-4-4-8-8-14Z"/></svg>6.5 L/100 km</span>
+                        <span class="legend-item-desc">Poraba (kombinirana)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="consumptionCity">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c-4 6-8 10-8 14a8 8 0 0 0 16 0c0-4-4-8-8-14Z"/></svg>Mesto 7.8 L</span>
+                        <span class="legend-item-desc">Poraba (mestna)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="consumptionHighway">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2c-4 6-8 10-8 14a8 8 0 0 0 16 0c0-4-4-8-8-14Z"/></svg>AC 5.4 L</span>
+                        <span class="legend-item-desc">Poraba (avtocesta)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="range" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="17" height="12" rx="2"/><path d="M20 10h1v4h-1M11 8l-3 5h4l-2 4 5-6h-4z"/></svg>Domet 520 km</span>
+                        <span class="legend-item-desc">Domet (električni WLTP)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="phevRange" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="6" width="17" height="12" rx="2"/><path d="M20 10h1v4h-1M11 8l-3 5h4l-2 4 5-6h-4z"/></svg>El. domet 65 km</span>
+                        <span class="legend-item-desc">El. domet na plug-in hibridih</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="batteryHealth">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="6" width="18" height="12" rx="2"/><path d="M22 10v4M7 12h2l1.5-3 2 6 1.5-3h2"/></svg>Baterija 96 %</span>
+                        <span class="legend-item-desc">Stanje baterije (zdravje v %)</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="owners">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.8-4 14.2-4 16 0"/></svg>1. lastnik</span>
+                        <span class="legend-item-desc">Št. prejšnjih lastnikov</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="engineType">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 6h10M9 6V4h6v2M4 10h3l2-2h6l2 2h3v7h-3l-2 2H9l-2-2H4v-7Zm-2 2v3"/></svg>V8 / Vrstni 4</span>
+                        <span class="legend-item-desc">Vrsta motorja</span>
+                    </label>
+                    <label class="legend-item legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="displacement">
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <span class="ah-spec"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 6h10M9 6V4h6v2M4 10h3l2-2h6l2 2h3v7h-3l-2 2H9l-2-2H4v-7Zm-2 2v3"/></svg>1.995 cc</span>
+                        <span class="legend-item-desc">Delovna prostornina (cc / L)</span>
+                    </label>
+                </div>
             </div>
-            <div class="legend-row" style="gap:0.35rem; flex-direction:column; align-items:center;">
-                <span class="legend-pill-demo" style="font-size:0.68rem; padding:0.15rem 0.4rem; background:rgba(241,245,249,0.5);border-color:#e2e8f0;color:#475569;"><i data-lucide="layers" style="width:10px;height:10px;"></i> R/A</span>
-                <span class="legend-row-desc" style="font-size:0.72rem; text-align:center;">Menjalnik</span>
+
+            <!-- CENA IN TRŽNA VREDNOST -->
+            <div class="legend-section">
+                <h4 class="legend-section-title">Oznake in analiza trga</h4>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <span class="ah-photo-badge legend-badge-demo">−12 %</span>
+                        <span class="legend-item-desc">Znižana cena / ugodnost</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="ah-photo-badge ah-badge-blue legend-badge-demo">NOVO</span>
+                        <span class="legend-item-desc">Novo dodano vozilo</span>
+                    </div>
+                    <label class="legend-item legend-item-full legend-item-checkable">
+                        <input type="checkbox" class="legend-field-cb" data-legend-field="fairPrice" checked>
+                        <span class="legend-cb-box"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5 6.5 11.5 12.5 4.5"/></svg></span>
+                        <div class="legend-rating-demo">
+                            <span class="legend-rating-label">Poštena cena</span>
+                            <div class="ah-rating-track"><i style="left: 50%;"></i></div>
+                        </div>
+                        <span class="legend-item-desc">Poštena cena — ocena cene glede na trg (Odlična / Poštena / Višja)</span>
+                    </label>
+                </div>
             </div>
-        </div>
 
-        <!-- Cena -->
-        <p class="legend-section-title" style="font-size:0.7rem; margin-bottom:0.4rem; text-align:center;">Cena</p>
-        <div class="legend-row" style="gap:0.5rem; margin-bottom:0.75rem; justify-content:center;">
-            <span class="legend-pill-demo discount-tag-legend">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-                    <line x1="7" y1="7" x2="7.01" y2="7"/>
-                </svg>
-            </span>
-            <span class="legend-row-desc" style="font-size:0.78rem;">Znižana cena / posebna ponudba</span>
-        </div>
+            <!-- HITRA DEJANJA (IKONE) -->
+            <div class="legend-section">
+                <h4 class="legend-section-title">Hitra dejanja na oglasu</h4>
+                <div class="legend-grid">
+                    <div class="legend-item">
+                        <div class="legend-action-demo"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg></div>
+                        <span class="legend-item-desc">Shrani med priljubljene</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-action-demo"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m16 16 3-8 3 8c-2 1.3-4 1.3-6 0Zm-14 0 3-8 3 8c-2 1.3-4 1.3-6 0ZM7 21h10M12 3v18M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+                        <span class="legend-item-desc">Dodaj v primerjalnik</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-action-demo"><svg class="ah-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 20 20 0 0 1-17.7-17.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7l.5 3a2 2 0 0 1-.6 2.1L7.7 10a16 16 0 0 0 6.3 6.3l1.2-1.3a2 2 0 0 1 2.1-.6l3 .5a2 2 0 0 1 1.7 2Z"/></svg></div>
+                        <span class="legend-item-desc">Kontaktiraj prodajalca</span>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Power unit toggle -->
-        <div class="power-unit-toggle" style="margin-top:0.5rem; padding-top:0.6rem; display:flex; align-items:center; border-top:1px solid rgba(128,128,128,0.15);">
-            <span class="legend-toggle-label" style="font-size:0.8rem; font-weight:600; margin-right:auto; color:#cbd5e1;">Prikaz moči:</span>
-            <button class="power-unit-btn" data-unit="kw" id="puBtnKw">kW</button>
-            <button class="power-unit-btn active" data-unit="km" id="puBtnKm">KM</button>
-        </div>
-
-        <!-- Displacement unit toggle -->
-        <div class="displacement-unit-toggle" style="margin-top:0.5rem; padding-top:0.6rem; border-top:1px solid rgba(128,128,128,0.15); display:flex; align-items:center; gap:0.5rem;">
-            <span class="legend-toggle-label" style="font-size:0.8rem; font-weight:600; margin-right:auto; color:#cbd5e1;">Prikaz prostornine:</span>
-            <button class="displacement-unit-btn active" data-unit="cc" id="duBtnCc">cc</button>
-            <button class="displacement-unit-btn" data-unit="l" id="duBtnL">L</button>
+            <!-- NASTAVITVE ENOT (TOGGLES) -->
+            <div class="legend-settings-box">
+                <div class="legend-setting-row">
+                    <div class="legend-setting-info">
+                        <span class="legend-setting-name">Prikaz moči motorja</span>
+                        <span class="legend-setting-hint">Kilovati (kW) ali konjske moči (KM)</span>
+                    </div>
+                    <div class="legend-unit-toggle">
+                        <button type="button" class="power-unit-btn" data-unit="kw" id="puBtnKw">kW</button>
+                        <button type="button" class="power-unit-btn active" data-unit="km" id="puBtnKm">KM</button>
+                    </div>
+                </div>
+                <div class="legend-setting-row">
+                    <div class="legend-setting-info">
+                        <span class="legend-setting-name">Prikaz delovne prostornine</span>
+                        <span class="legend-setting-hint">Kubični centimetri (cc) ali litri (L)</span>
+                    </div>
+                    <div class="legend-unit-toggle">
+                        <button type="button" class="displacement-unit-btn active" data-unit="cc" id="duBtnCc">cc</button>
+                        <button type="button" class="displacement-unit-btn" data-unit="l" id="duBtnL">L</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -2,8 +2,10 @@
 import { loginWithEmail, loginWithGoogle } from '../auth/auth.js';
 import { navigateTo } from '../router.js';
 import { t } from '../core/i18n.js';
+import { PLATFORM } from '../config/platform.js';
 
 export function initLoginPage() {
+    if (PLATFORM.id === 'avto') return import('../pages/accounts.autohub.js').then(m => m.initAutoHubAccountsPage('login'));
     const form = document.getElementById('loginForm');
     const errorEl = document.getElementById('error-message');
     const googleBtn = document.getElementById('googleLoginBtn');

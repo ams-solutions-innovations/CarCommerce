@@ -9,6 +9,17 @@ import { registerDefaultExtensions } from './src/core/extensions.js';
 import { PLATFORM } from './src/config/platform.js';
 import { initMonitoring, setMonitoringUser } from './src/lib/monitoring.js';
 import './src/index.css';
+import autoHubStylesheetUrl from './css/autohub.css?url';
+import autoHubWorkspaceStylesheetUrl from './css/autohub-workspace.css?url';
+import autoHubPartsStylesheetUrl from './css/autohub-parts.css?url';
+import autoHubVehicleStylesheetUrl from './css/autohub-vehicles.css?url';
+import autoHubAccountStylesheetUrl from './css/autohub-accounts.css?url';
+import autoHubSellerStylesheetUrl from './css/autohub-seller.css?url';
+import autoHubDashboardStylesheetUrl from './css/autohub-dashboard.css?url';
+import autoHubSearchStylesheetUrl from './css/autohub-search.css?url';
+import autoHubDetailStylesheetUrl from './css/autohub-detail.css?url';
+import autoHubMobileStylesheetUrl from './css/autohub-mobile.css?url';
+import { initResponsiveViewport } from './src/components/autohub/responsive.js';
 
 // Hijack window.fetch to automatically prefix absolute resource fetches with the base path
 const originalFetch = window.fetch;
@@ -35,6 +46,7 @@ window.fetch = function (resource, options) {
 
 // Global click interceptor for SPA routing
 document.addEventListener('click', (e) => {
+    if (e.defaultPrevented) return;
     const a = e.target.closest('a');
     if (!a) return;
     
@@ -48,6 +60,14 @@ document.addEventListener('click', (e) => {
     if (href.startsWith('/') && !href.startsWith('//')) {
         e.preventDefault();
         import('./src/router.js').then(m => m.navigateTo(href));
+        return;
+    }
+
+    // Legacy hash-style links ("#/b2b/storitve") from the pre-History-API router:
+    // translate them to real paths so they navigate instead of doing nothing.
+    if (href.startsWith('#/')) {
+        e.preventDefault();
+        import('./src/router.js').then(m => m.navigateTo(href.slice(1)));
     }
 });
 
@@ -56,6 +76,7 @@ initMonitoring();
 
 // Apply platform brand colors + document title before first paint.
 applyPlatformBranding();
+if (PLATFORM.id === 'avto') initResponsiveViewport();
 
 // Restore saved theme before any render to avoid flash
 if (localStorage.getItem('theme') === 'dark') {
@@ -106,6 +127,12 @@ document.addEventListener('langChanged', () => {
 // Track auth state globally so views can use it
 window.__authReady = new Promise(resolve => {
     onAuth(user => {
+        // Compatibility shim: pages written against the Firebase user shape read
+        // `.uid` / `.displayName`; a raw Supabase user only has `.id` / user_metadata.
+        if (user) {
+            if (!user.uid) user.uid = user.id;
+            if (!user.displayName) user.displayName = user.user_metadata?.display_name || user.user_metadata?.full_name || '';
+        }
         window.__currentUser = user || null;
         bindB2BContext(user);
         setMonitoringUser(user);
@@ -150,17 +177,33 @@ function applyPlatformBranding() {
 // ships one today (css/styles.navtika.css); MojAvto's styles live in styles.css.
 // Added to <head> so it overrides styles.css cascade order and loads before paint.
 function loadPlatformStylesheet() {
-    if (PLATFORM.id !== 'navtika') return;
-    const href = 'css/styles.navtika.css';
-    if (document.querySelector(`link[href="${href}"]`)) return;
+    const stylesheets = PLATFORM.id === 'avto' ? [autoHubStylesheetUrl,autoHubWorkspaceStylesheetUrl,autoHubPartsStylesheetUrl,autoHubVehicleStylesheetUrl,autoHubAccountStylesheetUrl,autoHubSellerStylesheetUrl,autoHubDashboardStylesheetUrl,autoHubSearchStylesheetUrl,autoHubDetailStylesheetUrl,autoHubMobileStylesheetUrl] : ['css/styles.navtika.css'];
+    for (const href of stylesheets) {
+    if (document.querySelector(`link[href="${href}"]`)) continue;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = href;
     document.head.appendChild(link);
+    }
 }
 
 // Fill the brand-specific bits of the footer from the active PLATFORM.
 function applyPlatformFooter(footerEl) {
+    if (PLATFORM.id === 'avto') footerEl.querySelectorAll('.footer-col').forEach((column,index) => {
+        const title = column.querySelector('.footer-col-title');
+        const content = column.querySelector('ul,address');
+        if (!title || !content) return;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'ah-footer-toggle';
+        button.textContent = title.textContent;
+        button.dataset.i18nKey = title.dataset.i18nKey;
+        content.id = `ah-footer-section-${index}`;
+        button.setAttribute('aria-controls',content.id);
+        button.setAttribute('aria-expanded','false');
+        button.addEventListener('click',() => button.setAttribute('aria-expanded',String(button.getAttribute('aria-expanded') !== 'true')));
+        title.after(button);
+    });
     const set = (id, fn) => { const el = footerEl.querySelector('#' + id); if (el) fn(el); };
     set('footerLogo', el => { el.innerHTML = `${PLATFORM.brandName}<span class="logo-accent">${PLATFORM.tld}</span>`; });
     set('footerCompanyName', el => { el.textContent = PLATFORM.company.name; });

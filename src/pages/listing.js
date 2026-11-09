@@ -3,6 +3,9 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { escHtml } from '../utils/escHtml.js';
+import { PLATFORM } from '../config/platform.js';
+import { renderAutoHubListing, enhanceAutoHubListing, syncAutoHubListingLayout, renderAutoHubPriceAssessment } from '../components/autohub/listingDetail.js';
+import { recordRecentVehicle, vehicleSnapshot } from '../services/vehicleWorkspaceService.js';
 import { getListingById, recordListingView, getListingViewStats, formatPrice, getListings } from '../services/listingService.js';
 import { kmToMiles, kwToHp, l100kmToMpg, formatDisplacement, showCompareLimitToast } from '../utils/listingUtils.js';
 import { getVehicleRating } from '../utils/valuationScore.js';
@@ -42,6 +45,7 @@ export async function initListingPage() {
         ]);
         if (!listing) { if (page) renderError(page, { mapped: mapError({ status: 404 }) }); return; }
         recordListingView(id);      // log this view (local timeline + Firestore daily) before rendering stats
+        if (PLATFORM.id === 'avto') recordRecentVehicle(listing);
         renderListing(listing, allListings);
         injectRating(listing, allListings);
         injectServiceHistory(listing);
@@ -115,6 +119,11 @@ function injectRating(listing, allListings) {
     if (!slot) return;
 
     const rating = getVehicleRating(listing, allListings);
+
+    if (PLATFORM.id === 'avto') {
+        renderAutoHubPriceAssessment(document.getElementById('listingPage'), rating);
+        return;
+    }
 
     // Low confidence or no rating — fall back to a neutral 3-star "fair price"
     // so we always show the star system (never an English pill).
@@ -283,12 +292,12 @@ function initCompareBtn(l) {
             } catch { return; }
         }
 
-        if (list.length >= 3) {
+        if (list.length >= (PLATFORM.id === 'avto' ? 4 : 3)) {
             showCompareLimitToast();
             return;
         }
 
-        list.push({ id: l.id, title: l.make + ' ' + l.model, image: l.images?.exterior?.[0] || '', price: l.priceEur || l.price });
+        list.push(PLATFORM.id === 'avto' ? vehicleSnapshot(l) : { id: l.id, title: l.make + ' ' + l.model, image: l.images?.exterior?.[0] || '', price: l.priceEur || l.price });
         btn.classList.add('active');
         popBtn(btn);
         localStorage.setItem(lsKey('compare'), JSON.stringify(list));
@@ -344,9 +353,64 @@ function renderListing(l, preloadedAll = []) {
     const page = document.getElementById('listingPage');
     if (!page) return;
 
-    const exteriorImages = l.images?.exterior || [];
+    const exteriorImages = l.images?.exterior || (Array.isArray(l.images) ? l.images : []);
     const interiorImages = l.images?.interior || [];
     const isSponsored = l.promotion?.tier === 'sponsored';
+
+
+    if (PLATFORM.id === 'avto') {
+        renderAutoHubListing(page, l, preloadedAll);
+
+        // Mount React cost panel if root exists
+        const costPanelRoot = document.getElementById('react-cost-panel-root');
+        const cpPrice = l.priceRaw || l.priceEur || l.price;
+        const cpKw = l.powerKw || l.power;
+        if (costPanelRoot && cpPrice && cpKw) {
+            mountReactComponent('react-cost-panel-root',
+                React.createElement(CostPanel, {
+                    price: Number(cpPrice),
+                    powerKw: Number(cpKw),
+                    fuelType: l.fuel || '',
+                    mpg: l.fuelL100km ? (235.215 / l.fuelL100km) : null,
+                    kWhPer100km: l.electricConsumption || null,
+                    isNew: l.isNew !== false,
+                    make: l.make || '',
+                    category: l.category || 'sedan',
+                    vin: l.vin || '',
+                })
+            );
+        }
+
+        // Init gallery interactivity
+        initGallery(exteriorImages, interiorImages);
+
+        // Favourite button
+        initFavBtn(l);
+
+        // Compare button
+        initCompareBtn(l);
+
+        // Report listing
+        document.getElementById('lpReportBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            showReportModal(l.id);
+        });
+
+        // Relocate layout elements on stacked/mobile widths:
+        const syncResponsiveLayout = () => {
+            syncAutoHubListingLayout(page);
+        };
+        syncResponsiveLayout();
+        window.addEventListener('resize', syncResponsiveLayout);
+
+        const cleanUp = () => {
+            window.removeEventListener('resize', syncResponsiveLayout);
+            document.removeEventListener('routeChanged', cleanUp);
+        };
+        document.addEventListener('routeChanged', cleanUp);
+
+        return;
+    }
 
     page.innerHTML = `
         <div class="lp-container">
@@ -740,13 +804,15 @@ function initGallery(exteriorImages, interiorImages) {
     // Touch swipe support for mobile
     const galleryMain = document.querySelector('.lp-gallery-main');
     if (galleryMain) {
-        let touchStartX = 0;
+        let touchStartX = 0, touchStartY = 0;
         galleryMain.addEventListener('touchstart', e => {
             touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
         }, { passive: true });
         galleryMain.addEventListener('touchend', e => {
             const dx = e.changedTouches[0].clientX - touchStartX;
-            if (Math.abs(dx) > 40) setImg(dx < 0 ? current + 1 : current - 1);
+            const dy = e.changedTouches[0].clientY - touchStartY;
+            if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) setImg(dx < 0 ? current + 1 : current - 1);
         }, { passive: true });
     }
 

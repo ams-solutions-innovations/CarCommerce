@@ -1,3 +1,4 @@
+import { PLATFORM } from '../config/platform.js';
 // Profile page — MojAvto.si
 // Moja garaža: add/manage vehicles with tire info
 import { getVehicles, addVehicle, updateVehicle, deleteVehicle, getFavourites, removeFromFavourites } from '../services/garageService.js';
@@ -8,6 +9,7 @@ import { key as lsKey } from '../config/storageKeys.js';
 import { scrollIntoViewOnMobile } from '../utils/viewport.js';
 
 export async function initProfilePage() {
+    if(PLATFORM.id==='avto')return import('./profile.autohub.js').then(module=>module.initAutoHubProfilePage());
     const container = document.getElementById('app-container');
     if (!container) return;
 

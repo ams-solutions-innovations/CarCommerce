@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <path d="M50 8 L88 22 L88 56 C88 76, 50 92, 50 92 C50 92, 12 76, 12 56 L12 22 Z" fill="#1e3d59"/>
+    <!-- Knight helmet -->
+    <path d="M36 32 C36 24, 64 24, 64 32 L68 52 C68 62, 60 70, 50 72 C40 70, 32 62, 32 52 Z" fill="#d4af37"/>
+    <rect x="38" y="44" width="24" height="4" fill="#1e3d59"/>
+    <rect x="42" y="52" width="16" height="3" fill="#1e3d59"/>
+    <rect x="44" y="58" width="12" height="3" fill="#1e3d59"/>
+  </svg>

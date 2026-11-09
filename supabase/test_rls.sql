@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- RLS regression test — run AFTER schema.sql + policies.sql + security.sql.
+-- RLS regression test — run AFTER schema.sql + policies.sql + security.sql + b2b.sql.
 -- Idempotent and READ-ONLY: it asserts that Row Level Security is still enabled
 -- and that every table has at least one policy. If a future migration
 -- accidentally drops RLS or a policy, this RAISES and fails the deploy — it can
@@ -18,7 +18,8 @@ declare
   required text[] := array[
     'profiles','businesses','listings','auctions','bids','inventory','leads',
     'bookings','tire_storage','tire_orders','reviews','reports',
-    'taxonomy_proposals','wallets','wallet_ledger','b2b_api_keys'
+    'taxonomy_proposals','wallets','wallet_ledger','b2b_api_keys',
+    'services','service_records'
   ];
   tname text;
 begin

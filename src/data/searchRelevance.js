@@ -26,11 +26,11 @@ export const MOTO_STROKE_OPTIONS = [
 ];
 
 export const MOTO_CYLINDER_OPTIONS = [
-    { v: '1', l: '1' },
-    { v: '2', l: '2' },
-    { v: '3', l: '3' },
-    { v: '4', l: '4' },
-    { v: '6', l: '6' },
+    { v: '1', l: '1 valj' },
+    { v: '2', l: '2 valja' },
+    { v: '3', l: '3 valji' },
+    { v: '4', l: '4 valji' },
+    { v: '6', l: '6 valjev' },
     { v: 'Wankel', l: 'Wankel' },
 ];
 

@@ -1,0 +1,2155 @@
+[
+  {
+    "id": "01",
+    "archive": "01 Domov-html.zip",
+    "sha256": "7206a5072686562c9ca7d15b1f290e894deb9d88161125273fbd83faed6fccaa",
+    "html": "Main.dc.html",
+    "assets": 22,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3090}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 41,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "02",
+    "archive": "02 Iskanje seznam-html.zip",
+    "sha256": "d84b2de1f2cf4ce5cccb8e1b886d44f13e2c786fdb9e50b5477a63782be89ee6",
+    "html": "Iskanje.dc.html",
+    "assets": 17,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2760}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 47,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "03",
+    "archive": "03 Iskanje mreža-html.zip",
+    "sha256": "18527b939eb3a662ad52e2422b85e02a6dc895f91f40ee449199d39e056c0300",
+    "html": "Mreza.dc.html",
+    "assets": 13,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2240}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)",
+      "transition:transform .25s,box-shadow .25s"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 46,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "04",
+    "archive": "04 Oglas-html.zip",
+    "sha256": "095dd5b0f6a3efecd055a082b07389d0e14d23fb804fd5a5b4edbd3cd355f5c5",
+    "html": "Oglas.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3450}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 40,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "05",
+    "archive": "05 Moje mape-html.zip",
+    "sha256": "63a8f63e1f598cd58bda501c9244d3657c99e38da12797e0cdea7967e5381a8a",
+    "html": "Mape.dc.html",
+    "assets": 22,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3640}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 39,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "06",
+    "archive": "06 Oglasna deska-html.zip",
+    "sha256": "99e4b63315f3a9aac4359f02bef7d677a20101066d9833d781c07713d11894bb",
+    "html": "Deska.dc.html",
+    "assets": 14,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2200}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 27,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "07",
+    "archive": "07 Avtohiše-html.zip",
+    "sha256": "9d44f1a05012ef35f12fb3cd8937ddd43e0c1dcd711b20e56bb342c7e641579a",
+    "html": "Avtohise.dc.html",
+    "assets": 11,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2200}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 43,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "08",
+    "archive": "08 Nove ikone za avtohiše-html.zip",
+    "sha256": "71b02c90a1743c2a279f4cad14ddc09ee90df856b4801123604f5d9410b408d4",
+    "html": "Ikone.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2080}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "09",
+    "archive": "09 Napredno iskanje avtomobili-html.zip",
+    "sha256": "db97f08eb804e5964542b926cc4b2b5823b5391c1f2fc452c07961477899c475",
+    "html": "VecFiltrov.dc.html",
+    "assets": 15,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":5090}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 26,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "10",
+    "archive": "10 Napredno iskanje motorji-html.zip",
+    "sha256": "81ccebf5099cb8fedf2a54a3bd3059ba320976af8add89c6dec1e6ef0390b391",
+    "html": "VecFiltrovMoto.dc.html",
+    "assets": 24,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":4310}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 25,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "11",
+    "archive": "11 Gume in deli-html.zip",
+    "sha256": "440e62628a01d4c3a050b32180f2d2060c18b385717bcd31e33ad76c18f27d19",
+    "html": "GumeDeli.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3470}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)",
+      "transition:transform .2s,box-shadow .2s"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:'Manrope',sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 41,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "12",
+    "archive": "12 Dodaj oglas · 1 Kategorija-html.zip",
+    "sha256": "4620cfef611aa9a632beefd6ffc5f1634cc5f25aa59b2f8b4d9c3c3ec912f533",
+    "html": "DodajKategorija.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1300}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "13",
+    "archive": "13 Dodaj oglas · 2 Osnovni podatki-html.zip",
+    "sha256": "c742261e4a194c1de4ded3894cb260d3940db080f7071721968bef5103d02d78",
+    "html": "DodajOsnovni.dc.html",
+    "assets": 17,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2080}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "14",
+    "archive": "14 Dodaj oglas · 3 Tehnika-html.zip",
+    "sha256": "132e50325e25dbb09318cffc252675e5fa824bad35697365012c26c361654c20",
+    "html": "DodajTehnika.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2010}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "15",
+    "archive": "15 Dodaj oglas · 4 Oprema-html.zip",
+    "sha256": "80182578b4f1c55e0348f4286cd06f7f42e2c7bf4e532102632cf410b940d285",
+    "html": "DodajOprema.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2030}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "16",
+    "archive": "16 Dodaj oglas · 5 Fotografije-html.zip",
+    "sha256": "97ed261660b1d1191b46d2327c8a58d87cf79f89953cf58d4ab764fcf6d059a8",
+    "html": "DodajFoto.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1530}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "17",
+    "archive": "17 Dodaj oglas · 6 Opis-html.zip",
+    "sha256": "83d67941019ee4054064b528f8d6ce745436ec15dcfd314c58cb870e0a976930",
+    "html": "DodajOpis.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1270}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "18",
+    "archive": "18 Dodaj oglas · 7 Cena-html.zip",
+    "sha256": "9ee984a3d2e2c0c92402606cec435e997c91d6738e2515b68d38d1bf98bed77a",
+    "html": "DodajCena.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1680}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "19",
+    "archive": "19 Dodaj oglas · 8 Lokacija in kontakt-html.zip",
+    "sha256": "1f8848a8b4c2ba7fa3085c288bb20216cf7c5cbd54cf531497071a51024db3fb",
+    "html": "DodajLokacija.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2170}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "20",
+    "archive": "20 Dodaj oglas · 9 Vidnost-html.zip",
+    "sha256": "55aba285ad01b7d49badcf451d1385867c9780326d4324dbfc8ea949b75f5edc",
+    "html": "DodajVidnost.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1300}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "21",
+    "archive": "21 Dodaj oglas · 10 Pregled-html.zip",
+    "sha256": "d61b5cde45d1d51876c6d695ebb82163560bfd894600a7ab843330378b9ccb50",
+    "html": "DodajPregled.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2780}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "22",
+    "archive": "22 Dodaj oglas · oglas objavljen-html.zip",
+    "sha256": "4153f18169e739627bda240bd4603efb3d7f1ef29702593766d90b7fe2cef0f2",
+    "html": "DodajUspeh.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1260}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "23",
+    "archive": "23 Dodaj oglas · dražba-html.zip",
+    "sha256": "b2c1daaf9b9d34542aa6441803f8053b618f86cb8737904e1737c8b9c6420203",
+    "html": "DodajDrazba.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2050}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "24",
+    "archive": "24 Dashboard prodajalca · pregled-html.zip",
+    "sha256": "44d5fcdda67b68de7d9292c10a3c18c846f02cc7033c3b2d6b8fc5fd2fa753a5",
+    "html": "DashPregled.dc.html",
+    "assets": 5,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1770}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Inter",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "25",
+    "archive": "25 Dashboard prodajalca · moji oglasi-html.zip",
+    "sha256": "49232d33b2b0d7ef8bc8477bf03608ac0b6436ef0f80dae41030d451edc90786",
+    "html": "DashOglasi.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2120}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "26",
+    "archive": "26 Dashboard prodajalca · pojavna okna-html.zip",
+    "sha256": "8bc6e81a9844456042da9bcc95d85e8a064d6f67fa3ae76e42f5bad21b7dbdcb",
+    "html": "DashOkna.dc.html",
+    "assets": 4,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2100}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "27",
+    "archive": "27 Dashboard prodajalca · statistika oglasov-html.zip",
+    "sha256": "ef5364253737faf3fadd1317ff6fd527806a34f71c3c878488f16e6852b2cf30",
+    "html": "DashStatistika.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1540}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "28",
+    "archive": "28 Dashboard prodajalca · povpraševanja in sporočila-html.zip",
+    "sha256": "e85856563b1fc91c3030af775e52aaa5a50f1c776688adf2a7fd081f87619b6d",
+    "html": "DashSporocila.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1280}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "29",
+    "archive": "29 B2B · pregled avtohiše-html.zip",
+    "sha256": "af7e4437bb309e8409f3a5a5c47a4b8b0b845a6b4dce8fe0992d56d86bfb690a",
+    "html": "B2bPregled.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1950}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "30",
+    "archive": "30 B2B · zaloga vozil-html.zip",
+    "sha256": "d9deffe50c938f331f26291fa90b24c248f7e2039d032102eb9a37463926bd34",
+    "html": "B2bZaloga.dc.html",
+    "assets": 5,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2040}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "31",
+    "archive": "31 B2B · povpraševanja (CRM)-html.zip",
+    "sha256": "1f290522a91f43ca9ea3204dc2dd3569dea88a37a5d76f8d9143c35e64220dc5",
+    "html": "B2bLeads.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":960}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "32",
+    "archive": "32 Dražbe · oglasna deska-html.zip",
+    "sha256": "241b7860e5be50c565a37458d4610fce91070b79b3d8c2c9c30d67a72966d4f7",
+    "html": "DrazbeDeska.dc.html",
+    "assets": 13,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2670}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 32,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "33",
+    "archive": "33 Dražba · odprt oglas aktivne dražbe-html.zip",
+    "sha256": "1276db2afaba5a93a18630abd2e52b44354b5d80dd2e7fd871a8de196f8d4618",
+    "html": "DrazbaOglas.dc.html",
+    "assets": 7,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3480}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 41,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "34",
+    "archive": "34 Dražba · stanja in pojavna okna-html.zip",
+    "sha256": "7f66da8634c52509302baf931614e9fa8ff1bd0b9744ae4572285a7f09af2728",
+    "html": "DrazbaStanja.dc.html",
+    "assets": 4,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2760}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 28,
+    "externalUrls": [
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "35",
+    "archive": "35 Onboarding · registracija (zasebni)-html.zip",
+    "sha256": "14a7bd30a45b1c35d2db7bc8903ec095e320c952047e24346327e96fa2e0d918",
+    "html": "OnbReg.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1150}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "36",
+    "archive": "36 Onboarding · potrditev e-pošte-html.zip",
+    "sha256": "cf680567daeb929ce7b266b01bc2ef4e3ad0ce1134ac6105a72f61a406f7ef43",
+    "html": "OnbEposta.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":930}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "37",
+    "archive": "37 Onboarding · kaj iščete-html.zip",
+    "sha256": "06cd87eadc6b77d915d6d969940d0749a89c2fa87d8722064cd97d41e68a3712",
+    "html": "OnbNamen.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1330}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "38",
+    "archive": "38 Onboarding · vozila in preference-html.zip",
+    "sha256": "412d30da40284b304ff50f0b90806acc602c9240296c75ef6db07162c97012cd",
+    "html": "OnbVozila.dc.html",
+    "assets": 25,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2040}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "39",
+    "archive": "39 Onboarding · obvestila in shranjeno iskanje-html.zip",
+    "sha256": "e067209d4efea1456eade8c6c304f0245fb7d1e3ab83e7d8e605939c43ff517d",
+    "html": "OnbObvestila.dc.html",
+    "assets": 4,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1520}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "40",
+    "archive": "40 Onboarding · dobrodošlica in vodič-html.zip",
+    "sha256": "2774193c7cef5a963c932bdbea8aac35e59f40a96da38cec7cfef4b86b31462e",
+    "html": "OnbDobrodosli.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1400}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "41",
+    "archive": "41 Onboarding · stanja in pojavna okna-html.zip",
+    "sha256": "d45df3902cc3da973637dab0ecb57fb6eb138cf67aa11ad0c2f1d84e893e1ff9",
+    "html": "OnbStanja.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1870}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "42",
+    "archive": "42 B2B onboarding · poslovni račun-html.zip",
+    "sha256": "0a32418dd037a9b03db8dcdc8632b2a688b996ba2bcc02a269d4586a6b01e6bf",
+    "html": "B2bOnbRacun.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1100}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "43",
+    "archive": "43 B2B onboarding · podatki podjetja-html.zip",
+    "sha256": "5610cf00f36bee56e5afe3730cd378a591e13d5efc74b249d6f80172f03dc9bf",
+    "html": "B2bOnbPodjetje.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1270}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://avtocenter.si",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "44",
+    "archive": "44 B2B onboarding · dejavnost-html.zip",
+    "sha256": "f4a35edb86d2fe56b03167979776da0679e47dda0ff607d907fca27b00d1d831",
+    "html": "B2bOnbDejavnost.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1400}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "45",
+    "archive": "45 B2B onboarding · preverjanje-html.zip",
+    "sha256": "7f020a4ee9c00850706ed3caca7ad23229c8218d9449e336ac64b4696480b031",
+    "html": "B2bOnbPreverjanje.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1020}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "46",
+    "archive": "46 B2B onboarding · prvi koraki (nadzorna plošča)-html.zip",
+    "sha256": "26f5f3a277c3ae9fe745364a5eec942f1702c97cf4293dda6c60bf4d7b059cf0",
+    "html": "B2bOnbPrviKoraki.dc.html",
+    "assets": 0,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1260}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "47",
+    "archive": "47 B2B onboarding · javni profil-html.zip",
+    "sha256": "280f0c16af5d6288e33825107bc682eecc5335361354610d74ea9ecc5fa37d95",
+    "html": "B2bOnbProfil.dc.html",
+    "assets": 4,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2210}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Inter,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://avtocenter.si",
+      "https://facebook.com/…",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap",
+      "https://instagram.com/…"
+    ]
+  },
+  {
+    "id": "48",
+    "archive": "48 B2B onboarding · cenik in zaloga-html.zip",
+    "sha256": "c949e3149f9db7bbd13e63831af056e860e4f8464b94eaa2d2be9ef91c1d1a2b",
+    "html": "B2bOnbCenikZaloga.dc.html",
+    "assets": 0,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1330}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "49",
+    "archive": "49 B2B onboarding · stanja in robni primeri-html.zip",
+    "sha256": "6d2d3522742734b545fb70125b8261edaefa86aaecae1669efb05cdfa604528e",
+    "html": "B2bOnbStanja.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1860}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "50",
+    "archive": "50 Prijava-html.zip",
+    "sha256": "55f3b5f7cb198ec47ce02ef6388e2eccc29c70768cb928baa78660190d02e7f5",
+    "html": "PrijavaMain.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1050}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "51",
+    "archive": "51 Prijava · pozabljeno geslo-html.zip",
+    "sha256": "c1d9905b99bff91e726643cf3dc935a33cd7be4fb69d3e49ff5d6afb6ba52b0c",
+    "html": "PrijavaGeslo.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1430}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "52",
+    "archive": "52 Prijava · stanja-html.zip",
+    "sha256": "2b5357d7f48038b6131473db63f5f7138f5253c6a1e70313d42e567e30e3e7d3",
+    "html": "PrijavaStanja.dc.html",
+    "assets": 1,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1940}",
+    "keyframes": [],
+    "motionDeclarations": [],
+    "mediaQueries": [],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 0,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "53",
+    "archive": "53 Moj profil · moji oglasi-html.zip",
+    "sha256": "88100afab787babd36e211d0ba87a44d62236221638db802ac7585073083f879",
+    "html": "ProfilOglasi.dc.html",
+    "assets": 7,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1580}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "54",
+    "archive": "54 Moj profil · priljubljeni-html.zip",
+    "sha256": "48ba00720666cb1aee6f7b0d7f02f567a8600d7eb8daddd6edcb0430787d4a71",
+    "html": "ProfilPriljubljeni.dc.html",
+    "assets": 7,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1500}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "55",
+    "archive": "55 Moj profil · nazadnje ogledano-html.zip",
+    "sha256": "8d70d84d8049f7b6bee32f4c3554ac18cd3ce50f0ae01a44c5c1b1745dca1f11",
+    "html": "ProfilOgledano.dc.html",
+    "assets": 7,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1600}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "56",
+    "archive": "56 Moj profil · uredi profil-html.zip",
+    "sha256": "bbb1f81bc75cc2efa8d6255168932e5f7e9268163f377ed58601cf9ab90f5189",
+    "html": "ProfilUredi.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3510}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "57",
+    "archive": "57 Moj profil · moja garaža-html.zip",
+    "sha256": "6fa4e39d0846926372851b7200cf80286c3f7ac4b43ff695a5e6ab7b0dfcf9af",
+    "html": "ProfilGaraza.dc.html",
+    "assets": 5,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1880}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "58",
+    "archive": "58 Moj profil · stanja-html.zip",
+    "sha256": "dfe47b2ee55638d66fd4235e44a44b00cb1adf93de71a53573a40d876324146e",
+    "html": "ProfilStanja.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2000}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "59",
+    "archive": "59 Primerjava vozil-html.zip",
+    "sha256": "eb119a6b7cd0e757fcf9b1234b256e922514b0247f496aaef82cfbb5b3dffed6",
+    "html": "Primerjava.dc.html",
+    "assets": 5,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1850}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "60",
+    "archive": "60 Primerjava · stanja-html.zip",
+    "sha256": "b5aaa9b381004c599b0552230b5d559994c3c8a5a772afa8a20416bb4e726cea",
+    "html": "PrimerjavaStanja.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1580}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "61",
+    "archive": "61 Oceni vrednost · obrazec-html.zip",
+    "sha256": "488d8da3376861fd2ccbce98fd210e9e2cde4994962540743f464726b8c0a084",
+    "html": "OceniVrednost.dc.html",
+    "assets": 6,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1440}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "62",
+    "archive": "62 Oceni vrednost · rezultat-html.zip",
+    "sha256": "2e8e35cd924382bb91950a94ad6460b83420165b4328a87fa18413780c2d3df5",
+    "html": "OceniRezultat.dc.html",
+    "assets": 3,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1540}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "63",
+    "archive": "63 Zemljevid-html.zip",
+    "sha256": "75580b853ca10f97004c67bbb91c68970d7de33d130c250060f292431f85cc6e",
+    "html": "Zemljevid.dc.html",
+    "assets": 5,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1290}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "64",
+    "archive": "64 Zemljevid · filtri in stanja-html.zip",
+    "sha256": "33457d2e30264d435b2864fd3f62852f860359100b311d57751c6dec70130ddf",
+    "html": "ZemljevidStanja.dc.html",
+    "assets": 10,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3370}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "65",
+    "archive": "65 Javni profil avtohiše-html.zip",
+    "sha256": "9a3a727d709cdc91055af30f251cb5461b725d4c6fab3706a3d15cd6c953eb58",
+    "html": "PoslovniProfil.dc.html",
+    "assets": 11,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2050}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "66",
+    "archive": "66 Javni profil · zavihki in stanja-html.zip",
+    "sha256": "d47a5b7f613a13300afe0c31bec9f63dbc673d9d836395d4e017748bf6ab45a0",
+    "html": "PoslovniProfilStanja.dc.html",
+    "assets": 7,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3320}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "67",
+    "archive": "67 Rezervacija · vozilo-html.zip",
+    "sha256": "97496d6602edcde531d12241c7a6d3bb268756a81822eb37dc98a0b54be6ef2d",
+    "html": "RezervacijaVozilo.dc.html",
+    "assets": 4,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1180}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "68",
+    "archive": "68 Rezervacija · storitve-html.zip",
+    "sha256": "5defb4331caa734090b18335614a440191f83d91a7244a7b194be5f926ea9b11",
+    "html": "RezervacijaStoritve.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1570}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "69",
+    "archive": "69 Rezervacija · izdelki-html.zip",
+    "sha256": "d01452298524c05aa2077f08bf33ed3f30578c001d6ddee08667bc397d17d705",
+    "html": "RezervacijaIzdelki.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1610}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "70",
+    "archive": "70 Rezervacija · termin-html.zip",
+    "sha256": "d39d5863f6cdd5eecfcef73d0af5a20dde0be3da1d53c6db72e4b0652b5f116e",
+    "html": "RezervacijaTermin.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1480}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "71",
+    "archive": "71 Rezervacija · potrditev-html.zip",
+    "sha256": "5aeb7ec1717970908967c5ece16230bc2f2f2ec96a7be3c1c0e63f1a3b90dbd9",
+    "html": "RezervacijaPotrditev.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":1700}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "72",
+    "archive": "72 Rezervacija · uspeh in stanja-html.zip",
+    "sha256": "07029bf8c7b5bab8b4c98e1501a52e100ec29e71d6ca5573e3324d240cad5739",
+    "html": "RezervacijaUspeh.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":3380}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "73",
+    "archive": "73 Katalog · guma-html.zip",
+    "sha256": "d45de65e5f1e677ed8b9c71cecc75909a190a9a2a92c7a13f78c89d3900950d9",
+    "html": "KatalogGuma.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2200}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  },
+  {
+    "id": "74",
+    "archive": "74 Katalog · del-html.zip",
+    "sha256": "160a029941c0d498fd270c3180d44ec61a344603a8802908b428da25981bd036",
+    "html": "KatalogDel.dc.html",
+    "assets": 2,
+    "preview": "\"$preview\":{\"width\":1440,\"height\":2680}",
+    "keyframes": [],
+    "motionDeclarations": [
+      "transition:background .25s,color .25s,box-shadow .25s",
+      "transition:max-width .35s cubic-bezier(.4,0,.2,1),padding .35s cubic-bezier(.4,0,.2,1),gap .35s cubic-bezier(.4,0,.2,1),box-shadow .3s ease,transform .3s ease",
+      "transition:opacity .2s ease .05s,max-width .35s cubic-bezier(.4,0,.2,1)"
+    ],
+    "mediaQueries": [
+      "@media (max-width:1023px)"
+    ],
+    "fonts": [
+      "font-family:'Inter',sans-serif",
+      "font-family:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif",
+      "font-family:'Manrope','Inter',sans-serif",
+      "font-family:'Manrope','Inter',system-ui,sans-serif",
+      "font-family:Manrope,Inter,sans-serif",
+      "font-family:ui-monospace,Menlo,Consolas,monospace"
+    ],
+    "logicLength": 63,
+    "logicExcerpt": "class Component extends DCLogic {\nrenderVals() {\nreturn {};\n}\n}",
+    "placeholderLinks": 23,
+    "externalUrls": [
+      "http://www.w3.org/2000/svg",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Manrope:wght@500;600;700;800&amp;display=swap"
+    ]
+  }
+]

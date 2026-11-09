@@ -33,7 +33,7 @@ export function parseFormattedNumber(value) {
  * Automatically appends ' €' for prices and ' km' for mileages.
  * @param {HTMLInputElement} input 
  */
-export function setupNumericFormatter(input) {
+export function setupNumericFormatter(input,{appendUnit=true}={}) {
     if (!input) return;
 
     // Detect suffix based on input name/id/placeholder
@@ -48,6 +48,7 @@ export function setupNumericFormatter(input) {
     } else if (name.includes('mileage') || id.includes('mileage') || placeholder.includes('km')) {
         suffix = ' km';
     }
+    if(!appendUnit)suffix='';
 
     input.addEventListener('input', (e) => {
         if (input._formatting) return;

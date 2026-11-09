@@ -1,0 +1,12 @@
+from pathlib import Path
+p=Path('tests/e2e/autohub-accounts.spec.js');s=p.read_text(encoding='utf-8')
+s=s.replace("localStorage.setItem('avto_lang','sl');", "if(!localStorage.getItem('avto_lang'))localStorage.setItem('avto_lang','sl');")
+s=s.replace("'x-supabase-api-version':'2024-01-01'", "'x-supabase-api-version':'2024-01-01','access-control-expose-headers':'X-Supabase-Api-Version'")
+s=s.replace("await expect(page).toHaveURL(/profil/);expect(f.verified()).toBe(true);", "await expect.poll(()=>f.verified()).toBe(true);await expect(page).toHaveURL(url=>url.pathname==='/profil');")
+s=s.replace("failSave=false}={}","failSave=false,partialServices=false}={}")
+s=s.replace("let prefs={sentinel:", "let rejectedService=false;let prefs={sentinel:")
+s=s.replace("if(req.method()==='POST'){const data=req.postDataJSON();services.push", "if(req.method()==='POST'){if(partialServices&&services.length===1&&!rejectedService){rejectedService=true;return route.fulfill({status:403,contentType:'application/json',body:JSON.stringify({message:'Storitev zavrnjena'})});}const data=req.postDataJSON();services.push")
+p.write_text(s,encoding='utf-8')
+p=Path('src/pages/onboarding.autohub.js');s=p.read_text(encoding='utf-8').replace("user.user_metadata?.display_name||user.email", "user.user_metadata?.display_name||user.user_metadata?.full_name||user.email")
+s=s.replace("state.completed=true;if(state.createSearch)", "state.completed=true;if(!state.createSearch)state.savedSearch=null;if(state.createSearch)")
+p.write_text(s,encoding='utf-8')

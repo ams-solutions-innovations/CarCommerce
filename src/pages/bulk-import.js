@@ -10,6 +10,12 @@ import { t } from '../core/i18n.js';
 
 const REQUIRED_FORMAT = 'mojavto-bulk-v1';
 
+// Real path (History-API router) of the listing editor; create-listing reads ?edit=<id>.
+function editListingUrl(id) {
+    const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+    return `${base}/novi-oglas?edit=${encodeURIComponent(id)}`;
+}
+
 // Required fields for vehicle itemType (same gate as createListing)
 const VEHICLE_REQUIRED = ['priceEur', 'make', 'model', 'fuel'];
 
@@ -21,7 +27,7 @@ export async function initBulkImportPage() {
         main.innerHTML = `
             <div class="b2b-empty">
                 <p>${t('bi_not_verified', 'Ta funkcija je na voljo samo verificiranim poslovnim uporabnikom.')}</p>
-                <a href="#/b2b" class="btn b2b-btn-primary">${t('bi_back_dashboard', 'Nazaj na pregled')}</a>
+                <a href="/b2b" class="btn b2b-btn-primary">${t('bi_back_dashboard', 'Nazaj na pregled')}</a>
             </div>`;
         return;
     }
@@ -275,7 +281,7 @@ async function runImport(main, drafts) {
             if (err) {
                 row.innerHTML = `<i data-lucide="x-circle"></i> <span class="bi-result-name">${esc(vehicleName)}</span> <span class="bi-result-msg">${esc(err)}</span>`;
             } else {
-                const editUrl = `#/novi-oglas?id=${id}`;
+                const editUrl = editListingUrl(id);
                 row.innerHTML = `<i data-lucide="check-circle"></i> <span class="bi-result-name">${esc(vehicleName)}</span> <a href="${editUrl}" target="_blank" class="bi-result-link">${t('bi_add_photos', 'Dodaj fotografije →')}</a>`;
             }
             listEl.appendChild(row);
@@ -294,7 +300,7 @@ function renderResultsStep(main, results) {
 
     const linksText = ok.map(r => {
         const name = [r.draft.make, r.draft.model, r.draft.variant].filter(Boolean).join(' ') || r.id;
-        return `${name}: ${window.location.origin}${window.location.pathname}#/novi-oglas?id=${r.id}`;
+        return `${name}: ${window.location.origin}${editListingUrl(r.id)}`;
     }).join('\n');
 
     main.innerHTML = `
@@ -317,7 +323,7 @@ function renderResultsStep(main, results) {
                     <div class="bi-links-list">
                         ${ok.map(r => {
                             const name = [r.draft.make, r.draft.model, r.draft.variant].filter(Boolean).join(' ') || r.id;
-                            const editUrl = `#/novi-oglas?id=${r.id}`;
+                            const editUrl = editListingUrl(r.id);
                             return `<div class="bi-link-row">
                                 <span class="bi-link-name">${esc(name)}</span>
                                 <a href="${editUrl}" class="bi-result-link" target="_blank">${t('bi_add_photos', 'Dodaj fotografije →')}</a>
@@ -336,7 +342,7 @@ function renderResultsStep(main, results) {
                 </div>` : ''}
 
                 <div class="bi-done-actions">
-                    <a href="#/b2b" class="btn b2b-btn-secondary">${t('bi_back_dashboard', 'Nazaj na pregled')}</a>
+                    <a href="/b2b" class="btn b2b-btn-secondary">${t('bi_back_dashboard', 'Nazaj na pregled')}</a>
                     <button id="biImportAnother" class="btn b2b-btn-primary">${t('bi_import_another', 'Uvozi novo datoteko')}</button>
                 </div>
             </div>

@@ -4,7 +4,7 @@ import '../../css/business-profile.css';
 import { getBusinessById, getTypeLabels, getBusinessTypeInfo } from '../services/businessService.js';
 import { serviceLabels } from '../data/businesses.js';
 import { SAMPLE_LISTINGS as sampleCars } from '../data/sampleListings.js'; // Reuse platform listings
-import { renderCarCard, bindCardEvents } from './oglasi.js';
+import { initBusinessListingsFilters } from './oglasi.js';
 import { getBrandLogo, getBrandInitial, isBrandMonochrome } from '../data/brandLogos.js';
 import { getBrandRgb } from '../data/brandColors.js';
 
@@ -147,118 +147,44 @@ function showTab(tabId) {
 window._showBizTab = showTab;
 
 // ── Build Listings Tab ────────────────────────────────────────
-// Reuses the same card renderer, toolbar markup, and grid layout as the
-// main /oglasi listings board so a dealer's inventory looks identical.
+// Reuses the full AutoHub /oglasi sidebar + topbar filtering logic and card renderer
+// so a dealer's inventory offers the exact same rich filtering experience as /oglasi.
 let bizAllListings = [];
-let bizListingsSort = '';
-let bizListingsFuel = 'all';
-
-function renderListingsGrid(listings) {
-    const grid = document.getElementById('carListingsContainer');
-    if (!grid) return;
-
-    if (listings.length === 0) {
-        grid.innerHTML = `<div class="biz-empty"><div style="font-size:2rem;margin-bottom:0.5rem;">🚗</div><div>Ni oglasov, ki bi ustrezali izbranim filtrom.</div></div>`;
-        return;
-    }
-
-    grid.innerHTML = listings.map(car => renderCarCard(car)).join('');
-    bindCardEvents(grid, listings);
-}
-
-function applyListingsFilterSort() {
-    let listings = [...bizAllListings];
-
-    if (bizListingsFuel !== 'all') {
-        listings = listings.filter(c => c.fuel === bizListingsFuel);
-    }
-
-    switch (bizListingsSort) {
-        case 'price-asc':
-            listings.sort((a, b) => (a.priceRaw ?? Infinity) - (b.priceRaw ?? Infinity));
-            break;
-        case 'price-desc':
-            listings.sort((a, b) => (b.priceRaw ?? 0) - (a.priceRaw ?? 0));
-            break;
-        case 'year-desc':
-            listings.sort((a, b) => (Number(b.year) || 0) - (Number(a.year) || 0));
-            break;
-        case 'km-asc':
-            listings.sort((a, b) => (a.mileageKm ?? Infinity) - (b.mileageKm ?? Infinity));
-            break;
-        default:
-            break;
-    }
-
-    renderListingsGrid(listings);
-}
-
-function buildListingsToolbar() {
-    const toolbar = document.getElementById('bizListingsToolbar');
-    if (!toolbar) return;
-
-    if (bizAllListings.length === 0) {
-        toolbar.style.display = 'none';
-        return;
-    }
-    toolbar.style.display = '';
-
-    const fuels = [...new Set(bizAllListings.map(c => c.fuel).filter(Boolean))];
-
-    toolbar.innerHTML = `
-        <h2 class="biz-listings-count">${bizAllListings.length} ${bizAllListings.length === 1 ? 'oglas' : 'oglasov'}</h2>
-        <div class="sort-wrap">
-            ${fuels.length > 1 ? `
-            <div class="pill-select-wrapper">
-                <select class="pill-input" id="bizFuelFilter" data-no-search="true">
-                    <option value="all">Vsa goriva</option>
-                    ${fuels.map(f => `<option value="${escHtml(f)}">${escHtml(f)}</option>`).join('')}
-                </select>
-            </div>` : ''}
-            <span class="sort-label">Razvrsti po:</span>
-            <div class="pill-select-wrapper">
-                <select class="pill-input" id="bizSortSelect" data-no-search="true">
-                    <option value="">Priporočeno</option>
-                    <option value="price-asc">Cena: najnižja</option>
-                    <option value="price-desc">Cena: najvišja</option>
-                    <option value="year-desc">Letnik: najnovejši</option>
-                    <option value="km-asc">Kilometrina: najnižja</option>
-                </select>
-            </div>
-        </div>
-    `;
-
-    document.getElementById('bizFuelFilter')?.addEventListener('change', (e) => {
-        bizListingsFuel = e.target.value;
-        applyListingsFilterSort();
-    });
-    document.getElementById('bizSortSelect').addEventListener('change', (e) => {
-        bizListingsSort = e.target.value;
-        applyListingsFilterSort();
-    });
-}
 
 function buildListingsTab(biz) {
     const grid = document.getElementById('carListingsContainer');
     if (!grid) return;
 
-    // Filter sampleCars by sellerId (using biz.id or biz.name as seller match)
-    let listings = sampleCars.filter(c =>
-        c.seller === biz.name ||
-        c.sellerId === biz.id
-    );
+    const bizNameLower = (biz.name || '').toLowerCase();
+    const bizWords = bizNameLower.split(/\s+/).filter(w => w.length >= 4 && !['auto', 'avto', 'center', 'hiša', 'hisa', 'slovenia', 'slovenija', 'ljubljana', 'maribor', 'koper', 'celje', 'kranj'].includes(w));
 
-    // Fallback: if dealer, show all dealer cars for demo
-    if (listings.length === 0 && biz.businessTypes.includes('dealer')) {
-        listings = sampleCars.filter(c => c.sellerType === 'dealer').slice(0, 3);
+    // Match sampleCars by sellerId, exact seller name, or partial company name match
+    let listings = sampleCars.filter(c => {
+        if (c.seller === biz.name || c.sellerId === biz.id) return true;
+        const sLower = (c.seller || '').toLowerCase();
+        if (bizWords.length > 0 && bizWords.some(w => sLower.includes(w))) return true;
+        return false;
+    });
+
+    // Enrich dealer inventory in demo mode so all filters (brands, fuels, body types, years, prices) are rich & interactive
+    if (biz.businessTypes.includes('dealer')) {
+        const dealerPool = sampleCars.filter(c => c.sellerType === 'dealer' && (!c.category || c.category === 'avto'));
+        const brandMatches = dealerPool.filter(c =>
+            (biz.authorizedBrands || []).includes(c.make) ||
+            (biz.supportedBrands || []).includes(c.make)
+        );
+        const combined = [...listings];
+        brandMatches.forEach(c => {
+            if (!combined.some(existing => existing.id === c.id)) combined.push(c);
+        });
+        dealerPool.forEach(c => {
+            if (combined.length < 12 && !combined.some(existing => existing.id === c.id)) combined.push(c);
+        });
+        listings = combined;
     }
 
     bizAllListings = listings;
-    bizListingsSort = '';
-    bizListingsFuel = 'all';
-
-    buildListingsToolbar();
-    renderListingsGrid(bizAllListings);
+    initBusinessListingsFilters(bizAllListings);
 }
 
 // ── Build Services Tab ────────────────────────────────────────

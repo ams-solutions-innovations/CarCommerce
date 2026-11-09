@@ -1,17 +1,8 @@
-﻿// Sample auction (dražba) listings — MojAvto.si / MojaNavtika.si
+// Sample auction (dražba) listings — MojAvto.si / MojaNavtika.si
 //
-// Demo/fallback data so the auction board (#/drazbe) and detail page (#/drazba?id=)
-// are populated and fully interactive WITHOUT a backend. Each entry is a normal
-// listing doc with `entryType: 'auction'` (so it flows through getListings and the
-// standard listing renderer), paired with mock auction state + a bid history that
-// auctionService falls back to when there is no Firestore doc.
-//
-// Timestamps are computed at module load as offsets from now, so the countdowns are
-// always live (an auction ending "in 3 days" stays 3 days out, never goes stale).
-// Shapes mirror docs/AUCTIONS_HANDOFF.md:
-//   • listing.endsAt / auction.endsAt|startsAt — Date
-//   • auction.priceSeries[].t — ms number
-//   • bid.createdAt — Firestore-Timestamp-like shim ({ toDate, toMillis, seconds })
+// Realistic fallback data matching AutoHub DrazbeDeska reference:
+// 14 car auctions (9 live, 3 prebid, 2 silent) + 3 moto auctions + 3 boat auctions.
+// Each entry is a listing doc with `entryType: 'auction'` paired with mock auction state.
 
 const NOW = Date.now();
 const HOUR = 3600 * 1000;
@@ -28,31 +19,41 @@ function tsAt(ms) {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// Builder — keeps each auction definition compact. Given a starting price and a
-// list of bids (amount + how many hours ago, newest last), it derives the listing
-// auction fields, the auction state doc, the bid docs (newest first), and the
-// denormalized price series for the chart.
+// Builder — keeps each auction definition compact.
 // ──────────────────────────────────────────────────────────────────────────────
 function buildAuction(listing, {
     startPrice,
     reservePrice = null,
-    durationWeeks,
-    endsInDays,
+    durationWeeks = 3,
+    endsInDays = 3,
+    endsInHours = null,
     bids = [],            // [{ name, amount, hoursAgo }] oldest → newest
     sellerId = 'demo-seller',
-    // AutoHub model facets (demo variety for the board badges + filters).
     auctionType = 'live', // 'silent' | 'prebid' | 'live'
     bindingContract = false,
     cashAllowed = false,
+    reserveMet = null,
+    watchersCount = null,
 }) {
-    const startsAt = NOW - (durationWeeks * 7 * DAY - endsInDays * DAY);
-    const endsAt = NOW + endsInDays * DAY;
-    // Reserve is silent-only in the AutoHub model.
-    const reserve = auctionType === 'silent' ? reservePrice : null;
+    const hoursRemaining = endsInHours != null ? endsInHours : endsInDays * 24;
+    const startsAt = NOW - (durationWeeks * 7 * DAY - hoursRemaining * HOUR);
+    const endsAt = NOW + hoursRemaining * HOUR;
+
+    const last = bids[bids.length - 1];
+    const currentBidEur = last ? last.amount : startPrice;
+
+    let effectiveReserve = reservePrice;
+    if (reserveMet === true) {
+        effectiveReserve = Math.min(startPrice, currentBidEur);
+    } else if (reserveMet === false && effectiveReserve == null) {
+        effectiveReserve = currentBidEur + 5000;
+    }
+    const isReserveMet = effectiveReserve != null ? (currentBidEur >= effectiveReserve) : (reserveMet ?? true);
+    const reserve = effectiveReserve;
     const durationDays = durationWeeks >= 6 ? 10 : 7;
     const cash = bindingContract && cashAllowed;
 
-    // Price series starts at the opening price, then one point per bid.
+    // Price series
     const series = [{ t: startsAt, amount: startPrice, bidders: 0 }];
     const seenBidders = new Set();
     bids.forEach((b) => {
@@ -60,11 +61,10 @@ function buildAuction(listing, {
         series.push({ t: NOW - b.hoursAgo * HOUR, amount: b.amount, bidders: seenBidders.size });
     });
 
-    const last = bids[bids.length - 1];
-    const currentBidEur = last ? last.amount : startPrice;
     const bidderCount = seenBidders.size;
+    const watchers = watchersCount != null ? watchersCount : (bids.length * 6 + 18);
 
-    // Bid docs newest-first (matches subscribeBids orderBy createdAt desc).
+    // Bid docs newest-first
     const bidDocs = bids
         .map((b, i) => ({
             id: `bid-${listing.id}-${i}`,
@@ -86,11 +86,13 @@ function buildAuction(listing, {
         currentPhase: auctionType === 'prebid' ? 'live' : null,
         startPriceEur: startPrice,
         reservePriceEur: reserve,
+        reserveMet: isReserveMet,
         currentBidEur,
         currentBidderId: last ? `demo-bidder-${last.name}` : null,
         proxyMaxEur: null,
         bidCount: bids.length,
         bidderCount,
+        watchersCount: watchers,
         antiSnipExtensions: 0,
         durationDays,
         durationWeeks,
@@ -101,7 +103,7 @@ function buildAuction(listing, {
         listingFee: (durationDays >= 10 ? 4.99 : 0) + (bindingContract ? 49.99 : 0),
         startsAt: new Date(startsAt),
         endsAt: new Date(endsAt),
-        prebidEndsAt: null,
+        prebidEndsAt: auctionType === 'prebid' ? new Date(endsAt - 2 * HOUR) : null,
         sellerContract: { type: 'sign', signatureData: null, signedAt: tsAt(startsAt) },
         listingFeePaid: true,
         paymentRef: null,
@@ -112,7 +114,6 @@ function buildAuction(listing, {
         priceSeries: series,
     };
 
-    // Listing-doc auction mirror fields (read by cards + price display + filters).
     const listingDoc = {
         ...listing,
         entryType: 'auction',
@@ -121,6 +122,12 @@ function buildAuction(listing, {
         auctionBinding: bindingContract,
         auctionCash: cash,
         startPriceEur: startPrice,
+        currentBidEur,
+        reservePriceEur: reserve,
+        reserveMet: isReserveMet,
+        bidCount: bids.length,
+        bidderCount,
+        watchersCount: watchers,
         endsAt: new Date(endsAt),
         priceEur: currentBidEur,
         priceRaw: currentBidEur,
@@ -131,53 +138,385 @@ function buildAuction(listing, {
     return { listing: listingDoc, auction, bids: bidDocs };
 }
 
-// ── Car auctions (avto/moto) ──────────────────────────────────────────────────
+// ── 14 Car auctions + 3 Motorcycles matching AutoHub DrazbeDeska ──────────────
 const CAR_DEFS = [
+    // 1. Tesla Model S Plaid (Live, hot ending soon: ~14 min)
     [
         {
-            id: 'auction-car-1',
+            id: 'auction-car-tesla-plaid',
+            title: 'Tesla Model S Plaid',
+            subtitle: 'Tri motorji · pogon na vsa kolesa',
+            year: '2024',
+            mileage: '5.000 km',
+            mileageKm: 5000,
+            power: '750 kW (1020 KM)',
+            powerKw: 750,
+            powerHp: 1020,
+            fuel: 'Elektrika',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Črna',
+            doorsCount: 5,
+            seatsCount: 5,
+            firstRegistration: '01/2024',
+            evRange: 600,
+            brandLogo: 'assets/756e3f301221a44fb81c321926abf1f8.svg',
+            seller: 'Tesla Slovenija',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Tesla',
+            model: 'Model S',
+            variant: 'Plaid',
+            images: {
+                exterior: ['assets/45527f0a5c14414fcd8e75ff183204db.jpg'],
+                interior: [],
+            },
+            imgCount: 18,
+        },
+        {
+            startPrice: 84000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 0.24, // 14 min 30 s
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: true,
+            watchersCount: 212,
+            bids: [
+                { name: 'Miha', amount: 84000, hoursAgo: 48 },
+                { name: 'Gregor', amount: 88000, hoursAgo: 36 },
+                { name: 'Matej', amount: 92000, hoursAgo: 24 },
+                { name: 'Luka', amount: 95500, hoursAgo: 8 },
+                { name: 'Gregor', amount: 98000, hoursAgo: 1 },
+                { name: 'Matej', amount: 98900, hoursAgo: 0.1 },
+            ],
+        },
+    ],
+
+    // 2. Porsche 911 GT3 PDK (Live, warn ending in 1d 3h)
+    [
+        {
+            id: 'auction-car-porsche-gt3',
+            title: 'Porsche 911 GT3 PDK',
+            subtitle: '4.0 Boxer-6 · zadnji pogon',
+            year: '2023',
+            mileage: '1.200 km',
+            mileageKm: 1200,
+            power: '375 kW (510 KM)',
+            powerKw: 375,
+            powerHp: 510,
+            fuel: 'Bencin',
+            transmission: 'Avtomatski',
+            driveType: 'RWD',
+            color: 'Modra',
+            doorsCount: 2,
+            seatsCount: 2,
+            engineCc: 3996,
+            firstRegistration: '05/2023',
+            previousOwnersCount: 1,
+            brandLogo: 'assets/36f553c85be290121a3322634110dc19.png',
+            seller: 'Porsche Center Ljubljana',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Prvi lastnik', 'Servisna knjiga'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Porsche',
+            model: '911',
+            variant: 'GT3 PDK',
+            images: {
+                exterior: ['assets/33fcc153d1461b1858fc0ed2282bfe1d.jpg'],
+                interior: [],
+            },
+            imgCount: 24,
+        },
+        {
+            startPrice: 160000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 27.36, // 1 d 3 h 22 min
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 158,
+            bids: [
+                { name: 'Boštjan', amount: 160000, hoursAgo: 60 },
+                { name: 'Simon', amount: 168000, hoursAgo: 40 },
+                { name: 'Andrej', amount: 175000, hoursAgo: 20 },
+                { name: 'Boštjan', amount: 182000, hoursAgo: 10 },
+                { name: 'Simon', amount: 187500, hoursAgo: 2 },
+            ],
+        },
+    ],
+
+    // 3. Toyota RAV4 Hybrid (Live, 2d 4h)
+    [
+        {
+            id: 'auction-car-toyota-rav4',
+            title: 'Toyota RAV4 Hybrid',
+            subtitle: '2.5 Hybrid AWD-i Executive',
+            year: '2021',
+            mileage: '42.000 km',
+            mileageKm: 42000,
+            power: '163 kW (222 KM)',
+            powerKw: 163,
+            powerHp: 222,
+            fuel: 'Hibrid',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Srebrna',
+            consumptionCombined: '5,3 l/100 km',
+            doorsCount: 5,
+            seatsCount: 5,
+            engineCc: 2487,
+            firstRegistration: '09/2021',
+            previousOwnersCount: 1,
+            brandLogo: 'assets/915082cca7b54e2bcce753b61333a212.svg',
+            seller: 'Toyota Center',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Servisna knjiga'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Toyota',
+            model: 'RAV4',
+            variant: '2.5 Hybrid AWD-i',
+            images: {
+                exterior: ['assets/19b2696b50d78da5a5d7dfa453e67ce0.webp'],
+                interior: [],
+            },
+            imgCount: 12,
+        },
+        {
+            startPrice: 28000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 52.2, // 2 d 4 h 12 min
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 64,
+            bids: [
+                { name: 'Matjaž', amount: 28000, hoursAgo: 45 },
+                { name: 'Urban', amount: 29500, hoursAgo: 30 },
+                { name: 'Matjaž', amount: 30800, hoursAgo: 15 },
+                { name: 'Urban', amount: 31450, hoursAgo: 4 },
+            ],
+        },
+    ],
+
+    // 4. Audi RS6 Avant (Silent, 3d 22h)
+    [
+        {
+            id: 'auction-car-audi-rs6',
+            title: 'Audi RS6 Avant',
+            subtitle: '4.0 TFSI quattro · Performance',
+            year: '2022',
+            mileage: '28.400 km',
+            mileageKm: 28400,
+            power: '463 kW (630 KM)',
+            powerKw: 463,
+            powerHp: 630,
+            fuel: 'Bencin',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Siva',
+            doorsCount: 5,
+            seatsCount: 5,
+            engineCc: 3996,
+            firstRegistration: '04/2022',
+            brandLogo: 'assets/6945c714b6dfd0cf4ddca7386ceaf237.svg',
+            seller: 'Rok Zupan',
+            sellerCity: 'Maribor',
+            sellerVerified: false,
+            sellerType: 'private',
+            tags: [],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Audi',
+            model: 'RS6',
+            variant: 'Avant Performance',
+            images: {
+                exterior: ['assets/a7a22b55201368869702d79fce33956d.jpg'],
+                interior: [],
+            },
+            imgCount: 16,
+        },
+        {
+            startPrice: 72000,
+            reservePrice: 85000,
+            durationWeeks: 3,
+            endsInHours: 94.08, // 3 d 22 h 05 min
+            auctionType: 'silent',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 96,
+            bids: [
+                { name: 'Tomaž', amount: 72000, hoursAgo: 50 },
+                { name: 'Dejan', amount: 75000, hoursAgo: 30 },
+                { name: 'Tomaž', amount: 78500, hoursAgo: 12 },
+            ],
+        },
+    ],
+
+    // 5. Mercedes-AMG GLC 63 S (Prebid, 1d 5h prebid left)
+    [
+        {
+            id: 'auction-car-mercedes-glc63',
+            title: 'Mercedes-AMG GLC 63 S',
+            subtitle: 'E Performance · 4MATIC+',
+            year: '2024',
+            mileage: '8.400 km',
+            mileageKm: 8400,
+            power: '500 kW (680 KM)',
+            powerKw: 500,
+            powerHp: 680,
+            fuel: 'Priključni hibrid',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Bela',
+            phevRange: 85,
+            doorsCount: 5,
+            seatsCount: 5,
+            engineCc: 1991,
+            firstRegistration: '02/2024',
+            brandLogo: 'assets/0d7f4855e2451cfbab53daaca2399c43.svg',
+            seller: 'Premium Cars',
+            sellerCity: 'Celje',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Mercedes-Benz',
+            model: 'GLC',
+            variant: 'AMG 63 S E Performance',
+            images: {
+                exterior: ['assets/ee77c186c4d868edc8887422a733aab0.jpg'],
+                interior: [],
+            },
+            imgCount: 22,
+        },
+        {
+            startPrice: 98000,
+            reserveMet: false,
+            durationWeeks: 3,
+            endsInHours: 29.0, // Živa faza čez 1 d 5 h
+            auctionType: 'prebid',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 71,
+            bids: [
+                { name: 'Igor', amount: 98000, hoursAgo: 20 },
+                { name: 'Gašper', amount: 101000, hoursAgo: 12 },
+                { name: 'Igor', amount: 104500, hoursAgo: 3 },
+            ],
+        },
+    ],
+
+    // 6. Škoda Octavia Combi (Live, 5d 6h, 0 ponudb)
+    [
+        {
+            id: 'auction-car-skoda-octavia',
+            title: 'Škoda Octavia Combi',
+            subtitle: '2.0 TDI Style · DSG',
+            year: '2019',
+            mileage: '112.000 km',
+            mileageKm: 112000,
+            power: '110 kW (150 KM)',
+            powerKw: 110,
+            powerHp: 150,
+            fuel: 'Dizel',
+            transmission: 'Avtomatski',
+            driveType: 'FWD',
+            color: 'Siva',
+            doorsCount: 5,
+            seatsCount: 5,
+            engineCc: 1968,
+            firstRegistration: '06/2019',
+            brandLogo: 'assets/af390f3386942f81ac95adec82480325.svg',
+            seller: 'Tina Rozman',
+            sellerCity: 'Kranj',
+            sellerVerified: false,
+            sellerType: 'private',
+            tags: [],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Škoda',
+            model: 'Octavia',
+            variant: 'Combi 2.0 TDI',
+            images: {
+                exterior: [], // Brez fotografij
+                interior: [],
+            },
+            imgCount: 0,
+        },
+        {
+            startPrice: 9900,
+            reserveMet: false,
+            durationWeeks: 3,
+            endsInHours: 126.66, // 5 d 6 h 40 min
+            auctionType: 'live',
+            bindingContract: false,
+            cashAllowed: true,
+            watchersCount: 9,
+            bids: [],
+        },
+    ],
+
+    // 7. BMW M3 Competition (Live, 2 dni)
+    [
+        {
+            id: 'auction-car-bmw-m3',
             title: 'BMW M3 Competition',
-            subtitle: '3.0 R6 (510 KM) — M xDrive, karbon paket, Laser',
+            subtitle: '3.0 R6 M xDrive · Karbon paket, Laser',
             year: '2022',
             mileage: '34.500 km',
             mileageKm: 34500,
             power: '375 kW (510 KM)',
             powerKw: 375,
-            fuel: 'Petrol',
-            condition: 'Rabljeno',
-            sellerNote: 'Servisno knjižico vodi BMW. Brez vlaganj, prvi lastnik.',
-            location: { country: 'SI', region: 'Osrednjeslovenska' },
-            seller: 'Zasebni prodajalec',
-            sellerImage: 'https://i.pravatar.cc/150?u=bmwm3',
-            sellerType: 'private',
-            segment: 'Sport',
-            category: 'avto',
-            itemType: 'vehicle',
-            make: 'BMW',
-            model: 'M3',
-            variant: 'Competition',
+            powerHp: 510,
+            fuel: 'Bencin',
             transmission: 'Avtomatski',
-            driveType: '4x4',
+            driveType: 'AWD',
             color: 'Siva',
             doorsCount: 4,
             seatsCount: 5,
             engineCc: 2993,
             firstRegistration: '06/2022',
             previousOwnersCount: 1,
+            brandLogo: '',
+            seller: 'Avto Aktiv',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Prvi lastnik', 'Servisna knjiga'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'BMW',
+            model: 'M3',
+            variant: 'Competition M xDrive',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80',
-                    'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 21,
         },
         {
             startPrice: 52000,
-            reservePrice: 64000,
+            reserveMet: true,
             durationWeeks: 3,
-            endsInDays: 2,
+            endsInHours: 48,
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 88,
             bids: [
                 { name: 'Marko', amount: 52000, hoursAgo: 70 },
                 { name: 'Janez', amount: 53500, hoursAgo: 64 },
@@ -188,9 +527,11 @@ const CAR_DEFS = [
             ],
         },
     ],
+
+    // 8. Volkswagen Golf GTI (Live, 4.8 dni)
     [
         {
-            id: 'auction-car-2',
+            id: 'auction-car-vw-golf-gti',
             title: 'Volkswagen Golf GTI',
             subtitle: '2.0 TSI (245 KM) — DSG, Akrapovič, virtual cockpit',
             year: '2019',
@@ -198,40 +539,41 @@ const CAR_DEFS = [
             mileageKm: 78000,
             power: '180 kW (245 KM)',
             powerKw: 180,
-            fuel: 'Petrol',
-            condition: 'Rabljeno',
-            sellerNote: 'Lepo ohranjen, redno servisiran. Zimske + letne gume.',
-            location: { country: 'SI', region: 'Savinjska' },
-            seller: 'AvtoCenter Celje',
-            sellerImage: 'https://i.pravatar.cc/150?u=golfgti',
-            sellerType: 'dealer',
-            segment: 'Hatchback',
-            category: 'avto',
-            itemType: 'vehicle',
-            make: 'Volkswagen',
-            model: 'Golf',
-            variant: 'GTI',
+            powerHp: 245,
+            fuel: 'Bencin',
             transmission: 'Avtomatski',
-            driveType: 'Spredaj',
+            driveType: 'FWD',
             color: 'Bela',
             doorsCount: 5,
             seatsCount: 5,
             engineCc: 1984,
             firstRegistration: '03/2019',
             previousOwnersCount: 2,
+            seller: 'AvtoCenter Celje',
+            sellerCity: 'Celje',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Redno servisiran'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Volkswagen',
+            model: 'Golf',
+            variant: 'GTI Performance',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 15,
         },
         {
             startPrice: 16500,
-            reservePrice: null,
+            reserveMet: true,
             durationWeeks: 3,
-            endsInDays: 5,
+            endsInHours: 115,
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: true,
+            watchersCount: 52,
             bids: [
                 { name: 'Peter', amount: 16500, hoursAgo: 40 },
                 { name: 'Sara', amount: 17000, hoursAgo: 28 },
@@ -239,50 +581,53 @@ const CAR_DEFS = [
             ],
         },
     ],
+
+    // 9. Mercedes-Benz G 350 d (Live, 6 dni)
     [
         {
-            id: 'auction-car-3',
+            id: 'auction-car-mercedes-g350',
             title: 'Mercedes-Benz G 350 d',
-            subtitle: '3.0 R6 dizel (286 KM) — AMG paket, AdBlue, 360° kamera',
+            subtitle: '3.0 R6 dizel (286 KM) — AMG paket, 360° kamera',
             year: '2021',
             mileage: '46.000 km',
             mileageKm: 46000,
             power: '210 kW (286 KM)',
             powerKw: 210,
+            powerHp: 286,
             fuel: 'Dizel',
-            condition: 'Rabljeno',
-            sellerNote: 'Top oprema. Možen leasing prevzem. Vključen komplet zimskih gum.',
-            location: { country: 'SI', region: 'Podravska' },
-            seller: 'Star Automobili',
-            sellerImage: 'https://i.pravatar.cc/150?u=gklasa',
-            sellerType: 'dealer',
-            segment: 'SUV',
-            category: 'avto',
-            itemType: 'vehicle',
-            make: 'Mercedes-Benz',
-            model: 'G 350',
-            variant: 'd AMG Line',
             transmission: 'Avtomatski',
-            driveType: '4x4',
+            driveType: 'AWD',
             color: 'Črna',
             doorsCount: 5,
             seatsCount: 5,
             engineCc: 2925,
             firstRegistration: '09/2021',
             previousOwnersCount: 1,
+            seller: 'Star Automobili',
+            sellerCity: 'Podravska',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija', '1. lastnik'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Mercedes-Benz',
+            model: 'G-Razred',
+            variant: 'G 350 d AMG Line',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1520031441872-265e4ff70366?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1520031441872-265e4ff70366?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 27,
         },
         {
             startPrice: 89000,
-            reservePrice: 105000,
+            reserveMet: false,
             durationWeeks: 6,
-            endsInDays: 9,
+            endsInHours: 144,
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 110,
             bids: [
                 { name: 'Robert', amount: 89000, hoursAgo: 120 },
                 { name: 'Damjan', amount: 92000, hoursAgo: 96 },
@@ -291,9 +636,281 @@ const CAR_DEFS = [
             ],
         },
     ],
+
+    // 10. Audi Q7 50 TDI quattro (Live, 6.8 dni)
     [
         {
-            id: 'auction-car-4',
+            id: 'auction-car-audi-q7',
+            title: 'Audi Q7 50 TDI quattro',
+            subtitle: '3.0 TDI (286 KM) — S-Line, zračno vzmetenje, 7 sedežev',
+            year: '2021',
+            mileage: '85.000 km',
+            mileageKm: 85000,
+            power: '210 kW (286 KM)',
+            powerKw: 210,
+            powerHp: 286,
+            fuel: 'Dizel',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Bela',
+            doorsCount: 5,
+            seatsCount: 7,
+            engineCc: 2967,
+            firstRegistration: '10/2021',
+            previousOwnersCount: 1,
+            seller: 'Avto Koper',
+            sellerCity: 'Koper',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Servisna knjiga'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Audi',
+            model: 'Q7',
+            variant: '50 TDI quattro S-Line',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 19,
+        },
+        {
+            startPrice: 58000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 160,
+            auctionType: 'live',
+            bindingContract: false,
+            cashAllowed: true,
+            watchersCount: 43,
+            bids: [
+                { name: 'Anže', amount: 58000, hoursAgo: 15 },
+                { name: 'Matej', amount: 59500, hoursAgo: 2 },
+            ],
+        },
+    ],
+
+    // 11. Porsche Taycan 4S (Prebid, 3 dni)
+    [
+        {
+            id: 'auction-car-porsche-taycan',
+            title: 'Porsche Taycan 4S',
+            subtitle: 'Performance Battery Plus · AWD, Porsche Approved',
+            year: '2023',
+            mileage: '18.000 km',
+            mileageKm: 18000,
+            power: '390 kW (530 KM)',
+            powerKw: 390,
+            powerHp: 530,
+            fuel: 'Elektrika',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Modra',
+            evRange: 480,
+            doorsCount: 4,
+            seatsCount: 4,
+            firstRegistration: '03/2023',
+            brandLogo: 'assets/36f553c85be290121a3322634110dc19.png',
+            seller: 'Porsche Center Ljubljana',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Porsche',
+            model: 'Taycan',
+            variant: '4S Performance Plus',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 20,
+        },
+        {
+            startPrice: 79000,
+            reserveMet: false,
+            durationWeeks: 3,
+            endsInHours: 72,
+            auctionType: 'prebid',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 89,
+            bids: [
+                { name: 'Tadej', amount: 79000, hoursAgo: 30 },
+                { name: 'Gorazd', amount: 80500, hoursAgo: 18 },
+                { name: 'Tadej', amount: 82500, hoursAgo: 5 },
+            ],
+        },
+    ],
+
+    // 12. BMW M4 Coupe (Prebid, 1.8 dni)
+    [
+        {
+            id: 'auction-car-bmw-m4',
+            title: 'BMW M4 Coupe',
+            subtitle: '3.0 R6 Biturbo · Zadnji pogon, ročni menjalnik, karbon streha',
+            year: '2021',
+            mileage: '39.000 km',
+            mileageKm: 39000,
+            power: '353 kW (480 KM)',
+            powerKw: 353,
+            powerHp: 480,
+            fuel: 'Bencin',
+            transmission: 'Ročni',
+            driveType: 'RWD',
+            color: 'Rumena',
+            doorsCount: 2,
+            seatsCount: 4,
+            engineCc: 2993,
+            firstRegistration: '07/2021',
+            previousOwnersCount: 1,
+            seller: 'A-Cosmos',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['1. lastnik'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'BMW',
+            model: 'M4',
+            variant: 'Coupe Manual',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 17,
+        },
+        {
+            startPrice: 62000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 42,
+            auctionType: 'prebid',
+            bindingContract: true,
+            cashAllowed: true,
+            watchersCount: 95,
+            bids: [
+                { name: 'Žiga', amount: 62000, hoursAgo: 36 },
+                { name: 'Matic', amount: 64000, hoursAgo: 24 },
+                { name: 'Žiga', amount: 67000, hoursAgo: 8 },
+            ],
+        },
+    ],
+
+    // 13. Mercedes-Benz E 300 de 4MATIC (Silent, 3.5 dni)
+    [
+        {
+            id: 'auction-car-mercedes-e300',
+            title: 'Mercedes-Benz E 300 de 4MATIC',
+            subtitle: 'Dizelski priključni hibrid · AMG Line, EQ Power',
+            year: '2022',
+            mileage: '58.000 km',
+            mileageKm: 58000,
+            power: '225 kW (306 KM)',
+            powerKw: 225,
+            powerHp: 306,
+            fuel: 'Priključni hibrid',
+            transmission: 'Avtomatski',
+            driveType: 'AWD',
+            color: 'Siva',
+            phevRange: 54,
+            doorsCount: 5,
+            seatsCount: 5,
+            engineCc: 1950,
+            firstRegistration: '05/2022',
+            seller: 'Emil Frey Avtocenter',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija', 'Servisna knjiga'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Mercedes-Benz',
+            model: 'E-Razred',
+            variant: 'E 300 de 4MATIC T-Model',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 23,
+        },
+        {
+            startPrice: 42000,
+            reservePrice: 47000,
+            durationWeeks: 3,
+            endsInHours: 85,
+            auctionType: 'silent',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 49,
+            bids: [
+                { name: 'Darko', amount: 42000, hoursAgo: 40 },
+                { name: 'Milan', amount: 44000, hoursAgo: 15 },
+            ],
+        },
+    ],
+
+    // 14. Toyota Yaris GR Circuit Pack (Live, 18 ur)
+    [
+        {
+            id: 'auction-car-toyota-yaris-gr',
+            title: 'Toyota Yaris GR Circuit Pack',
+            subtitle: '1.6 Turbo AWD · Torsen LSD, kovani platišči, Track oprema',
+            year: '2023',
+            mileage: '9.200 km',
+            mileageKm: 9200,
+            power: '192 kW (261 KM)',
+            powerKw: 192,
+            powerHp: 261,
+            fuel: 'Bencin',
+            transmission: 'Ročni',
+            driveType: 'AWD',
+            color: 'Rdeča',
+            doorsCount: 3,
+            seatsCount: 4,
+            engineCc: 1618,
+            firstRegistration: '02/2023',
+            previousOwnersCount: 1,
+            brandLogo: 'assets/915082cca7b54e2bcce753b61333a212.svg',
+            seller: 'Toyota Center',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['1. lastnik', 'Garancija'],
+            category: 'avto',
+            itemType: 'vehicle',
+            make: 'Toyota',
+            model: 'Yaris',
+            variant: 'GR Circuit Pack',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1617788138017-80ad40651399?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 14,
+        },
+        {
+            startPrice: 36000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 18, // < 24 h
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: true,
+            watchersCount: 82,
+            bids: [
+                { name: 'Vid', amount: 36000, hoursAgo: 40 },
+                { name: 'Nejc', amount: 37500, hoursAgo: 25 },
+                { name: 'Vid', amount: 38800, hoursAgo: 10 },
+                { name: 'Nejc', amount: 39500, hoursAgo: 1 },
+            ],
+        },
+    ],
+
+    // 15. Yamaha MT-09 (Motorcycle)
+    [
+        {
+            id: 'auction-moto-yamaha-mt09',
             title: 'Yamaha MT-09',
             subtitle: '847 cm³ (115 KM) — Akrapovič, quickshifter, ABS',
             year: '2020',
@@ -301,37 +918,38 @@ const CAR_DEFS = [
             mileageKm: 12300,
             power: '85 kW (115 KM)',
             powerKw: 85,
-            fuel: 'Petrol',
-            condition: 'Rabljeno',
-            sellerNote: 'Garažiran, nikoli padel. Dodatna oprema v vrednosti 1.500 €.',
-            location: { country: 'SI', region: 'Gorenjska' },
-            seller: 'Zasebni prodajalec',
-            sellerImage: 'https://i.pravatar.cc/150?u=mt09',
-            sellerType: 'private',
-            segment: 'Naked',
-            category: 'motorna-kolesa',
-            itemType: 'vehicle',
-            make: 'Yamaha',
-            model: 'MT-09',
-            variant: 'MT-09',
+            powerHp: 115,
+            fuel: 'Bencin',
             transmission: 'Ročni',
             color: 'Modra',
             engineCc: 847,
             firstRegistration: '04/2020',
             previousOwnersCount: 1,
+            seller: 'Zasebni prodajalec',
+            sellerCity: 'Kranj',
+            sellerVerified: false,
+            sellerType: 'private',
+            tags: ['Garažiran'],
+            category: 'motorna-kolesa',
+            itemType: 'vehicle',
+            make: 'Yamaha',
+            model: 'MT-09',
+            variant: 'MT-09',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 12,
         },
         {
             startPrice: 6500,
-            reservePrice: null,
+            reserveMet: true,
             durationWeeks: 3,
-            endsInDays: 1,
+            endsInHours: 24,
+            auctionType: 'live',
+            bindingContract: false,
+            cashAllowed: true,
+            watchersCount: 42,
             bids: [
                 { name: 'Tine', amount: 6500, hoursAgo: 30 },
                 { name: 'Gregor', amount: 6800, hoursAgo: 22 },
@@ -340,53 +958,105 @@ const CAR_DEFS = [
             ],
         },
     ],
+
+    // 16. BMW R 1250 GS (Motorcycle)
     [
         {
-            id: 'auction-car-5',
-            title: 'Audi Q7 50 TDI quattro',
-            subtitle: '3.0 TDI (286 KM) — S-Line, zračno vzmetenje',
-            year: '2021',
-            mileage: '85.000 km',
-            mileageKm: 85000,
-            power: '210 kW (286 KM)',
-            powerKw: 210,
-            fuel: 'Dizel',
-            condition: 'Rabljeno',
-            sellerNote: 'Odlično ohranjen, znana zgodovina.',
-            location: { country: 'SI', region: 'Obalno-kraška' },
-            seller: 'Avto Koper',
-            sellerImage: 'https://i.pravatar.cc/150?u=audiq7',
-            sellerType: 'dealer',
-            segment: 'SUV',
-            category: 'avto',
-            itemType: 'vehicle',
-            make: 'Audi',
-            model: 'Q7',
-            variant: '50 TDI quattro S-Line',
-            transmission: 'Avtomatski',
-            driveType: '4x4',
+            id: 'auction-moto-bmw-r1250gs',
+            title: 'BMW R 1250 GS Adventure',
+            subtitle: '1254 cm³ (136 KM) — Rallye, 3x kovček, TFT',
+            year: '2022',
+            mileage: '19.800 km',
+            mileageKm: 19800,
+            power: '100 kW (136 KM)',
+            powerKw: 100,
+            powerHp: 136,
+            fuel: 'Bencin',
+            transmission: 'Ročni',
             color: 'Bela',
-            doorsCount: 5,
-            seatsCount: 7,
-            engineCc: 2967,
-            firstRegistration: '10/2021',
+            engineCc: 1254,
+            firstRegistration: '05/2022',
             previousOwnersCount: 1,
+            seller: 'AvtoVal',
+            sellerCity: 'Grosuplje',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Servisna knjiga'],
+            category: 'motorna-kolesa',
+            itemType: 'vehicle',
+            make: 'BMW',
+            model: 'R 1250 GS',
+            variant: 'Adventure Rallye',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
-            imgCount: 19,
+            imgCount: 18,
         },
         {
-            startPrice: 58000,
-            reservePrice: 62000,
+            startPrice: 16000,
+            reserveMet: true,
             durationWeeks: 3,
-            endsInDays: 6,
+            endsInHours: 48,
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
+            watchersCount: 68,
             bids: [
-                { name: 'Anže', amount: 58000, hoursAgo: 15 },
-                { name: 'Matej', amount: 59500, hoursAgo: 2 },
+                { name: 'Borut', amount: 16000, hoursAgo: 35 },
+                { name: 'Rok', amount: 17200, hoursAgo: 18 },
+                { name: 'Borut', amount: 18200, hoursAgo: 5 },
+            ],
+        },
+    ],
+
+    // 17. Ducati Panigale V4 S (Motorcycle)
+    [
+        {
+            id: 'auction-moto-ducati-panigale',
+            title: 'Ducati Panigale V4 S',
+            subtitle: '1103 cm³ (215 KM) — Öhlins vzmetenje, kovani Marchesini',
+            year: '2023',
+            mileage: '4.200 km',
+            mileageKm: 4200,
+            power: '158 kW (215 KM)',
+            powerKw: 158,
+            powerHp: 215,
+            fuel: 'Bencin',
+            transmission: 'Ročni',
+            color: 'Rdeča',
+            engineCc: 1103,
+            firstRegistration: '06/2023',
+            previousOwnersCount: 1,
+            seller: 'Ducati Ljubljana',
+            sellerCity: 'Ljubljana',
+            sellerVerified: true,
+            sellerType: 'dealer',
+            tags: ['Garancija', '1. lastnik'],
+            category: 'motorna-kolesa',
+            itemType: 'vehicle',
+            make: 'Ducati',
+            model: 'Panigale V4',
+            variant: 'V4 S',
+            images: {
+                exterior: ['https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80'],
+                interior: [],
+            },
+            imgCount: 16,
+        },
+        {
+            startPrice: 24000,
+            reserveMet: true,
+            durationWeeks: 3,
+            endsInHours: 36,
+            auctionType: 'prebid',
+            bindingContract: true,
+            cashAllowed: true,
+            watchersCount: 84,
+            bids: [
+                { name: 'Jan', amount: 24000, hoursAgo: 24 },
+                { name: 'Klemen', amount: 25500, hoursAgo: 14 },
+                { name: 'Jan', amount: 26500, hoursAgo: 4 },
             ],
         },
     ],
@@ -402,6 +1072,8 @@ const BOAT_DEFS = [
             year: '2021',
             location: { country: 'SI', region: 'Obalno-kraška' },
             seller: 'Marina Trade',
+            sellerCity: 'Portorož',
+            sellerVerified: true,
             sellerImage: 'https://i.pravatar.cc/150?u=capcamarat',
             sellerType: 'dealer',
             category: 'colni',
@@ -430,18 +1102,19 @@ const BOAT_DEFS = [
             condition: 'Rabljeno',
             equipment: ['gps_plotter', 'bimini', 'teak', 'shower'],
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1605281317010-fe5ffe798166?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 16,
         },
         {
             startPrice: 38000,
-            reservePrice: 46000,
+            reserveMet: true,
             durationWeeks: 3,
             endsInDays: 3,
+            auctionType: 'live',
+            bindingContract: true,
+            cashAllowed: false,
             bids: [
                 { name: 'Boris', amount: 38000, hoursAgo: 55 },
                 { name: 'Davor', amount: 39500, hoursAgo: 41 },
@@ -458,6 +1131,8 @@ const BOAT_DEFS = [
             year: '2016',
             location: { country: 'SI', region: 'Obalno-kraška' },
             seller: 'Zasebni prodajalec',
+            sellerCity: 'Izola',
+            sellerVerified: false,
             sellerImage: 'https://i.pravatar.cc/150?u=bavaria37',
             sellerType: 'private',
             category: 'jadrnice',
@@ -486,18 +1161,19 @@ const BOAT_DEFS = [
             condition: 'Rabljeno',
             equipment: ['autopilot', 'gps_plotter', 'bow_thruster', 'solar_panel', 'refrigerator'],
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1540946485063-a40da27545f8?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1540946485063-a40da27545f8?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 22,
         },
         {
             startPrice: 72000,
-            reservePrice: null,
+            reserveMet: true,
             durationWeeks: 6,
             endsInDays: 7,
+            auctionType: 'prebid',
+            bindingContract: true,
+            cashAllowed: false,
             bids: [
                 { name: 'Andrej', amount: 72000, hoursAgo: 90 },
                 { name: 'Klemen', amount: 74000, hoursAgo: 50 },
@@ -513,6 +1189,8 @@ const BOAT_DEFS = [
             year: '2022',
             location: { country: 'SI', region: 'Obalno-kraška' },
             seller: 'Jet Ski Center',
+            sellerCity: 'Koper',
+            sellerVerified: true,
             sellerImage: 'https://i.pravatar.cc/150?u=seadoo',
             sellerType: 'dealer',
             category: 'jet-ski',
@@ -536,18 +1214,19 @@ const BOAT_DEFS = [
             hullMaterial: 'Stekloplastika',
             condition: 'Rabljeno',
             images: {
-                exterior: [
-                    'https://images.unsplash.com/photo-1559405230-fa1d4d142512?auto=format&fit=crop&w=800&q=80',
-                ],
+                exterior: ['https://images.unsplash.com/photo-1559405230-fa1d4d142512?auto=format&fit=crop&w=800&q=80'],
                 interior: [],
             },
             imgCount: 10,
         },
         {
             startPrice: 15500,
-            reservePrice: 18000,
+            reserveMet: false,
             durationWeeks: 3,
             endsInDays: 4,
+            auctionType: 'silent',
+            bindingContract: false,
+            cashAllowed: true,
             bids: [
                 { name: 'Tilen', amount: 15500, hoursAgo: 24 },
                 { name: 'Blaž', amount: 16000, hoursAgo: 12 },
@@ -557,19 +1236,8 @@ const BOAT_DEFS = [
 ];
 
 // ── Build ───────────────────────────────────────────────────────────────────
-// Spread the three auction types + binding/cash flags across the demo set so the
-// board badges and the type/binding/cash filters all have something to show.
-const _TYPE_CYCLE = ['live', 'silent', 'prebid'];
-function _withFacets(opts, i) {
-    return {
-        ...opts,
-        auctionType: opts.auctionType || _TYPE_CYCLE[i % _TYPE_CYCLE.length],
-        bindingContract: opts.bindingContract ?? (i % 2 === 0),
-        cashAllowed: opts.cashAllowed ?? (i % 3 === 0),
-    };
-}
-const _carBuilt = CAR_DEFS.map(([listing, opts], i) => buildAuction(listing, _withFacets(opts, i)));
-const _boatBuilt = BOAT_DEFS.map(([listing, opts], i) => buildAuction(listing, _withFacets(opts, i)));
+const _carBuilt = CAR_DEFS.map(([listing, opts]) => buildAuction(listing, opts));
+const _boatBuilt = BOAT_DEFS.map(([listing, opts]) => buildAuction(listing, opts));
 
 /** Auction listing docs (entryType: 'auction') — merged into getListings(). */
 export const sampleAuctionCars = _carBuilt.map(b => b.listing);

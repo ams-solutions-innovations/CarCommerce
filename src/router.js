@@ -6,16 +6,30 @@ import { PLATFORM } from './config/platform.js';
 
 // ── Route definitions ─────────────────────────────────────────────────────────
 const routes = {
+    '/potrdi-eposto': { view: 'account-confirm', protected: false, title: 'Potrditev e-pošte' },
+    '/pozabljeno-geslo': { view: 'account-forgot', protected: false, title: 'Pozabljeno geslo' },
+    '/ponastavi-geslo': { view: 'account-reset', protected: false, title: 'Novo geslo' },
+    '/zacetek': { view: 'onboarding', protected: true, title: 'Dobrodošli' },
+    '/poslovni-uvod': { view: 'business-onboarding', protected: true, title: 'Poslovni uvod' },
     '/': { view: 'home', protected: false, title: null },
     '/oglasi': { view: 'oglasi', protected: false, title: 'Oglasi' },
+    '/mape': { view: 'collections', protected: true, title: 'Moje mape' },
+    '/oglasne-deske': { view: 'boards', protected: true, title: 'Oglasne deske' },
+    '/avtohise': { view: 'business-directory', protected: false, title: 'Avtohiše' },
     '/iskanje': { view: 'advanced-search', protected: false, title: 'Iskanje' },
+    '/iskanje-drazbe': { view: 'advanced-search-auctions', protected: false, title: 'Iskanje dražb' },
     '/oglas': { view: 'listing', protected: false, title: 'Oglas' },
     '/drazbe': { view: 'drazbe', protected: false, title: 'Dražbe' },
     '/drazba': { view: 'auction-listing', protected: false, title: 'Dražba' },
+    '/najem': { view: 'najem', protected: false, title: 'Najem vozil' },
+    '/iskanje-najem': { view: 'advanced-search-rental', protected: false, title: 'Iskanje najema vozil' },
     '/gume-in-deli': { view: 'gume-in-deli', protected: false, title: 'Gume in deli' },
     '/katalog': { view: 'catalog-product', protected: false, title: 'Katalog' },
     '/prijava': { view: 'login', protected: false, title: 'Prijava' },
     '/registracija': { view: 'register', protected: false, title: 'Registracija' },
+    // Aliases: static view HTML (login.html / register.html / header.html) links to these.
+    '/login': { view: 'login', protected: false, title: 'Prijava' },
+    '/register': { view: 'register', protected: false, title: 'Registracija' },
     '/dashboard': { view: 'dashboard', protected: true, title: 'Nadzorna plošča' },
     '/novi-oglas': { view: 'create-listing', protected: false, title: 'Oddaj oglas' },
     '/profil': { view: 'profile', protected: true, title: 'Moj profil' },
@@ -39,6 +53,7 @@ const routes = {
     '/b2b/rezervacije': { view: 'b2b-reservations', protected: true, b2bOnly: true, title: 'B2B rezervacije' },
     '/b2b/storitve': { view: 'b2b-services', protected: true, b2bOnly: true, title: 'B2B storitve' },
     '/b2b/profil': { view: 'b2b-profile-editor', protected: true, b2bOnly: true, title: 'B2B profil' },
+    '/b2b/zacetek': { view: 'b2b-profile-editor', protected: true, b2bOnly: true, title: 'Nastavitev profila' },
     '/b2b/zaloga': { view: 'b2b-inventory', protected: true, b2bOnly: true, title: 'B2B zaloga' },
     '/b2b/leads': { view: 'b2b-leads', protected: true, b2bOnly: true, title: 'B2B leadi' },
     '/b2b/delavnica': { view: 'b2b-workshop', protected: true, b2bOnly: true, title: 'B2B delavnica' },
@@ -49,28 +64,36 @@ const routes = {
 
 const PROTECTED_REDIRECT = '/prijava';
 const APP = document.getElementById('app-container');
+const navigationGuards=new Set();
+let lastLoadedUrl=null;
+let viewLoadSequence=0;
+export function registerNavigationGuard(guard){navigationGuards.add(guard);return ()=>navigationGuards.delete(guard);}
+async function mayNavigate(destination){for(const guard of navigationGuards)if(!await guard(destination))return false;return true;}
 
 // Views that render entirely in JS (no matching /views/*.html file)
 const JS_ONLY_VIEWS = new Set([
+    'account-confirm', 'account-forgot', 'account-reset', 'onboarding', 'business-onboarding',
     'b2b-dashboard', 'b2b-reservations', 'b2b-services', 'b2b-profile-editor',
     'b2b-inventory', 'b2b-leads', 'b2b-workshop', 'b2b-tire-hotel',
-    'tco-settings', 'bulk-import',
+    'tco-settings', 'bulk-import', 'collections', 'boards', 'business-directory',
 ]);
 
 // Views that ship a platform-specific variant (views/<view>.<platform>.html).
 // An explicit allowlist is required because the SPA host returns index.html (HTTP
 // 200) for missing files, so a probe fetch can't reliably detect a missing variant.
 const PLATFORM_VIEW_VARIANTS = {
+    avto: new Set(['home', 'advanced-search', 'advanced-search-auctions', 'advanced-search-rental', 'drazbe', 'auction-listing', 'najem', 'login', 'register']),
     navtika: new Set(['home', 'advanced-search', 'oglasi', 'drazbe', 'auction-listing']),
 };
 
 // ── Programmatic navigation ───────────────────────────────────────────────────
-export function navigateTo(path) {
+export async function navigateTo(path) {
     const base = import.meta.env.BASE_URL;
     const cleanBase = base.endsWith('/') ? base.slice(0, -1) : base;
     const targetPath = (base !== '/' && path.startsWith('/')) ? `${cleanBase}${path}` : path;
+    if(!await mayNavigate(targetPath))return;
     history.pushState({}, '', targetPath);
-    router();
+    return router(true);
 }
 // Expose globally for inline onclick handlers in dynamically-generated HTML.
 window.navigateTo = navigateTo;
@@ -93,6 +116,7 @@ export function setPageMeta(title, description) {
 
 // ── Load a view HTML into the main container ──────────────────────────────────
 async function loadView(viewName) {
+    const sequence=++viewLoadSequence;
     try {
         if (JS_ONLY_VIEWS.has(viewName)) {
             // JS-only pages: clear container and let the page init render into it.
@@ -107,6 +131,7 @@ async function loadView(viewName) {
             if (!res.ok) throw new Error(`View not found: ${viewName}`);
             
             let htmlText = await res.text();
+            if(sequence!==viewLoadSequence)return;
             // Rewrite absolute paths inside dynamically-loaded view HTML to match base url
             const base = import.meta.env.BASE_URL;
             if (base !== '/') {
@@ -117,11 +142,13 @@ async function loadView(viewName) {
             }
             APP.innerHTML = htmlText;
         }
+        APP.dataset.view=viewName;
         // Translate the newly loaded content
         translatePage(APP);
 
         // Track the loaded path so filter-only param changes skip a full reload.
         _lastLoadedPath = decodeURIComponent(window.location.pathname);
+        lastLoadedUrl=window.location.pathname+window.location.search;
 
         // Dispatch so page-specific scripts can init
         document.dispatchEvent(new CustomEvent('routeChanged', { detail: { view: viewName } }));
@@ -134,10 +161,14 @@ async function loadView(viewName) {
 let _lastLoadedPath = null;
 
 // ── Main router function ──────────────────────────────────────────────────────
-async function router() {
+async function router(guardApproved=false) {
     // Ensure translations (base + platform overlay) are ready before any view
     // renders, so translatePage never paints stale/base strings on first load.
     await i18nReady;
+    if(guardApproved!==true&&!await mayNavigate(window.location.pathname+window.location.search)){
+        if(lastLoadedUrl)history.replaceState(history.state,'',lastLoadedUrl);
+        return;
+    }
 
     const base = import.meta.env.BASE_URL;
     let path = decodeURIComponent(window.location.pathname);
@@ -153,8 +184,9 @@ async function router() {
 
     // If only query params changed (same path already loaded), let the page
     // handle the update itself rather than reloading the whole view.
-    if (path === _lastLoadedPath) {
+    if (path === _lastLoadedPath && ['/oglasi','/iskanje','/iskanje-drazbe','/iskanje-najem','/drazbe','/najem','/profil','/garaža'].includes(path)) {
         document.dispatchEvent(new CustomEvent('routeParamsChanged', { detail: { path, search: window.location.search } }));
+        lastLoadedUrl=window.location.pathname+window.location.search;
         return;
     }
 
