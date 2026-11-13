@@ -1,4 +1,4 @@
-// Dražbe (Auctions Board) — MojAvto.si / AutoHub
+// Dražbe (Auctions Board) — Carcommerce / AutoHub
 // Fully matching scratch/autohub-references/32/DrazbeDeska.dc.html
 
 import { getListings } from '../services/listingService.js';

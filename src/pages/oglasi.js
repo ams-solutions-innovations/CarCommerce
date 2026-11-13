@@ -1,4 +1,4 @@
-// Oglasi (Listings Board) page — MojAvto.si
+// Oglasi (Listings Board) page — Carcommerce
 // Renders car listing cards + comparison tray logic
 
 import { PLATFORM } from '../config/platform.js';

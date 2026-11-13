@@ -1,4 +1,4 @@
-// Header component — MojAvto.si
+// Header component — Carcommerce
 // Renders the nav with Material 3 Expressive styling and dynamic API items
 import { onAuth, logout } from '../auth/auth.js';
 import { t, getCurrentLang, switchLang } from '../core/i18n.js';

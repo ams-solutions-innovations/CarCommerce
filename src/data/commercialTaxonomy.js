@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Commercial-vehicle taxonomy — MojAvto.si
+// Commercial-vehicle taxonomy — Carcommerce
 // Two-level structure used by the advanced-search "Gospodarska" tab:
 //   Vrsta (type)  →  Kategorije (categories)
 // The search UI first shows the Vrsta cards. Clicking one drills down (in place)

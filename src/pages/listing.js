@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Listing Detail Page — MojAvto.si
+// Listing Detail Page — Carcommerce
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { escHtml } from '../utils/escHtml.js';
@@ -1471,7 +1471,7 @@ function renderSellerCardHtml(l) {
                                 <span class="lp-dealer-data-val font-mono">${escHtml(dd.regNumber)}</span>
                             </div>` : ''}
                             <div class="lp-dealer-verified-badge">
-                                <i data-lucide="shield-check"></i> Preverjen trgovec MojAvto
+                                <i data-lucide="shield-check"></i> Preverjen trgovec Carcommerce
                             </div>
                         </div>
                     </div>

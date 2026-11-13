@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Category hierarchy data — MojAvto (vehicles)
+// Category hierarchy data — Carcommerce (vehicles)
 // mainCategory → subcategory → vehicleType. Each leaf maps to search filters.
 // Consumed via the platform router in categories.js.
 // ═══════════════════════════════════════════════════════════════════════════════

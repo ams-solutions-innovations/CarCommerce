@@ -2,8 +2,8 @@
    MojaNavtika-only stylesheet.
 
    This file is loaded ONLY on the navtika build (injected at runtime by main.js
-   when isNavtika() is true). MojAvto never fetches it. Put navtika-specific
-   styling here — editing it can NEVER affect MojAvto.
+   when isNavtika() is true). Carcommerce never fetches it. Put navtika-specific
+   styling here — editing it can NEVER affect Carcommerce.
 
    Rules of thumb:
    - Shared structural CSS stays in styles.css and the per-page css/*.css files.

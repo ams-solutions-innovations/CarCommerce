@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// AI Listing Import ("Že imate oglas?") — MojAvto.si  [EXPERIMENTAL]
+// AI Listing Import ("Že imate oglas?") — Carcommerce  [EXPERIMENTAL]
 // ───────────────────────────────────────────────────────────────────────────────
-// Lets a seller convert an existing listing (from another site) into a MojAvto.si
+// Lets a seller convert an existing listing (from another site) into a Carcommerce
 // listing with the help of a chatbot (ChatGPT / DeepSeek):
 //   1. The seller copies their existing listing text.
 //   2. They download a detailed prompt (.txt) generated here and paste it +
@@ -15,7 +15,7 @@
 // it advertises in the prompt are the same ones it validates against, so the two
 // can never drift. Everything that is NOT whitelisted here is dropped.
 //
-// Scope (v1): vehicles on MojAvto (avto / moto / gospodarska / mehanizacija /
+// Scope (v1): vehicles on Carcommerce (avto / moto / gospodarska / mehanizacija /
 // prosti-cas). Parts, tyres and navtika are intentionally excluded.
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -347,11 +347,11 @@ function bodyTypePromptSection() {
  * Generated from the same enums this module validates against, so it can't drift.
  */
 export function buildImportPromptText() {
-    return `NAVODILO ZA PRETVORBO OGLASA V JSON ZA MOJAVTO.SI
+    return `NAVODILO ZA PRETVORBO OGLASA V JSON ZA CARCOMMERCE
 ==================================================================
 
 Si pomočnik, ki MOJ obstoječi oglas za vozilo pretvori v strukturiran JSON,
-ki ga bo spletna stran MojAvto.si samodejno uvozila. Spodaj ti bom prilepil
+ki ga bo spletna stran Carcommerce samodejno uvozila. Spodaj ti bom prilepil
 besedilo svojega oglasa. Tvoja naloga je iz njega izluščiti podatke in vrniti
 IZKLJUČNO en sam veljaven JSON objekt — brez razlag, brez markdown ograj (\`\`\`),
 brez besedila pred ali za objektom.
@@ -378,7 +378,7 @@ RAVNANJE Z NEZNANIMI LASTNOSTMI (zelo pomembno):
     (npr. "Premium ozvočenje Bang & Olufsen", "Paket Night", "Zračno vzmetenje").
   • "category" naj bo id najbolj ustrezne skupine, ena izmed:
     ${equipmentGroupIdList()}.
-  Te lastnosti bo uredništvo MojAvto.si pregledalo in po odobritvi dodalo v sistem.
+  Te lastnosti bo uredništvo Carcommerce pregledalo in po odobritvi dodalo v sistem.
 - Če je v oglasu navedena LINIJA / paket opreme (npr. "M Sport", "S-Line",
   "AMG Line", "GT Line", "Elegance"), jo zapiši v polje "linija" kot lepo
   poimenovanje. Če zanjo ne obstaja koda, jo prav tako pregleda uredništvo.
@@ -491,7 +491,7 @@ SPODAJ PRILEPI BESEDILO SVOJEGA OGLASA:
 // ── Gemini AI Extraction ────────────────────────────────────────────────────────
 /**
  * Calls Google Gemini API to extract vehicle listing data from raw unstructured text.
- * Returns parsed and validated listing data matching MojAvto.si taxonomy.
+ * Returns parsed and validated listing data matching Carcommerce taxonomy.
  * 
  * @param {string} rawText - Unstructured vehicle listing text pasted by user.
  * @param {object} [options]
@@ -648,7 +648,7 @@ Cena: 18.900 €" spellcheck="false"></textarea>
 
             <label class="aii-disclaimer">
                 <input type="checkbox" id="aiiConsent" />
-                <span><strong>Objavljam svoj lastni oglas.</strong> Potrjujem, da sem lastnik oz. pooblaščeni prodajalec tega vozila in da sam odgovarjam za vsebino ter avtorske pravice (besedilo, fotografije). MojAvto.si ne odgovarja za uvožene podatke ali kršitve pravic tretjih oseb.</span>
+                <span><strong>Objavljam svoj lastni oglas.</strong> Potrjujem, da sem lastnik oz. pooblaščeni prodajalec tega vozila in da sam odgovarjam za vsebino ter avtorske pravice (besedilo, fotografije). Carcommerce ne odgovarja za uvožene podatke ali kršitve pravic tretjih oseb.</span>
             </label>
 
             <div class="aii-actions">

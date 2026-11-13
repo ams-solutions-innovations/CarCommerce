@@ -8,7 +8,7 @@ const SUPPORTED_LANGS = ['sl', 'en'];
 const DEFAULT_LANG = 'sl';
 let currentLang = DEFAULT_LANG;
 
-// Brand placeholder injected into every translation: "{brand}" → "MojAvto.si" |
+// Brand placeholder injected into every translation: "{brand}" → "Carcommerce" |
 // "MojaNavtika.si". Lets one set of language strings serve both platforms.
 const BRAND_FULL = `${PLATFORM.brandName}${PLATFORM.tld}`;
 
@@ -41,7 +41,7 @@ async function loadTranslations(lang) {
     }
     // Platform overlay: merge e.g. lang/sl.navtika.json over the base so MojaNavtika
     // can override vehicle-specific copy (taglines, hero words) and add its own
-    // category/type labels. Base file stays focused on MojAvto.
+    // category/type labels. Base file stays focused on Carcommerce.
     if (PLATFORM.id !== 'avto') {
         try {
             const res = await fetch(`/lang/${lang}.${PLATFORM.id}.json`);

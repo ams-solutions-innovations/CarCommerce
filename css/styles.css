@@ -100,7 +100,7 @@ body.dark-mode {
 /* ── MojaNavtika platform styles moved to css/styles.navtika.css ──
    All `body.platform-navtika` rules now live in styles.navtika.css, which is
    loaded ONLY on the navtika build (injected by main.js). Do not add
-   navtika-specific rules here — they would ship to MojAvto too. */
+   navtika-specific rules here — they would ship to Carcommerce too. */
 
 body.dark-mode .glass-card {
   background: var(--bg-glass);
@@ -5466,7 +5466,7 @@ body.dark-mode .spec-pill:hover {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
 }
 
-/* Unified Modern Spec Pills for MojAvto - completely uniform across all cards and specs */
+/* Unified Modern Spec Pills for Carcommerce - completely uniform across all cards and specs */
 .spec-pill,
 .spec-pill.fuel-coded,
 .spec-pill[class*="fuel-pill-"],
@@ -11043,7 +11043,7 @@ body.dark-mode .news-article-body .nb-article-divider { border-color: #374151; }
 body.dark-mode .news-article-body .nb-article-quote { background: #1a1830; }
 body.dark-mode .news-article-body .nb-article-source { background: #374151; color: #e5e7eb; }
 
-/* ── Unified Elegant Badges for MojAvto Pills (Listings & Sponsored) ── */
+/* ── Unified Elegant Badges for Carcommerce Pills (Listings & Sponsored) ── */
 body .spec-pill,
 body.dark-mode .spec-pill,
 body .sponsored-mini-card .spec-pill,

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Category hierarchy data — MojaNavtika (vessels)
-// mainCategory → subcategory → vesselType. Mirrors the MojAvto shape so the search
+// mainCategory → subcategory → vesselType. Mirrors the Carcommerce shape so the search
 // page, header mega-menu and helpers work unchanged. Consumed via categories.js.
 //
 // itemType mapping for create-listing / search:

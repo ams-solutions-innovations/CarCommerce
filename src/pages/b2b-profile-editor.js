@@ -54,7 +54,7 @@ export async function initB2bProfileEditorPage() {
     main.innerHTML = `
         ${GUIDED ? '<div id="guidedStepper" class="b2b-guided-header"></div>' : ''}
         <div class="b2b-profile-editor-toolbar">
-            <p class="b2b-hint">Javni profil je stran, ki jo vidijo stranke na MojAvto.si. Uredite podatke in kliknite <strong>Predogled</strong>, da vidite končni videz.</p>
+            <p class="b2b-hint">Javni profil je stran, ki jo vidijo stranke na Carcommerce. Uredite podatke in kliknite <strong>Predogled</strong>, da vidite končni videz.</p>
             <div style="display:flex;gap:0.5rem;">
                 <button id="previewFullBtn" class="btn b2b-btn-secondary"><i data-lucide="eye"></i> Predogled v živo</button>
                 <button id="saveProfileBtn" type="submit" form="profileForm" class="btn b2b-btn-primary"><i data-lucide="save"></i> Shrani</button>

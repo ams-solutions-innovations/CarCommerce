@@ -3654,3 +3654,20 @@ body.dark-mode #carListingsContainer.grid-layout .az-r {
     from { opacity: 0; transform: translateY(-6px) scale(0.98); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
+
+/* ── Auction card: protect from the dashboard's generic `.lc` (column / overflow:hidden) rules ── */
+.lc.az-c { flex-direction: row; flex-wrap: wrap; overflow: visible; border-radius: 22px; background: var(--ah-surface, #fff); }
+.lc.az-c .lc-ph { flex: 0 0 232px; width: 232px; align-self: flex-start; }
+@media (max-width: 900px) {
+  .lc.az-c .lc-ph { flex: 1 0 100%; width: 100%; aspect-ratio: 16/10; }
+  .lc.az-c .az-r { flex: 1 0 100%; border-left: 0; border-top: 1px dashed #d5e0ee; padding: 12px 4px 4px; }
+}
+.lc.az-c .lc-ph { align-self: stretch; min-height: 190px; aspect-ratio: auto; }
+.lc.az-c .lc-ph img { position: absolute; inset: 0; }
+.lc.az-c .lc-f { display: flex; padding: 8px 0 0; background: transparent; border-top: 1px dashed #d5e0ee; gap: 6px 8px; }
+.lc.az-c .lc-f .dl { display: inline-flex; padding: 0; }
+.lc.az-c .az-r .sub { display: block; padding: 0; }
+.lc.az-c .az-r .sub b { display: inline; }
+body.dark-mode .lc.az-c .lc-f { border-top-color: rgba(255,255,255,.1); }
+@media (max-width: 900px) { .lc.az-c .lc-ph { aspect-ratio: 16/10; min-height: 0; } }
+.lc.az-c .az-r .sub { border: 0; }

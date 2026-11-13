@@ -1,4 +1,4 @@
-// Sample auction (dražba) listings — MojAvto.si / MojaNavtika.si
+// Sample auction (dražba) listings — Carcommerce / MojaNavtika.si
 //
 // Realistic fallback data matching AutoHub DrazbeDeska reference:
 // 14 car auctions (9 live, 3 prebid, 2 silent) + 3 moto auctions + 3 boat auctions.

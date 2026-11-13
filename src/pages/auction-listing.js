@@ -1,4 +1,4 @@
-// Auction (Dražba) detail page — MojAvto.si / AutoHub
+// Auction (Dražba) detail page — Carcommerce / AutoHub
 // Fully aligned with AutoHub DrazbaOglas.dc.html & DrazbaStanja.dc.html specifications.
 //
 // Key Features:

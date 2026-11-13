@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Category filter schema — MojAvto.si
+// Category filter schema — Carcommerce
 //
 // Single source of truth for "which advanced-search filters apply to which
 // category / commercial vrsta". The advanced-search page, the results page and the

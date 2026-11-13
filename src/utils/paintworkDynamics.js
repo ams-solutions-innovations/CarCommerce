@@ -1,4 +1,4 @@
-// Dynamic paintwork pill styling for Advanced Search — MojAvto.si
+// Dynamic paintwork pill styling for Advanced Search — Carcommerce
 // Adapts "Vrsta barve" (Metallic, Navadna, Biserna, Mat) pills to the currently selected exterior color.
 // If 0 or >1 colors are selected, pills fall back to the default descriptive automotive finish palette.
 

@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Price-rating UI — shared 5-star rendering (half-stars) with a Slovenian label
 // shown BELOW the stars. Used on listing cards (oglasi) and listing detail pages,
-// on both portals (MojAvto + MojaNavtika).
+// on both portals (Carcommerce + MojaNavtika).
 //
 // The star value + label come from getVehicleRating() (src/utils/valuationScore.js),
 // whose `label` is already Slovenian ("Odlična vrednost", "Poštena cena", …).

@@ -7,36 +7,32 @@ test.describe('Header Desktop Navigation & Dropdowns', () => {
         await page.waitForLoadState('networkidle');
     });
 
-    test('renders separate dropdown anchors for Oglasi, Dražbe, and Najem', async ({ page }) => {
-        const listingsAnchor = page.locator('#ahListingsAnchor');
-        const auctionsAnchor = page.locator('#ahAuctionsAnchor');
-        const rentalsAnchor = page.locator('#ahRentalsAnchor');
+    test('groups Dražbe and Najem as flyouts inside the Oglasi dropdown', async ({ page }) => {
+        await expect(page.locator('#ahListingsAnchor')).toBeVisible();
+        await expect(page.locator('#ahAuctionsAnchor')).toHaveCount(0);
+        await expect(page.locator('#ahRentalsAnchor')).toHaveCount(0);
+        await expect(page.locator('.ah-burger')).toBeHidden();
 
-        await expect(listingsAnchor).toBeVisible();
-        await expect(auctionsAnchor).toBeVisible();
-        await expect(rentalsAnchor).toBeVisible();
+        await page.locator('#ahListingsButton').hover();
+        const menu = page.locator('#ahListingsMenu');
+        await expect(menu).toBeVisible();
 
-        // Auctions popover links
-        await page.locator('#ahAuctionsButton').hover();
-        const auctionsMenu = page.locator('#ahAuctionsMenu');
-        await expect(auctionsMenu).toBeVisible();
-        await expect(auctionsMenu.locator('a[href="/drazbe"]')).toBeVisible();
-        await expect(auctionsMenu.locator('a[href="/iskanje-drazbe"]')).toBeVisible();
+        const triggers = menu.locator('.ah-submenu-trigger');
+        await triggers.nth(0).hover();
+        const auctions = menu.locator('.ah-submenu-anchor').nth(0).locator('.ah-submenu');
+        await expect(auctions.locator('a[href="/drazbe"]')).toBeVisible();
+        await expect(auctions.locator('a[href="/iskanje-drazbe"]')).toBeVisible();
 
-        // Rentals popover links
-        await page.locator('#ahRentalsButton').hover();
-        const rentalsMenu = page.locator('#ahRentalsMenu');
-        await expect(rentalsMenu).toBeVisible();
-        await expect(rentalsMenu.locator('a[href="/najem"]')).toBeVisible();
-        await expect(rentalsMenu.locator('a[href="/iskanje-najem"]')).toBeVisible();
+        await triggers.nth(1).hover();
+        const rentals = menu.locator('.ah-submenu-anchor').nth(1).locator('.ah-submenu');
+        await expect(rentals.locator('a[href="/najem"]')).toBeVisible();
+        await expect(rentals.locator('a[href="/iskanje-najem"]')).toBeVisible();
     });
 
-    test('highlights Dražbe anchor when visiting /iskanje-drazbe', async ({ page }) => {
+    test('highlights the Oglasi anchor when visiting /iskanje-drazbe', async ({ page }) => {
         await page.goto('/iskanje-drazbe');
         await page.waitForLoadState('networkidle');
-
-        const auctionsBtn = page.locator('#ahAuctionsButton');
-        await expect(auctionsBtn).toHaveClass(/is-active/);
+        await expect(page.locator('#ahListingsButton')).toHaveClass(/is-active/);
     });
 });
 

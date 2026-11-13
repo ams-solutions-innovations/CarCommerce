@@ -1,4 +1,4 @@
-// Auth Gate — MojAvto.si
+// Auth Gate — Carcommerce
 // Shows a login/register overlay; resolves with the signed-in user.
 // Usage:
 //   import { showAuthGate } from '../utils/authGate.js';

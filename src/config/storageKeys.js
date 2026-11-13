@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════════
 // Platform-scoped localStorage keys.
 //
-// Historically keys were hardcoded with a 'mojavto_' prefix. To keep MojAvto and
+// Historically keys were hardcoded with a 'mojavto_' prefix. To keep Carcommerce and
 // MojaNavtika settings isolated (compare list, language, view mode, garage…) all
 // keys now run through key() which prefixes with the active platform id.
 //

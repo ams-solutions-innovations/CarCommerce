@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Admin Panel — MojAvto.si
+// Admin Panel — Carcommerce
 // Modular admin controller: 12 modules, sidebar SPA navigation
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -3662,7 +3662,7 @@ function openSeoModal(page) {
         <input id="seo-slug" class="adm-input" value="${escHtml(page?.slug || '')}" placeholder="npr. /bmw/x5">
       </div>
       <div class="adm-form-row"><label>Meta naslov</label>
-        <input id="seo-title" class="adm-input" value="${escHtml(page?.metaTitle || '')}" placeholder="BMW X5 rabljeni — MojAvto.si">
+        <input id="seo-title" class="adm-input" value="${escHtml(page?.metaTitle || '')}" placeholder="BMW X5 rabljeni — Carcommerce">
       </div>
       <div class="adm-form-row"><label>Meta opis</label>
         <textarea id="seo-desc" class="adm-input" rows="3" placeholder="Opisi, ki se prikazujejo v Googlu…">${escHtml(page?.metaDescription || '')}</textarea>

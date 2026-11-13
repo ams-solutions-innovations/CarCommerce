@@ -1,4 +1,4 @@
-// Unified UI-state renderers — MojAvto.si
+// Unified UI-state renderers — Carcommerce
 // Drop-in replacements for the per-page inline loading/empty/error HTML. They
 // write into an existing container element (same pattern as `el.innerHTML = …`).
 //

@@ -1,4 +1,4 @@
-// Transaction abandonment recovery — MojAvto.si
+// Transaction abandonment recovery — Carcommerce
 // Persists a user's in-flight intent so that, if they leave and come back, we can
 // offer to resume. Covers three flows:
 //   - 'auction_payment'  : auction winner opened Stripe checkout, didn't finish

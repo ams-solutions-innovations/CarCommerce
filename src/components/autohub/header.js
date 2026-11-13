@@ -29,44 +29,39 @@ export function initAutoHubHeader() {
                 <a href="/" class="ah-logo" aria-label="Carcommerce, ${label('nav_home','Domov')}"><img src="${brandAsset(AUTOHUB_LOGO)}" alt="Carcommerce" width="108" height="36"></a>
                 
                 <div class="ah-nav-links">
-                    <!-- Oglasi dropdown -->
+                    <!-- Oglasi dropdown (dražbe + najem as flyouts to the right) -->
                     <div class="ah-menu-anchor" id="ahListingsAnchor">
                         <a href="/oglasi" class="ah-nav-link" id="ahListingsButton" aria-expanded="false" aria-controls="ahListingsMenu">${icon('newspaper')}<span>${label('header_listings','Oglasi')}</span>${icon('down','ah-small')}</a>
                         <div class="ah-popover" id="ahListingsMenu" hidden>
                             ${menuLink('/oglasi','newspaper',label('all_listings','Vsi oglasi'))}
                             ${menuLink('/iskanje','sliders',label('adv_search','Napredno iskanje'))}
-                            <div class="ah-menu-divider" style="margin: 4px 6px;"></div>
+                            <div class="ah-menu-divider"></div>
                             ${menuLink('/iskanje?cat=avto','car',label('cat_cars','Avtomobili'))}
                             ${menuLink('/iskanje?cat=moto','bike',label('cat_moto','Motorna kolesa'))}
                             ${menuLink('/iskanje?cat=gospodarska','truck',label('cat_commercial','Gospodarska vozila'))}
                             ${menuLink('/iskanje?cat=prosti-cas','tent',label('cat_recreation','Prosti čas'))}
-                            <div class="ah-menu-divider" style="margin: 4px 6px;"></div>
-                            ${menuLink('/iskanje-drazbe','gavel',label('nav_auctions','Dražbe'))}
-                        </div>
-                    </div>
-
-                    <!-- Dražbe dropdown -->
-                    <div class="ah-menu-anchor" id="ahAuctionsAnchor">
-                        <a href="/drazbe" class="ah-nav-link" id="ahAuctionsButton" aria-expanded="false" aria-controls="ahAuctionsMenu">${icon('gavel')}<span>${label('nav_auctions','Dražbe')}</span>${icon('down','ah-small')}</a>
-                        <div class="ah-popover" id="ahAuctionsMenu" hidden>
-                            ${menuLink('/drazbe','gavel',label('all_auctions','Aktivne dražbe'))}
-                            ${menuLink('/iskanje-drazbe','sliders',label('adv_search_auctions','Napredno iskanje dražb'))}
-                            <div class="ah-menu-divider" style="margin: 4px 6px;"></div>
-                            ${menuLink('/drazbe?type=live','radio',label('live_auctions','Žive dražbe'))}
-                            ${menuLink('/drazbe?type=silent','lock',label('silent_auctions','Tihe dražbe'))}
-                        </div>
-                    </div>
-
-                    <!-- Najem dropdown -->
-                    <div class="ah-menu-anchor" id="ahRentalsAnchor">
-                        <a href="/najem" class="ah-nav-link" id="ahRentalsButton" aria-expanded="false" aria-controls="ahRentalsMenu">${icon('key')}<span>${label('nav_rentals','Najem')}</span>${icon('down','ah-small')}</a>
-                        <div class="ah-popover" id="ahRentalsMenu" hidden>
-                            ${menuLink('/najem','key',label('all_rentals','Vsa vozila za najem'))}
-                            ${menuLink('/iskanje-najem','sliders',label('adv_search_rentals','Napredno iskanje najema'))}
-                            <div class="ah-menu-divider" style="margin: 4px 6px;"></div>
-                            ${menuLink('/najem?cat=avto','car',label('cat_cars','Avtomobili'))}
-                            ${menuLink('/najem?cat=potniski-kombi','users',label('cat_vans','Potniški kombiji'))}
-                            ${menuLink('/najem?cat=pocitniska','tent',label('cat_campers','Avtodomi'))}
+                            <div class="ah-menu-divider"></div>
+                            <div class="ah-submenu-anchor">
+                                <button type="button" class="ah-menu-row ah-submenu-trigger" aria-expanded="false">${icon('gavel')}<span>${label('nav_auctions','Dražbe')}</span>${icon('right','ah-small ah-submenu-caret')}</button>
+                                <div class="ah-submenu">
+                                    ${menuLink('/drazbe','gavel',label('all_auctions','Aktivne dražbe'))}
+                                    ${menuLink('/iskanje-drazbe','sliders',label('adv_search_auctions','Napredno iskanje dražb'))}
+                                    <div class="ah-menu-divider"></div>
+                                    ${menuLink('/drazbe?type=live','radio',label('live_auctions','Žive dražbe'))}
+                                    ${menuLink('/drazbe?type=silent','lock',label('silent_auctions','Tihe dražbe'))}
+                                </div>
+                            </div>
+                            <div class="ah-submenu-anchor">
+                                <button type="button" class="ah-menu-row ah-submenu-trigger" aria-expanded="false">${icon('key')}<span>${label('nav_rentals_long','Najem vozil')}</span>${icon('right','ah-small ah-submenu-caret')}</button>
+                                <div class="ah-submenu">
+                                    ${menuLink('/najem','key',label('all_rentals','Vsa vozila za najem'))}
+                                    ${menuLink('/iskanje-najem','sliders',label('adv_search_rentals','Napredno iskanje najema'))}
+                                    <div class="ah-menu-divider"></div>
+                                    ${menuLink('/najem?cat=avto','car',label('cat_cars','Avtomobili'))}
+                                    ${menuLink('/najem?cat=potniski-kombi','users',label('cat_vans','Potniški kombiji'))}
+                                    ${menuLink('/najem?cat=pocitniska','tent',label('cat_campers','Avtodomi'))}
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -154,9 +149,7 @@ export function initAutoHubHeader() {
         </nav>`;
 
         const navAnchors = [
-            { anchor: '#ahListingsAnchor', menu: '#ahListingsMenu', button: '#ahListingsButton' },
-            { anchor: '#ahAuctionsAnchor', menu: '#ahAuctionsMenu', button: '#ahAuctionsButton' },
-            { anchor: '#ahRentalsAnchor', menu: '#ahRentalsMenu', button: '#ahRentalsButton' }
+            { anchor: '#ahListingsAnchor', menu: '#ahListingsMenu', button: '#ahListingsButton' }
         ];
 
         let navTimer = null;
@@ -196,8 +189,6 @@ export function initAutoHubHeader() {
 
         const pairs = [
             ['ahListingsButton','ahListingsMenu'],
-            ['ahAuctionsButton','ahAuctionsMenu'],
-            ['ahRentalsButton','ahRentalsMenu'],
             ['ahAccountButton','ahAccountMenu'],
             ['ahLanguageButton','ahLanguageMenu'],
             ['ahMobileButton','ahMobileMenu']
@@ -216,7 +207,7 @@ export function initAutoHubHeader() {
             const button = host.querySelector(`#${buttonId}`);
             const menu = host.querySelector(`#${menuId}`);
             button?.addEventListener('click', (e) => {
-                if (['ahListingsButton','ahAuctionsButton','ahRentalsButton'].includes(buttonId)) {
+                if (buttonId === 'ahListingsButton') {
                     if (!window.matchMedia('(hover: hover)').matches && menu.hidden) {
                         e.preventDefault();
                         closeAll();
@@ -231,6 +222,20 @@ export function initAutoHubHeader() {
                 closeAll();
                 menu.hidden = !open;
                 button.setAttribute('aria-expanded',String(open));
+            }, options);
+        });
+
+        host.querySelectorAll('.ah-submenu-trigger').forEach(trigger => {
+            trigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const anchorEl = trigger.closest('.ah-submenu-anchor');
+                const open = !anchorEl.classList.contains('is-open');
+                host.querySelectorAll('.ah-submenu-anchor.is-open').forEach(el => {
+                    el.classList.remove('is-open');
+                    el.querySelector('.ah-submenu-trigger')?.setAttribute('aria-expanded', 'false');
+                });
+                anchorEl.classList.toggle('is-open', open);
+                trigger.setAttribute('aria-expanded', String(open));
             }, options);
         });
 
@@ -322,9 +327,7 @@ export function initAutoHubHeader() {
         else if (isRental) currentMode = 'najem';
         else if (path === '/') currentMode = window.__currentHomeSearchMode || 'oglasi';
 
-        host.querySelector('#ahListingsButton')?.classList.toggle('is-active', isListings || (path === '/' && currentMode === 'oglasi'));
-        host.querySelector('#ahAuctionsButton')?.classList.toggle('is-active', isAuction || (path === '/' && currentMode === 'drazbe'));
-        host.querySelector('#ahRentalsButton')?.classList.toggle('is-active', isRental || (path === '/' && currentMode === 'najem'));
+        host.querySelector('#ahListingsButton')?.classList.toggle('is-active', isListings || isAuction || isRental || path === '/');
 
         // Update mobile pills
         host.querySelectorAll('.ah-mobile-mode-pill').forEach(pill => {

@@ -1,5 +1,5 @@
 ﻿// ═══════════════════════════════════════════════════════════════════════════════
-// Gume in deli — parts & tires search — MojAvto.si
+// Gume in deli — parts & tires search — Carcommerce
 // Two data sources merged into one result grid:
 //   1. Peer listings (rabljeni/novi deli & gume) posted by users — Firestore listings
 //   2. Catalog products (price comparison "od X€") — partsCatalog / mock catalog
@@ -59,7 +59,7 @@ export async function initGumeInDeliPage() {
 
     state = { itemType: 'tire', vehicleCategory: 'avto', source: 'all', sort: 'recommended', filters: {} };
 
-    // MojAvto uses one continuous search surface: useful results are visible
+    // Carcommerce uses one continuous search surface: useful results are visible
     // immediately and every control refines them in place.
     renderShell(root);
     initCustomSelects();
@@ -77,11 +77,11 @@ export async function initGumeInDeliPage() {
     applyAndRender();
 }
 
-// ── MojAvto: landing search UI (pick what you're looking for, then search) ──────
+// ── Carcommerce: landing search UI (pick what you're looking for, then search) ──────
 // Mirrors the navtika "Oprema za plovila" landing: vehicle category + item type +
 // category tiles + brand/price filters. Clicking "Išči" transitions to the
 // results shell (the advanced-filters view) that previously loaded immediately.
-function renderMojAvtoLanding(root) {
+function renderCarcommerceLanding(root) {
     // Brand lists loaded lazily so dropdowns can populate after initial render.
     fetch('/json/tire_brands.json').then(r => r.json()).then(d => { tireBrands = d || []; refreshLandingBrand(); }).catch(() => {});
     fetch('/json/equipment_brands.json').then(r => r.json()).then(d => { equipmentBrands = d || []; refreshLandingBrand(); }).catch(() => {});
@@ -605,7 +605,7 @@ function renderShell(root) {
         : `<section class="gd-search-hero glass-card">
             <div class="gd-search-heading">
                 <div>
-                    <span class="gd-eyebrow">MojAvto iskalnik</span>
+                    <span class="gd-eyebrow">Carcommerce iskalnik</span>
                     <h1>${t('gd_title', 'Gume in deli')}</h1>
                     <p>${t('gd_subtitle', 'Poiščite pravi izdelek med oglasi in ponudbami trgovin.')}</p>
                 </div>

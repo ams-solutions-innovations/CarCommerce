@@ -1,4 +1,4 @@
-// Najem vozil (Rentals Page) — MojAvto.si / AutoHub.si
+// Najem vozil (Rentals Page) — Carcommerce / AutoHub.si
 import { getRentalListings } from '../services/listingService.js';
 import { PLATFORM } from '../config/platform.js';
 import { escHtml } from '../utils/escHtml.js';

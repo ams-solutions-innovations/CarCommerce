@@ -1694,3 +1694,72 @@ body.dark-mode .ah-legend-card .legend-item-checkable:hover,
 .ah-legend-card .legend-item-checkable.is-unchecked .legend-item-desc {
   opacity: 0.65;
 }
+
+/* ── Navbar: Dražbe & Najem as flyouts inside the Oglasi menu ── */
+.platform-avto .ah-submenu-anchor { position: relative; }
+.platform-avto .ah-submenu-trigger { justify-content: flex-start; }
+.platform-avto .ah-submenu-trigger > span { flex: 1; text-align: left; }
+.platform-avto .ah-submenu-caret { margin-left: auto; color: var(--ah-muted); }
+.platform-avto .ah-submenu-trigger .ah-submenu-caret { transform: none; }
+.platform-avto .ah-submenu {
+  display: none; position: absolute; top: -8px; left: calc(100% + 6px); width: 270px; padding: 8px;
+  border: 1px solid rgba(12,27,48,.08); border-radius: 26px; background: var(--ah-surface); color: var(--ah-ink);
+  box-shadow: 0 28px 52px -16px rgba(12,27,48,.4),0 2px 8px rgba(12,27,48,.06); z-index: 101;
+  animation: ah-popover-in .16s ease both;
+}
+.platform-avto .ah-submenu::before { content: ''; position: absolute; top: 0; bottom: 0; left: -10px; width: 10px; }
+.platform-avto .ah-submenu-anchor:is(:hover,:focus-within,.is-open) > .ah-submenu { display: block; }
+.platform-avto .ah-submenu-anchor:is(:hover,.is-open) > .ah-submenu-trigger { background: var(--ah-soft); color: #1d4ed8; }
+body.dark-mode .platform-avto .ah-submenu,
+.platform-avto.dark-mode .ah-submenu { background: var(--ah-surface, #13233a); border-color: rgba(255,255,255,.12); box-shadow: 0 24px 52px -12px rgba(0,0,0,.7); }
+@media (max-width: 1023px) {
+  .platform-avto .ah-submenu { position: static; width: auto; margin: 2px 0 6px 14px; padding: 4px; border-radius: 18px; box-shadow: none; animation: none; }
+  .platform-avto .ah-submenu::before { display: none; }
+  .platform-avto .ah-submenu-anchor:hover > .ah-submenu:not(:focus-within) { display: none; }
+  .platform-avto .ah-submenu-anchor.is-open > .ah-submenu { display: block; }
+}
+/* Hamburger is a mobile-only control */
+@media (min-width: 1024px) {
+  .platform-avto .ah-nav .ah-burger { display: none !important; }
+}
+
+/* Selected brand → tinted in the brand's own colour (overrides the generic peach "has-value" state) */
+.platform-avto .ah-field .custom-select-trigger.brand-selected {
+  background: rgba(var(--brand-rgb, 37,99,235), .14) !important;
+  border-color: rgba(var(--brand-rgb, 37,99,235), .55) !important;
+  box-shadow: 0 0 0 3px rgba(var(--brand-rgb, 37,99,235), .10) !important;
+}
+.platform-avto .custom-select-trigger.brand-selected .custom-select-brand-name { color: rgb(var(--brand-rgb, 15,23,42)) !important; filter: brightness(.72) saturate(1.1); }
+body.dark-mode .platform-avto .ah-field .custom-select-trigger.brand-selected,
+.platform-avto.dark-mode .ah-field .custom-select-trigger.brand-selected {
+  background: rgba(var(--brand-rgb, 37,99,235), .28) !important;
+  border-color: rgba(var(--brand-rgb, 37,99,235), .7) !important;
+}
+body.dark-mode .platform-avto .custom-select-trigger.brand-selected .custom-select-brand-name,
+.platform-avto.dark-mode .custom-select-trigger.brand-selected .custom-select-brand-name { color: #fff !important; filter: none; }
+
+/* Home "Izbrano za vas": compact 4-up cards with centred content */
+@media (min-width: 1100px) {
+  .platform-avto .ah-home-card-grid { grid-template-columns: repeat(4,minmax(0,1fr)); gap: 16px; }
+}
+@media (min-width: 700px) {
+  .platform-avto .ah-home-card-grid .ah-card-photo { aspect-ratio: 16 / 10; }
+  .platform-avto .ah-home-card-grid .ah-card-content { padding: 14px 14px 16px; gap: 10px; align-items: center; text-align: center; }
+  .platform-avto .ah-home-card-grid .ah-card-heading { justify-content: center; width: 100%; }
+  .platform-avto .ah-home-card-grid .ah-card-heading > div { text-align: center; }
+  .platform-avto .ah-home-card-grid .ah-card-heading h2 { font-size: 16px; text-align: center; }
+  .platform-avto .ah-home-card-grid .ah-card-brand { display: none; }
+  .platform-avto .ah-home-card-grid .ah-card-price { justify-content: center; }
+  .platform-avto .ah-home-card-grid .ah-card-price strong { font-size: 21px; }
+  .platform-avto .ah-home-card-grid .ah-card-rating { width: 100%; align-items: center; text-align: center; }
+  .platform-avto .ah-home-card-grid .ah-card-specs { justify-content: center; gap: 6px; }
+  .platform-avto .ah-home-card-grid .ah-spec { font-size: 11px; padding: 4px 8px; }
+  .platform-avto .ah-home-card-grid .ah-card-seller { align-items: center; width: 100%; text-align: center; }
+  .platform-avto .ah-home-card-grid .ah-card-seller span { justify-content: center; }
+}
+/* Hero featured card: smaller, centred */
+.platform-avto .ah-hero-sponsored { width: 244px; padding: 14px 16px; text-align: center; }
+.platform-avto .ah-hero-sponsored strong { font-size: 15px; }
+.platform-avto .ah-hero-sponsored b { font-size: 18px; }
+.platform-avto .ah-home-card-grid .ah-rating-track { width: 100%; }
+.platform-avto .ah-field .custom-select-trigger.brand-selected { background: rgba(var(--brand-rgb, 37,99,235), .2) !important; border-color: rgba(var(--brand-rgb, 37,99,235), .7) !important; }

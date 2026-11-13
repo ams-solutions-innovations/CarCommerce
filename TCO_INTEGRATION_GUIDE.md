@@ -2,7 +2,7 @@
 
 ## ✅ Installation Complete
 
-The production-grade Total Cost of Ownership (TCO) engine has been successfully integrated into MojAvto.si.
+The production-grade Total Cost of Ownership (TCO) engine has been successfully integrated into Carcommerce.
 
 ---
 

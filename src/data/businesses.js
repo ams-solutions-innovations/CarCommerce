@@ -1,4 +1,4 @@
-// businesses.js — Mock data for MojAvto Business Discovery
+// businesses.js — Mock data for Carcommerce Business Discovery
 // businessTypes is an array: a business can be dealer, service, and/or vulcanizer simultaneously
 
 export const mockBusinesses = [

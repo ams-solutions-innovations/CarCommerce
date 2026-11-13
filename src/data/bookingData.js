@@ -1,4 +1,4 @@
-// bookingData.js — Mock data for Booking & Service System — MojAvto.si
+// bookingData.js — Mock data for Booking & Service System — Carcommerce
 
 // ── Car brands and models for vehicle form ────────────────────
 export const carBrands = [

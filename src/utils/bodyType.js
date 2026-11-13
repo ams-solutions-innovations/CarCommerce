@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Vehicle body type (vrsta vozila) — shared taxonomy helpers — MojAvto.si
+// Vehicle body type (vrsta vozila) — shared taxonomy helpers — Carcommerce
 // Used by create-listing (auto-fill on entry) and advanced-search (auto-select
 // the body-type card when a model with a known body_type is chosen).
 // ═══════════════════════════════════════════════════════════════════════════════

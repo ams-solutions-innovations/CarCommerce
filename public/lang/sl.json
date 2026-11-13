@@ -133,7 +133,7 @@
   "bi_err_format": "Format datoteke ni podprt. Pričakovano: mojavto-bulk-v1.",
   "bi_err_json": "Datoteka ni veljavna JSON datoteka.",
   "bi_failed_title": "Neuspeli oglasi",
-  "bi_format_note": "Sprejemamo samo datoteke v formatu mojavto-bulk-v1 (MojAvto AI Converter).",
+  "bi_format_note": "Sprejemamo samo datoteke v formatu mojavto-bulk-v1 (Carcommerce AI Converter).",
   "bi_import_another": "Uvozi novo datoteko",
   "bi_import_btn": "Ustvari oglase",
   "bi_import_btn_n": "Uvozi {n} oglasov",

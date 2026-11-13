@@ -180,7 +180,7 @@ export function initCustomSelects(scope = document) {
 }
 
 export function createCustomSelect(select) {
-    if (!select || select.dataset.customSelectInit) return;
+    if (!select || select.dataset.customSelectInit || select.dataset.noCustom) return;
     select.dataset.customSelectInit = "true";
     select.classList.add('custom-select-hidden');
     select.style.display = 'none';

@@ -1,4 +1,4 @@
-// Progressive loading messages — MojAvto.si
+// Progressive loading messages — Carcommerce
 // While a load runs, rotate a reassuring message every 3s across 0–15s to reduce
 // perceived wait time and abandonment. After the last bucket it stays put.
 //

@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // --- PRIKAZ PODATKOV O OGLASU ---
     titleEl.textContent = listing.title;
-    document.title = `${listing.title} - MojAvto.si`;
+    document.title = `${listing.title} - Carcommerce`;
     priceEl.textContent = `$${listing.price.toLocaleString('en-US')}`;
     descriptionEl.textContent = listing.description || "The seller did not provide a description.";
     sellerNameEl.textContent = listing.author || "Unknown seller";
@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     contactEmailBtn.addEventListener('click', () => {
         const subject = encodeURIComponent(`Inquiry about: ${listing.title}`);
         const body = encodeURIComponent(`Hello,\n\nI'm interested in your listing for ${listing.title}.\n\nBest regards`);
-        window.location.href = `mailto:${listing.author}@mojavto.si?subject=${subject}&body=${body}`;
+        window.location.href = `mailto:${listing.author}@carcommerce.net?subject=${subject}&body=${body}`;
     });
 
     if (listing.phone && listing.phone.trim() !== "") {

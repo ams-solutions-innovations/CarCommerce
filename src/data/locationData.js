@@ -1,4 +1,4 @@
-// Country + region taxonomy for MojAvto.si / MojaNavtika.si
+// Country + region taxonomy for Carcommerce / MojaNavtika.si
 // Used in listing creation (mandatory) and search filters (with localStorage persistence).
 
 export const COUNTRIES = [

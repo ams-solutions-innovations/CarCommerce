@@ -4,7 +4,7 @@ import { navigateTo,registerNavigationGuard } from '../router.js';
 import { openAutoHubDialog } from '../components/autohub/dialog.js';
 import { icon as ahIcon } from '../components/autohub/icons.js';
 // ═══════════════════════════════════════════════════════════════════════════════
-// Create Listing — Multi-step Controller — MojAvto.si
+// Create Listing — Multi-step Controller — Carcommerce
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { escHtml } from '../utils/escHtml.js';

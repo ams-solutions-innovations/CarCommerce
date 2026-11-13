@@ -1,5 +1,5 @@
 import { PLATFORM } from '../config/platform.js';
-// Profile page — MojAvto.si
+// Profile page — Carcommerce
 // Moja garaža: add/manage vehicles with tire info
 import { getVehicles, addVehicle, updateVehicle, deleteVehicle, getFavourites, removeFromFavourites } from '../services/garageService.js';
 import { navigateTo } from '../router.js';

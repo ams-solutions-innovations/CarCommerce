@@ -1,4 +1,4 @@
-// Error taxonomy — MojAvto.si
+// Error taxonomy — Carcommerce
 // Not all errors are equal. mapError() turns any thrown error (from apiClient,
 // fetch, Supabase, or a plain Error) into a user-facing descriptor: a severity,
 // an i18n title/message key, a recommended action, and (where present) the

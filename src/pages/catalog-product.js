@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Katalog izdelka — price-comparison product detail — MojAvto.si
+// Katalog izdelka — price-comparison product detail — Carcommerce
 // Shows the lowest price ("od X€") and a list of shop offers that link out to the
 // external stores where the part/tire can be bought (ceneje.si style).
 // ═══════════════════════════════════════════════════════════════════════════════

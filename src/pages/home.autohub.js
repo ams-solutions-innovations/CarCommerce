@@ -125,6 +125,7 @@ export async function initAutoHubHomePage() {
     let catalog = {};
     let listings = [];
     let recommendMode = 'all';
+    const RECOMMEND_PAGE = 4;
     let recommendOffset = 0;
     let brandGeneration = 0;
     const select = id => host.querySelector(`#${id}`);
@@ -519,11 +520,11 @@ export async function initAutoHubHomePage() {
             return created > Date.now()-86400000;
         });
         if (recommendMode === 'nearby') available = country.value || region.value ? available.filter(l=>(!country.value || l.location?.country === country.value) && (!region.value || l.location?.region === region.value)) : [];
-        const cards = available.slice(recommendOffset,recommendOffset+3);
+        const cards = available.slice(recommendOffset,recommendOffset+RECOMMEND_PAGE);
         const container = select('ahHomeListings');
         container.innerHTML = cards.length ? cards.map(car=>renderCarCard(car)).join('') : `<p class="ah-empty">${recommendMode === 'nearby' && !country.value && !region.value ? text('ah_select_area','V iskalniku izberite državo in regijo za prikaz oglasov v bližini.') : text('no_featured_listings','Trenutno ni oglasov v tej kategoriji.')}</p>`;
         select('ahRecommendPrev').disabled = recommendOffset === 0;
-        select('ahRecommendNext').disabled = recommendOffset+3 >= available.length;
+        select('ahRecommendNext').disabled = recommendOffset+RECOMMEND_PAGE >= available.length;
         bindCardEvents(container,cards);
     }
     const recommendSheet = select('ahRecommendSheet');
@@ -584,8 +585,8 @@ export async function initAutoHubHomePage() {
             if (event.target === recommendSheet) closeRecommendSheet();
         }, options);
     }
-    select('ahRecommendPrev').addEventListener('click',()=>{recommendOffset=Math.max(0,recommendOffset-3);renderCards();},options);
-    select('ahRecommendNext').addEventListener('click',()=>{recommendOffset+=3;renderCards();},options);
+    select('ahRecommendPrev').addEventListener('click',()=>{recommendOffset=Math.max(0,recommendOffset-RECOMMEND_PAGE);renderCards();},options);
+    select('ahRecommendNext').addEventListener('click',()=>{recommendOffset+=RECOMMEND_PAGE;renderCards();},options);
 
     const recentClear = select('ahRecentClear');
     if (recentClear) {

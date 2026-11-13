@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Listing Detail Page — MojAvto.si
+// Listing Detail Page — Carcommerce
 // ═══════════════════════════════════════════════════════════════════════════════
 
 import { escHtml } from '../utils/escHtml.js';

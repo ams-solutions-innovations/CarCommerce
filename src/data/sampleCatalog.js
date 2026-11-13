@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Sample price-comparison catalog — MojAvto.si
+// Sample price-comparison catalog — Carcommerce
 // MOCK DATA. These products mimic what the future webscraping backend will write
 // into the Firestore `partsCatalog` collection (see docs/WEBSCRAPING_HANDOFF.md).
 // Each product carries an `offers[]` array of shop offers; the UI shows the lowest

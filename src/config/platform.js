@@ -2,7 +2,7 @@
 // Platform configuration — single source of truth for "which portal is this".
 //
 // Selected at BUILD TIME via VITE_PLATFORM (see vite.config.js → define()).
-//   VITE_PLATFORM=avto    vite build   → MojAvto.si    (default)
+//   VITE_PLATFORM=avto    vite build   → Carcommerce    (default)
 //   VITE_PLATFORM=navtika vite build   → MojaNavtika.si
 //
 // Everything brand-, taxonomy- and content-specific reads from the active
@@ -15,7 +15,7 @@ const PLATFORMS = {
         brandName: 'Carcommerce',
         brandMark: 'C',
         tld: '.si',
-        domain: 'mojavto.si',
+        domain: 'carcommerce.net',
         siblingUrl: 'https://mojanavtika.si',
         siblingName: 'MojaNavtika.si',
         mainIcon: 'car',
@@ -33,7 +33,7 @@ const PLATFORMS = {
             name: 'AMS Solutions d.o.o.',
             taxNo: '58144498',
             regNo: '7511744000',
-            email: 'info@mojavto.si',
+            email: 'info@carcommerce.net',
         },
         // B2B role labels (dealer/mechanic/vulcanizer roles defined in core/extensions.js)
         b2bRoleLabels: { dealer: 'Avtohiša', mechanic: 'Servis', vulcanizer: 'Vulkanizer', tuner: 'Tuning center', detailing: 'Avto detajling', carwash: 'Avtopralnica' },
@@ -45,8 +45,8 @@ const PLATFORMS = {
         brandMark: 'N',
         tld: '.si',
         domain: 'mojanavtika.si',
-        siblingUrl: 'https://mojavto.si',
-        siblingName: 'MojAvto.si',
+        siblingUrl: 'https://carcommerce.net',
+        siblingName: 'Carcommerce',
         mainIcon: 'sailboat',
         thumbFallback: '⛵',
         // Boats: charter/rental is first-class alongside sale → global toggle

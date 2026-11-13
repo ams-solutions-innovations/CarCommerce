@@ -13,9 +13,9 @@ if (fs.existsSync(distDir)) {
 }
 fs.mkdirSync(distDir, { recursive: true });
 
-// Copy dist-avto contents to dist (MojAvto as root)
+// Copy dist-avto contents to dist (Carcommerce as root)
 if (fs.existsSync(distAvtoDir)) {
-    console.log('Copying MojAvto build (dist-avto) to dist...');
+    console.log('Copying Carcommerce build (dist-avto) to dist...');
     fs.cpSync(distAvtoDir, distDir, { recursive: true });
 } else {
     console.error('Error: dist-avto directory not found. Run build:avto first.');

@@ -12,7 +12,8 @@ import { popularBrandsFor } from '../data/popularBrands.js';
 import { setupNumericFormatter, parseFormattedNumber } from '../utils/inputFormatters.js';
 import { initCustomSelects, createCustomSelect } from '../utils/customSelect.js';
 import { getModelBodyType, getModelVariants } from '../utils/bodyType.js';
-import { renderEquipmentChipsHtml } from '../data/equipment.js';
+import { renderEquipmentChipsHtml, renderEquipmentGroupsHtml } from '../data/equipment.js';
+import { repairAdvancedSearchView, layoutEquipment } from '../components/autohub/advancedSearchFixes.js';
 import { COMMERCIAL_TAXONOMY, COMMERCIAL_BY_KEY } from '../data/commercialTaxonomy.js';
 import { resolveFilterSpec, LEISURE_ENGINE_CONFIGS, LEISURE_FUELS, LEISURE_MOTORIZED } from '../data/categoryFilters.js';
 import {
@@ -67,6 +68,7 @@ export function initAdvancedSearchPage(options = {}) {
 
         injectRentalToggle(catContext);
         populateEquipmentChips(catContext.cat || 'avto');
+        repairAdvancedSearchView(document.querySelector('.search-container') || document);
         applyCategoryContext(catContext);
         console.log('[AdvancedSearchPage] after applyCategoryContext bodyTypeHidden: ' + document.getElementById('bodyTypeHidden')?.value);
         bindAccordions();
@@ -168,8 +170,9 @@ const MOTO_BESPOKE_FEATURES = new Set([
 function populateEquipmentChips(category = 'avto') {
     const carEl = document.getElementById('car-equipment-chips');
     if (carEl && carEl.dataset.cat !== category) {
-        carEl.innerHTML = renderEquipmentChipsHtml(category, t);
+        carEl.innerHTML = carEl.dataset.v2 ? renderEquipmentGroupsHtml(category, t) : renderEquipmentChipsHtml(category, t);
         carEl.dataset.cat = category;
+        if (carEl.dataset.v2) layoutEquipment(carEl);
     }
     const motoEl = document.getElementById('moto-equipment-chips');
     if (motoEl && !motoEl.dataset.filled) {
@@ -332,10 +335,6 @@ function bindAccordions() {
         const isDesktop = typeof window !== 'undefined' && window.innerWidth >= 768;
         // On desktop, sections matching VecFiltrovMoto.dc.html start open (Osnovni, Motor, Oprema, Ponudnik, Garancija)
         const startsOpen = isPersistent || (isDesktop && (
-            acc.id === 'acc-engine' ||
-            acc.id === 'acc-equipment' ||
-            acc.id === 'acc-seller' ||
-            acc.id === 'acc-warranty' ||
             acc.classList.contains('open') ||
             acc.classList.contains('initially-open')
         ));
@@ -744,7 +743,7 @@ function bindSearchLogic(catContext) {
             items.forEach(item => {
                 const escaped = item.value.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
                 const label = document.createElement('label');
-                label.className = 'adv-chip adv-chip--custom';
+                label.className = 'chip adv-chip--custom';
                 label.title = 'Lastna oprema za to znamko';
                 label.innerHTML = `<input type="checkbox" name="customEquipment" value="${escaped}" data-cat="${cat}"> ${escaped}`;
                 groupEl.appendChild(label);
@@ -1917,8 +1916,8 @@ bindCardDrag(excludedVehicleCardsEl);
                 const newUnit = btn.dataset.unit;
                 if (newUnit === activePowerUnit) return;
 
-                btns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+                btns.forEach(b => b.classList.remove('active', 'on'));
+                btn.classList.add('active', 'on');
 
                 // Convert current values
                 const valFrom = parseFloat(powerFromInput.value);

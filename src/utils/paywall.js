@@ -1,4 +1,4 @@
-// Paywall — MojAvto.si
+// Paywall — Carcommerce
 // UI-only gating for the free-tier listing quota. When a user is at/over the
 // limit, a paywall modal blocks the action and upsells the paid package.
 //

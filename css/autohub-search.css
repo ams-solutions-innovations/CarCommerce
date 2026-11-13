@@ -1070,3 +1070,85 @@ body.platform-avto.dark-mode .ah-sidebar-vec.vec-excluded,
     background: linear-gradient(180deg,#fdab6a,#fb7f2f);
     transform: translateY(-1px);
 }
+
+/* ═══ Advanced search page: consistency & wiring fixes ═══ */
+/* Section headers: icon + title + counter on the left, summary / remember / chevron on the right */
+.platform-avto .search-container .acc-t { justify-content: flex-start !important; }
+.platform-avto .search-container .acc-t h2 { text-align: left; }
+.platform-avto .search-container .acc-t .sm { margin-left: auto; padding-left: 12px; text-align: right; }
+.platform-avto .search-container .acc-h { min-height: 74px; }
+.platform-avto .search-container .remember-toggle { position: relative; }
+.platform-avto .search-container .remember-toggle .remember-check { pointer-events: none; }
+.platform-avto .search-container .rem.on .ts,
+.platform-avto .search-container .rem[aria-checked="true"] .ts { background: #10b981; }
+.platform-avto .search-container .rem.on .ts::after,
+.platform-avto .search-container .rem[aria-checked="true"] .ts::after { left: 19px; }
+
+/* Brand / model / variant row (+ add / exclude) */
+.platform-avto .ah-vehicle-selector { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto auto; gap: 12px; align-items: end; }
+.platform-avto .ah-vehicle-selector .pill-select-wrapper,
+.platform-avto .ah-vehicle-selector .custom-select-container { width: 100%; min-width: 0; }
+.platform-avto .ah-vehicle-selector :is(.btn-blue, .pill) { white-space: nowrap; padding: 0 22px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 9999px; }
+.platform-avto .ah-vehicle-selector .btn-blue { border: 0; background: #2563eb; color: #fff; font-weight: 700; cursor: pointer; }
+.platform-avto .ah-vehicle-selector .btn-blue:hover { background: #1d4ed8; }
+@media (max-width: 1000px) { .platform-avto .ah-vehicle-selector { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .platform-avto .ah-vehicle-selector { grid-template-columns: minmax(0, 1fr); } }
+.platform-avto #excludedVehiclesSection:has(#excludedVehicleCards:empty) { display: none !important; }
+
+/* Inputs / selects inside a pill field must not draw a second pill */
+.platform-avto .search-container .fld :is(input, select, .custom-select-trigger, .pill-input) { border: 0 !important; background: transparent !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; height: auto !important; min-height: 0 !important; min-width: 0; }
+.platform-avto .search-container .fld .custom-select-container,
+.platform-avto .search-container .fld .pill-select-wrapper { flex: 1; min-width: 0; width: auto; }
+.platform-avto .search-container .fld .custom-select-trigger { justify-content: space-between !important; }
+.platform-avto .search-container .fld .fld-raw::placeholder { color: #8a99ae; font-weight: 500; }
+.platform-avto .search-container .fld { overflow: hidden; }
+
+/* Equipment groups */
+.platform-avto .eq .fl small { margin-left: auto; }
+.platform-avto .eq .fl .eq-sel { color: #1d4ed8; font-size: 12.5px; margin-left: 4px; }
+.platform-avto .eq .chip.more { border-style: dashed; color: #1d4ed8; background: transparent; cursor: pointer; }
+.platform-avto .eq .chip.more:hover { background: #e6eefc; }
+.platform-avto .search-container .srch input { border: 0 !important; background: transparent !important; box-shadow: none !important; padding: 0 !important; height: auto !important; border-radius: 0 !important; }
+.platform-avto .search-container .fld:has(.custom-select-container) > svg.i { display: none; }
+.platform-avto .search-container :is(#motoMainGrid, #motoSubGrid) { grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)) !important; }
+.platform-avto .search-container .vgrid .vt { min-width: 0; }
+
+/* Advanced search – dark mode (inline light styles in the markup need !important overrides) */
+body.dark-mode .platform-avto .search-container .fld,
+.platform-avto.dark-mode .search-container .fld { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.14) !important; color: #f1f5f9 !important; }
+body.dark-mode .platform-avto .search-container .fld :is(input, select, .custom-select-value),
+.platform-avto.dark-mode .search-container .fld :is(input, select, .custom-select-value) { color: #f1f5f9 !important; background: transparent !important; }
+body.dark-mode .platform-avto .search-container .fld input::placeholder,
+.platform-avto.dark-mode .search-container .fld input::placeholder { color: #7f8ea6 !important; }
+body.dark-mode .platform-avto .search-container .fld > span,
+.platform-avto.dark-mode .search-container .fld > span { color: #94a3b8 !important; }
+body.dark-mode .platform-avto .search-container .acc.open .acc-h,
+.platform-avto.dark-mode .search-container .acc.open .acc-h { border-bottom-color: rgba(255,255,255,.08) !important; }
+body.dark-mode .platform-avto .search-container .acc-h .chv,
+.platform-avto.dark-mode .search-container .acc-h .chv { background: rgba(255,255,255,.1) !important; color: #e2e8f0 !important; }
+body.dark-mode .platform-avto .search-container .acc-t .fi,
+.platform-avto.dark-mode .search-container .acc-t .fi { background: rgba(96,165,250,.16) !important; color: #93c5fd !important; }
+body.dark-mode .platform-avto .search-container .rem .tl,
+.platform-avto.dark-mode .search-container .rem .tl { color: #94a3b8; }
+body.dark-mode .platform-avto .search-container .srch,
+.platform-avto.dark-mode .search-container .srch { background: rgba(255,255,255,.06) !important; border-color: rgba(255,255,255,.14) !important; color: #cbd5e1 !important; }
+body.dark-mode .platform-avto .search-container .chip,
+.platform-avto.dark-mode .search-container .chip { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.14); color: #e2e8f0; }
+body.dark-mode .platform-avto .search-container .chip:is(.on, .active),
+.platform-avto.dark-mode .search-container .chip:is(.on, .active) { background: rgba(59,130,246,.28); border-color: #3b82f6; color: #fff; }
+body.dark-mode .platform-avto .search-container .seg button:not(.on):not(.active),
+.platform-avto.dark-mode .search-container .seg button:not(.on):not(.active) { color: #cbd5e1; }
+body.dark-mode .platform-avto .search-container .seg button:is(.on, .active),
+.platform-avto.dark-mode .search-container .seg button:is(.on, .active) { background: #fff; color: #1d4ed8; }
+
+/* Segmented controls: one consistent look (A2, damaged, transmission …) */
+.platform-avto .search-container #moto-cylinder-layout { display: none !important; }
+.platform-avto .search-container .seg .seg-btn { padding: 0; height: auto; background: transparent !important; box-shadow: none !important; border-radius: 9999px; position: relative; }
+.platform-avto .search-container .seg .seg-btn > input { position: absolute; opacity: 0; pointer-events: none; }
+.platform-avto .search-container .seg .seg-btn > button { height: 38px; padding: 0 18px; border-radius: 9999px; font-size: 14px; font-weight: 600; color: #4a5b73; background: transparent; border: 0; cursor: pointer; }
+.platform-avto .search-container .seg .seg-btn > button:is(.on, .active) { background: #fff; color: #1d4ed8; font-weight: 700; box-shadow: 0 1px 2px rgba(12,27,48,.08), 0 4px 10px -4px rgba(12,27,48,.16); }
+.platform-avto .search-container .adv-a2-cell .seg .unit-btn { height: 30px; padding: 0 16px; font-size: 13px; font-weight: 600; background: transparent; color: #4a5b73; box-shadow: none; }
+.platform-avto .search-container .adv-a2-cell .seg .unit-btn:is(.on, .active) { background: #fff !important; color: #1d4ed8 !important; font-weight: 700; box-shadow: 0 1px 2px rgba(12,27,48,.08), 0 4px 10px -4px rgba(12,27,48,.16); }
+body.dark-mode .platform-avto .search-container .seg .seg-btn > button { color: #cbd5e1; }
+body.dark-mode .platform-avto .search-container .adv-a2-cell .seg .unit-btn:not(.on):not(.active) { color: #cbd5e1; }
+body.dark-mode .platform-avto .search-container .seg .seg-btn > button:is(.on, .active) { background: #fff; color: #1d4ed8; }

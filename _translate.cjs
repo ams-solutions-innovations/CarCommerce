@@ -1,4 +1,4 @@
-// Bulk Slovenian -> English translation script for MojAvto page controllers
+// Bulk Slovenian -> English translation script for Carcommerce page controllers
 const fs = require('fs');
 const path = require('path');
 

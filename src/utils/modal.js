@@ -1,4 +1,4 @@
-// Generic modal/popup primitive — MojAvto.si
+// Generic modal/popup primitive — Carcommerce
 // Vanilla DOM overlay generalised from the authGate pattern, adding a focus trap
 // and ESC handling. Used for paywall + transaction-abandonment prompts.
 //

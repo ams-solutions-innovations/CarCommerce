@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Unified UI-state system — MojAvto.si
+   Unified UI-state system — Carcommerce
    Canonical loading / empty / error blocks, skeletons, the "updating" badge,
    and the generic modal. Legacy per-feature classes (.b2b-*, .se-*, .gd-*) are
    aliased onto these rules so existing pages keep working during migration.

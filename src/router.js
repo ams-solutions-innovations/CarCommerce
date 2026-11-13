@@ -1,4 +1,4 @@
-// SPA Router — platform-aware (MojAvto / MojaNavtika)
+// SPA Router — platform-aware (Carcommerce / MojaNavtika)
 import { supabase } from './lib/supabase.js';
 import { fetchB2BProfile } from './core/b2bContext.js';
 import { t, translatePage, i18nReady } from './core/i18n.js';

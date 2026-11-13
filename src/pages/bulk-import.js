@@ -1,4 +1,4 @@
-// bulk-import.js — B2B bulk listing import from a MojAvto AI Converter JSON file.
+// bulk-import.js — B2B bulk listing import from a Carcommerce AI Converter JSON file.
 // Only accessible to verified business users.
 
 import { mountB2BShell } from '../layouts/b2b-layout.js';
@@ -48,7 +48,7 @@ function renderUploadStep(main) {
                         ${t('bi_choose_file', 'Izberite datoteko')}
                         <input type="file" id="biFileInput" accept=".json" hidden>
                     </label>
-                    <p class="bi-format-note">${t('bi_format_note', 'Sprejemamo samo datoteke v formatu mojavto-bulk-v1 (MojAvto AI Converter).')}</p>
+                    <p class="bi-format-note">${t('bi_format_note', 'Sprejemamo samo datoteke v formatu mojavto-bulk-v1 (Carcommerce AI Converter).')}</p>
                 </div>
                 <div id="biError" class="bi-error" hidden></div>
             </div>

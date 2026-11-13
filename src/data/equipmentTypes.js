@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Moto equipment (oprema) taxonomy — MojAvto.si
+// Moto equipment (oprema) taxonomy — Carcommerce
 // Rider gear & accessories — a SEPARATE itemType ('oprema') from spare parts.
 // Two-level structure: equipment group (sklop) → specific types (vrste).
 // Used by BOTH the "Gume in deli" search filter (Oprema tab) and the

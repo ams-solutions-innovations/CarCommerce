@@ -305,7 +305,7 @@
                         <small id="brandModelSummary">0 dodano · največ 5</small>
                     </div>
 
-                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) auto auto; gap: 12px; align-items: end;">
+                    <div class="ah-vehicle-selector">
                         <div>
                             <div class="lbl">Znamka</div>
                             <div class="pill-select-wrapper">
@@ -358,7 +358,7 @@
                     </div>
                     <div class="chips">
                         <label class="chip"><input type="checkbox" name="condition" value="Novo" >Novo</label>
-                        <label class="chip"><input type="checkbox" name="condition" value="Rabljeno" >Rabljeno<span class="ct">14.820</span></label>
+                        <label class="chip"><input type="checkbox" name="condition" value="Rabljeno" >Rabljeno</label>
                         <label class="chip"><input type="checkbox" name="condition" value="Razstavno" >Razstavno / testno</label>
                         <label class="chip"><input type="checkbox" name="condition" value="DnevnaRegistracija" >Dnevna registracija</label>
                         <label class="chip"><input type="checkbox" name="condition" value="Starodobnik" >Starodobnik</label>
@@ -537,18 +537,18 @@
                     <div class="fl">
                         <svg class="i"><use href="#i-fuel"></use></svg>
                         <span>Vrsta goriva</span>
-                        <small id="fuelSummary">2 izbrani</small>
+                        <small id="fuelSummary">Vse</small>
                     </div>
                     <div class="chips">
-                        <label class="chip"><input type="checkbox" name="fuel" value="Petrol" >Bencin<span class="ct">18.420</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="Dizel" >Dizel<span class="ct">12.310</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="Hibrid" id="fuelHibridCheck" >Hibrid<span class="ct">4.180</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="Elektrika" >Elektrika<span class="ct">1.900</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="EREV" >EREV<span class="ct">120</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="LPG" >LPG / Plin<span class="ct">210</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="CNG" >CNG<span class="ct">64</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="Vodik" >Vodik<span class="ct">12</span></label>
-                        <label class="chip"><input type="checkbox" name="fuel" value="Etanol" >Etanol<span class="ct">8</span></label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Petrol" >Bencin</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Dizel" >Dizel</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Hibrid" id="fuelHibridCheck" >Hibrid</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Elektrika" >Elektrika</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="EREV" >EREV</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="LPG" >LPG / Plin</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="CNG" >CNG</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Vodik" >Vodik</label>
+                        <label class="chip"><input type="checkbox" name="fuel" value="Etanol" >Etanol</label>
                     </div>
 
                     <!-- Hybrid Sub-section -->
@@ -742,7 +742,7 @@
                             <button type="button" data-val="Avtomatski">Avtomatski</button>
                             <button type="button" data-val="Polavtomatski">Polavtomatski</button>
                         </div>
-                        <select name="transmission" id="transmissionSelect" class="glass-select" style="display:none;" data-no-search="true">
+                        <select name="transmission" id="transmissionSelect" data-no-custom="true" class="glass-select" style="display:none;" data-no-search="true">
                             <option value="" selected>Vsi menjalniki</option>
                             <option value="Ročni">Ročni</option>
                             <option value="Avtomatski">Avtomatski</option>
@@ -756,7 +756,7 @@
                             <svg class="i"><use href="#nv-bike"></use></svg>
                             <span>A2 izpit</span>
                         </div>
-                        <div class="seg unit-toggle-pill" id="advA2Toggle" role="group">
+                        <div class="seg sm" id="advA2Toggle" role="group">
                             <button type="button" class="unit-btn on active" data-a2="all">Vse</button>
                             <button type="button" class="unit-btn" data-a2="yes">Samo A2</button>
                         </div>
@@ -803,7 +803,7 @@
                                 <button type="button" data-stroke="2T">2-taktni</button>
                                 <button type="button" data-stroke="4T">4-taktni</button>
                             </div>
-                            <select name="stroke" id="strokeSelect" style="display:none;" data-no-search="true">
+                            <select name="stroke" id="strokeSelect" data-no-custom="true" style="display:none;" data-no-search="true">
                                 <option value="" selected>Vsi takti</option>
                                 <option value="2T">2-taktni</option>
                                 <option value="4T">4-taktni</option>
@@ -825,7 +825,7 @@
                                 <button type="button" class="chip" data-cyl="6">6</button>
                                 <button type="button" class="chip" data-cyl="Wankel">Wankel</button>
                             </div>
-                            <select name="cylinders" id="moto-cylinders" style="display:none;" data-no-search="true">
+                            <select name="cylinders" id="moto-cylinders" data-no-custom="true" style="display:none;" data-no-search="true">
                                 <option value="" selected>Valji</option>
                                 <option value="1">1 valj</option>
                                 <option value="2">2 valja</option>
@@ -845,7 +845,7 @@
                         </div>
                         <div class="chips" id="motoLayoutChips"></div>
                         <div id="cylinder-layout-group" style="display:none;">
-                            <select name="cylinderLayout" id="moto-cylinder-layout" data-no-search="true"></select>
+                            <select name="cylinderLayout" id="moto-cylinder-layout" data-no-custom="true" data-no-search="true"></select>
                         </div>
                         <div id="cylFilterChips" class="cyl-chips-container" style="display:none;"></div>
                     </div>
@@ -935,7 +935,7 @@
                     <div class="fl">
                         <svg class="i"><use href="#i-palette"></use></svg>
                         <span>Barva zunanjosti</span>
-                        <small>2 izbrani</small>
+                        <small id="colorSummary">Vse</small>
                     </div>
                     <!-- Color Swatches with labels -->
                     <div style="display:flex;flex-wrap:wrap;gap:16px 8px">
@@ -1033,7 +1033,6 @@
                     <span class="fi"><svg class="i"><use href="#nv-car"></use></svg></span>
                     <h2>Zunanjost</h2>
                     <span class="cnt">0</span>
-                    <span class="sm">4 / 5 vrat · Vlečna kljuka (snemljiva)</span>
                 </button>
                 <button type="button" class="rem remember-toggle" role="switch" aria-checked="false" aria-label="Zapomni izbiro">
                     <input type="checkbox" class="remember-check" data-category="zunanjost" >
@@ -1223,109 +1222,7 @@
                     <input type="text" id="equipmentSearchInput" placeholder="Poišči opremo, npr. panoramska streha, head-up zaslon" style="border:0;background:transparent;outline:none;font:inherit;color:inherit;width:100%;">
                 </div>
 
-                <!-- Varnost -->
-                <div class="eq">
-                    <div class="fl">
-                        <svg class="i"><use href="#i-shield"></use></svg>
-                        <span>Varnost</span>
-                        <b style="color:#1d4ed8;font-size:12.5px;margin-left:4px;">2 izbrano</b>
-                        <small>29</small>
-                    </div>
-                    <div class="chips">
-                        <label class="chip"><input type="checkbox" name="features" value="ABS" >ABS</label>
-                        <label class="chip"><input type="checkbox" name="features" value="ESP" >ESP</label>
-                        <label class="chip"><input type="checkbox" name="features" value="Alarm" >Alarm</label>
-                        <label class="chip"><input type="checkbox" name="features" value="Imobilizator" >Imobilizator</label>
-                        <label class="chip"><input type="checkbox" name="features" value="BlindSpot" >Opozorilo za mrtvi kot</label>
-                        <label class="chip"><input type="checkbox" name="features" value="EmergencyBrake" >Samodejno zaviranje v sili</label>
-                        <button type="button" class="chip more" style="border-style:dashed;color:#1d4ed8;background:transparent;">+ še 23</button>
-                    </div>
-                </div>
-
-                <div class="dv"></div>
-
-                <!-- Asistenčni sistemi -->
-                <div class="eq">
-                    <div class="fl">
-                        <svg class="i"><use href="#i-sliders"></use></svg>
-                        <span>Asistenčni sistemi</span>
-                        <b style="color:#1d4ed8;font-size:12.5px;margin-left:4px;">1 izbrano</b>
-                        <small>15</small>
-                    </div>
-                    <div class="chips">
-                        <label class="chip"><input type="checkbox" name="features" value="Tempomat" >Tempomat</label>
-                        <label class="chip"><input type="checkbox" name="features" value="ACC" >Prilagodljivi tempomat</label>
-                        <label class="chip"><input type="checkbox" name="features" value="LaneAssist" >Ohranjanje sredine pasu</label>
-                        <label class="chip"><input type="checkbox" name="features" value="LaneChange" >Pomoč pri menjavi pasu</label>
-                        <label class="chip"><input type="checkbox" name="features" value="FatigueAlert" >Nadzor pozornosti voznika</label>
-                        <button type="button" class="chip more" style="border-style:dashed;color:#1d4ed8;background:transparent;">+ še 10</button>
-                    </div>
-                </div>
-
-                <div class="dv"></div>
-
-                <!-- Parkiranje -->
-                <div class="eq">
-                    <div class="fl">
-                        <svg class="i"><use href="#i-camera"></use></svg>
-                        <span>Parkiranje</span>
-                        <b style="color:#1d4ed8;font-size:12.5px;margin-left:4px;">2 izbrano</b>
-                        <small>11</small>
-                    </div>
-                    <div class="chips">
-                        <label class="chip"><input type="checkbox" name="features" value="ParkingSensorsRear" >Zadnji parkirni senzorji</label>
-                        <label class="chip"><input type="checkbox" name="features" value="RearCamera" >Zadnja kamera</label>
-                        <label class="chip"><input type="checkbox" name="features" value="Camera360" >360° kamera</label>
-                        <label class="chip"><input type="checkbox" name="features" value="ParkAssist" >Samodejno parkiranje</label>
-                        <label class="chip"><input type="checkbox" name="features" value="RemoteParking" >Daljinsko parkiranje</label>
-                        <button type="button" class="chip more" style="border-style:dashed;color:#1d4ed8;background:transparent;">+ še 6</button>
-                    </div>
-                </div>
-
-                <div class="dv"></div>
-
-                <!-- Udobje -->
-                <div class="eq">
-                    <div class="fl">
-                        <svg class="i"><use href="#i-armchair"></use></svg>
-                        <span>Udobje</span>
-                        <small>34</small>
-                    </div>
-                    <div class="chips">
-                        <label class="chip"><input type="checkbox" name="features" value="ElectricSeats" >Električni sedeži</label>
-                        <label class="chip"><input type="checkbox" name="features" value="MemorySeats" >Sedeži s spominom</label>
-                        <label class="chip"><input type="checkbox" name="features" value="MassageSeats" >Masažni sedeži</label>
-                        <label class="chip"><input type="checkbox" name="features" value="HeatedWheel" >Ogrevan volan</label>
-                        <label class="chip"><input type="checkbox" name="features" value="ElectricWheel" >Električno nastavljiv volan</label>
-                        <button type="button" class="chip more" style="border-style:dashed;color:#1d4ed8;background:transparent;">+ še 29</button>
-                    </div>
-                </div>
-
-                <div class="dv"></div>
-
-                <!-- Multimedija -->
-                <div class="eq">
-                    <div class="fl">
-                        <svg class="i"><use href="#i-volume"></use></svg>
-                        <span>Multimedija</span>
-                        <b style="color:#1d4ed8;font-size:12.5px;margin-left:4px;">1 izbrano</b>
-                        <small>26</small>
-                    </div>
-                    <div class="chips">
-                        <label class="chip"><input type="checkbox" name="features" value="Navigation" >Navigacijski sistem</label>
-                        <label class="chip"><input type="checkbox" name="features" value="CarPlay" >Apple CarPlay / Android Auto</label>
-                        <label class="chip"><input type="checkbox" name="features" value="DAB" >Digitalni radio DAB+</label>
-                        <label class="chip"><input type="checkbox" name="features" value="Bluetooth" >Bluetooth</label>
-                        <button type="button" class="chip more" style="border-style:dashed;color:#1d4ed8;background:transparent;">+ še 22</button>
-                    </div>
-                </div>
-
-                <div>
-                    <a href="#" id="moreEquipmentGroupsToggle" style="font-size:14px;font-weight:700;color:#1d4ed8;display:inline-flex;align-items:center;gap:6px;">
-                        <span>Pokaži še 4 skupine: osvetlitev, klima in ogrevanje, zračne blazine, prtljaga in tovor</span>
-                        <svg class="i" style="width:15px;height:15px"><use href="#i-down"></use></svg>
-                    </a>
-                </div>
+                <div id="car-equipment-chips" data-v2="1"></div>
                 </div>
 
                 <div class="moto-only-field" style="display:none;" id="moto-equipment">
@@ -1445,7 +1342,7 @@
                             <svg class="i"><use href="#i-pin"></use></svg>
                             <span>Mesto / Poštna številka</span>
                         </div>
-                        <input type="text" name="city" value="" placeholder="npr. Ljubljana, 1000" class="fld sm">
+                        <input type="text" name="city" id="cityInput" value="" placeholder="npr. Ljubljana, 1000" class="fld sm">
                         <div class="fl" style="margin-top:8px;font-weight:600;color:#4a5b73;font-size:13px;"><svg class="i"><use href="#i-pin"></use></svg><span>Hitra izbira mesta</span></div>
                         <div class="chips" id="quickCityChips">
                             <button type="button" class="chip sm" data-city="Ljubljana">Ljubljana</button>

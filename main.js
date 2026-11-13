@@ -1,4 +1,4 @@
-// Main entry point — platform-aware (MojAvto.si / MojaNavtika.si)
+// Main entry point — platform-aware (Carcommerce / MojaNavtika.si)
 import { initI18n, translatePage } from './src/core/i18n.js';
 import { reloadCurrentView } from './src/router.js';
 import './src/pageController.js';
@@ -156,10 +156,10 @@ onB2BChange(profile => {
 
 // ── Platform branding ──────────────────────────────────────────────────────────
 // Override the brand color CSS variables and document title from the active
-// PLATFORM. styles.css :root holds the MojAvto defaults; this re-points them.
+// PLATFORM. styles.css :root holds the Carcommerce defaults; this re-points them.
 // On the navtika build it ALSO loads css/styles.navtika.css — the navtika-only
-// stylesheet that MojAvto never fetches. Edits to that file can never affect
-// MojAvto.
+// stylesheet that Carcommerce never fetches. Edits to that file can never affect
+// Carcommerce.
 function applyPlatformBranding() {
     const root = document.documentElement;
     const c = PLATFORM.colors;
@@ -174,7 +174,7 @@ function applyPlatformBranding() {
 }
 
 // Load the active platform's dedicated stylesheet, if it has one. Only navtika
-// ships one today (css/styles.navtika.css); MojAvto's styles live in styles.css.
+// ships one today (css/styles.navtika.css); Carcommerce's styles live in styles.css.
 // Added to <head> so it overrides styles.css cascade order and loads before paint.
 function loadPlatformStylesheet() {
     const stylesheets = PLATFORM.id === 'avto' ? [autoHubStylesheetUrl,autoHubWorkspaceStylesheetUrl,autoHubPartsStylesheetUrl,autoHubVehicleStylesheetUrl,autoHubAccountStylesheetUrl,autoHubSellerStylesheetUrl,autoHubDashboardStylesheetUrl,autoHubSearchStylesheetUrl,autoHubDetailStylesheetUrl,autoHubMobileStylesheetUrl] : ['css/styles.navtika.css'];
@@ -211,7 +211,7 @@ function applyPlatformFooter(footerEl) {
     set('footerRegNo', el => { el.textContent = PLATFORM.company.regNo; });
     set('footerEmail', el => { el.textContent = PLATFORM.company.email; el.href = `mailto:${PLATFORM.company.email}`; });
     set('footerCopyrightBrand', el => { el.textContent = `${PLATFORM.brandName}${PLATFORM.tld}`; });
-    // Cross-promo link to the sibling portal (MojAvto ⇄ MojaNavtika) — rendered as logo emblem.
+    // Cross-promo link to the sibling portal (Carcommerce ⇄ MojaNavtika) — rendered as logo emblem.
     set('footerSibling', el => {
         el.href = PLATFORM.siblingUrl;
         const [name, tld] = PLATFORM.siblingName.split('.');

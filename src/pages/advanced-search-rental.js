@@ -1,4 +1,4 @@
-// Napredno iskanje najema vozil (Advanced Search Rentals) — MojAvto.si / AutoHub.si
+// Napredno iskanje najema vozil (Advanced Search Rentals) — Carcommerce / AutoHub.si
 import { getRentalListings } from '../services/listingService.js';
 import { navigateTo } from '../router.js';
 

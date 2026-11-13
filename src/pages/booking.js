@@ -1,4 +1,4 @@
-// booking.js — Booking Wizard Controller — MojAvto.si
+// booking.js — Booking Wizard Controller — Carcommerce
 // Multi-step wizard: Vehicle → Type → Services → Products → DateTime → Confirm
 
 import { getBusinessById } from '../services/businessService.js';
@@ -1474,7 +1474,7 @@ function renderTireOrderBanner(tireOrder) {
     banner.innerHTML = `
         <i data-lucide="package-check" style="width:18px;height:18px;flex-shrink:0;color:#2563eb;"></i>
         <span>
-            <strong>Gume so bile naročene preko MojAvto in bodo dostavljene na vaš naslov.</strong>
+            <strong>Gume so bile naročene preko Carcommerce in bodo dostavljene na vaš naslov.</strong>
             ${td.quantity}× ${td.brand} ${td.model} (${td.dimension}) —
             izberite termin montaže po dostavi.
         </span>
@@ -1579,7 +1579,7 @@ export async function initBookingPage() {
     if (tireHandoff) {
         state.tireHandoff = tireHandoff;
 
-        // Auto-select booking type: bring own tires (delivered via MojAvto)
+        // Auto-select booking type: bring own tires (delivered via Carcommerce)
         state.bookingType = 'bring_own';
 
         // Auto-select tyre_change service if offered by this business
@@ -1601,7 +1601,7 @@ export async function initBookingPage() {
             !state.selectedServiceIds.includes('tyre_change')) {
             state.selectedServiceIds.push('tyre_change');
         }
-        state.notes = `Montaža dostavljenih gum (naročilo MojAvto #${to.id}). Gume bodo dostavljene na vaš naslov.`;
+        state.notes = `Montaža dostavljenih gum (naročilo Carcommerce #${to.id}). Gume bodo dostavljene na vaš naslov.`;
     }
 
     // Update back button

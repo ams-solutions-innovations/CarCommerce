@@ -1,4 +1,4 @@
-// store.js — Global state management for MojAvto Business Discovery
+// store.js — Global state management for Carcommerce Business Discovery
 // Simple reactive store pattern, no external dependencies
 
 export const store = {

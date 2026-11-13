@@ -1,4 +1,4 @@
-// Country flags and signature colors data for MojAvto.si / MojaNavtika.si
+// Country flags and signature colors data for Carcommerce / MojaNavtika.si
 
 export const COUNTRY_COLORS_RGB = {
   'SI': '0, 85, 184',       // Slovenian Blue

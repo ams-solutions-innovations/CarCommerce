@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Equipment data — MojAvto.si
+// Equipment data — Carcommerce
 // Single source of truth for equipment/features.
 // Values MUST match `name="features"` checkboxes in advanced-search.html
 // Used by: create-listing (step 4) + advanced-search filters
@@ -833,6 +833,32 @@ export function renderEquipmentChipsHtml(category, translate, opts = {}) {
         return `<p class="adv-sub-label"><i data-lucide="${g.icon}"></i> ${_escEq(t(g.label, g.id))}</p>\n` +
             `<div class="adv-chip-group" data-eq-group="${g.id}" style="margin-bottom:1.5rem;">\n${chips}\n</div>`;
     }).filter(Boolean).join('\n');
+}
+
+// Sprite ids (`#i-…`) used for the group headings of the redesigned search page.
+const EQ_GROUP_SPRITE = {
+    varnost: 'shield', zracne_blazine: 'shield', razsvetljava: 'bolt', udobje: 'armchair',
+    klima_ogrevanje: 'wind', parkiranje: 'camera', multimedija: 'volume', asistenti: 'sliders',
+    prtljaga: 'box', garancija: 'shieldck',
+};
+
+// Redesigned advanced-search markup: one `.eq` block per group with a heading
+// (icon, label, "N izbrano" slot, total) and a `.chips` row. The first chips are
+// shown, the rest are revealed by the "+ še N" chip — see advancedSearchFixes.js.
+export function renderEquipmentGroupsHtml(category, translate, opts = {}) {
+    const t = typeof translate === 'function' ? translate : (k, f) => f || k;
+    const exclude = opts.exclude instanceof Set ? opts.exclude : new Set(opts.exclude || []);
+    const fieldName = opts.name || 'features';
+    return getEquipmentForCategory(category).map(g => {
+        const items = g.items.filter(i => !exclude.has(i.value));
+        if (!items.length) return '';
+        const chips = items.map(i =>
+            `<label class="chip"><input type="checkbox" name="${_escEq(fieldName)}" value="${_escEq(i.value)}">${_escEq(t(i.label, i.value))}</label>`
+        ).join('');
+        const sprite = EQ_GROUP_SPRITE[g.id] || 'check2';
+        return `<div class="eq" data-eq="${g.id}"><div class="fl"><svg class="i"><use href="#i-${sprite}"></use></svg><span>${_escEq(t(g.label, g.id))}</span><b class="eq-sel" hidden></b><small>${items.length}</small></div>` +
+            `<div class="chips adv-chip-group" data-eq-group="${g.id}">${chips}<button type="button" class="chip more" data-eq-more hidden></button></div></div>`;
+    }).filter(Boolean).join('<div class="dv"></div>');
 }
 
 // Flat list of all values (for search filtering)

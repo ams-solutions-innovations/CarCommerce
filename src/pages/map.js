@@ -1,4 +1,4 @@
-// map.js — Business Discovery Map Page — MojAvto.si
+// map.js — Business Discovery Map Page — Carcommerce
 // Leaflet integration, filter sidebar, list/map sync
 
 import { escHtml } from '../utils/escHtml.js';
@@ -464,7 +464,7 @@ function locateUser() {
             console.warn('[MapPage] Geolocation error:', err.message);
             // MojaNavtika businesses are spread along the coast (and Croatia), so a
             // tight default radius around an inland point would hide them all —
-            // leave location unset to show every marina/seller. MojAvto defaults to
+            // leave location unset to show every marina/seller. Carcommerce defaults to
             // Ljubljana center as before.
             if (PLATFORM.id === 'navtika') {
                 if (labelEl) labelEl.textContent = 'Vsa plovila (vse lokacije)';
@@ -542,7 +542,7 @@ export function initMapPage() {
 
     // Init Leaflet map
     leafletMap = window.L.map('businessMap', {
-        // MojaNavtika centers on the Adriatic coast; MojAvto on Slovenia's centre.
+        // MojaNavtika centers on the Adriatic coast; Carcommerce on Slovenia's centre.
         center: PLATFORM.id === 'navtika' ? [45.3, 13.9] : [46.1512, 14.9955],
         zoom: PLATFORM.id === 'navtika' ? 8 : 8,
         zoomControl: false

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Part taxonomy — MojAvto.si
+// Part taxonomy — Carcommerce
 // Two-level structure: vehicleCategory → part groups (sklopi) → specific types.
 // Used by BOTH the "Gume in deli" search filter and the create-listing wizard so
 // posting and filtering stay in sync. The same `group`/`value` keys are reused by

@@ -22,7 +22,7 @@ function isAuthorized(user) {
         profile.businessTier === 'verified' ||
         hasRole('mechanic') ||
         profile.role === 'mechanic' ||
-        user.email?.endsWith('@mojavto.si')
+        user.email?.endsWith('@carcommerce.net')
     );
 }
 

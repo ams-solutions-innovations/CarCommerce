@@ -1,4 +1,4 @@
-// Dashboard page — MojAvto.si
+// Dashboard page — Carcommerce
 // Shows after login — user's listings, stats, quick actions
 import QRCode from 'qrcode';
 import { PLATFORM } from '../config/platform.js';
