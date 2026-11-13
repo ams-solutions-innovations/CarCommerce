@@ -844,15 +844,6 @@ body.platform-avto.dark-mode :is(.ah-onboarding-bodies button[aria-pressed=true]
 .platform-avto .contact-popup-card { border-radius: 28px; background: var(--ah-surface); color: var(--ah-ink); box-shadow: 0 28px 60px -16px rgba(12,27,48,.4); }
 .platform-avto .contact-popup-card .ah-cta { display: flex; width: 100%; }
 .platform-avto .lp-modal-overlay.active .lp-modal { animation: ah-modal-in .22s cubic-bezier(.2,0,.2,1) both; }
-.platform-avto .ah-listing-summary { display: flex; flex-direction: column; gap: 18px; padding: 26px; border-radius: 32px; background: var(--ah-surface); border: 1px solid rgba(12,27,48,.05); box-shadow: var(--ah-card-shadow); margin-bottom: 20px; }
-.platform-avto .ah-listing-summary :is(.lp-title-card,.lp-header-price) { margin: 0 !important; padding: 0 !important; background: transparent !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; width: 100% !important; backdrop-filter: none; }
-.platform-avto .ah-listing-summary .lp-title-card { min-height: 0; }
-.platform-avto .ah-listing-summary .lp-title-card-content { padding: 0; }
-.platform-avto .ah-listing-summary .lp-title { margin: 0; font-size: 28px; line-height: 1.15; }
-.platform-avto .ah-listing-summary .lp-subtitle { margin-top: 6px; color: var(--ah-muted); font-size: 15px; }
-.platform-avto .ah-listing-summary .lp-header-price { align-items: flex-start; text-align: left; }
-.platform-avto .ah-listing-summary :is(.lp-price-discount-wrapper,.lp-price-pill-container) { align-items: flex-start; justify-content: flex-start; }
-.platform-avto .ah-listing-summary :is(.lp-price,.lp-sale-price) { font-size: 36px; color: var(--ah-ink); line-height: 1.15; }
 .platform-avto .ah-summary-facts { display: flex; flex-wrap: wrap; gap: 6px; }
 .platform-avto .ah-summary-contact { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid var(--ah-line); }
 .platform-avto .ah-summary-contact .ah-cta { width: 100%; padding-inline: 14px; }

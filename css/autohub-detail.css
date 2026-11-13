@@ -628,19 +628,12 @@ body.platform-avto.dark-mode .ah-listing-detail .lp-gallery-nav:hover {
 .platform-avto .ah-listing-detail .ah-listing-summary {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 14px;
   padding: 0;
-  border-radius: 28px;
-  background: var(--ah-surface, #fff);
-  border: 1px solid rgba(12,27,48,.05);
-  box-shadow: 0 1px 2px rgba(12,27,48,.05), 0 12px 32px -14px rgba(12,27,48,.16);
-  overflow: hidden;
-}
-.platform-avto.dark-mode .ah-listing-detail .ah-listing-summary,
-body.platform-avto.dark-mode .ah-listing-detail .ah-listing-summary {
-  background: #13233a;
-  border-color: rgba(255,255,255,.08);
-  box-shadow: 0 14px 36px -14px rgba(0,0,0,.5);
+  margin: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .platform-avto .ah-listing-detail .lp-title-card {
@@ -649,13 +642,8 @@ body.platform-avto.dark-mode .ah-listing-detail .ah-listing-summary {
   justify-content: space-between;
   gap: 16px;
   padding: 20px 24px 20px 28px;
-  border-radius: 28px 28px 0 0;
-  border-bottom: 1px solid rgba(12,27,48,.06);
+  border-radius: 28px;
   box-sizing: border-box;
-}
-.platform-avto.dark-mode .ah-listing-detail .lp-title-card,
-body.platform-avto.dark-mode .ah-listing-detail .lp-title-card {
-  border-bottom-color: rgba(255,255,255,.08);
 }
 .platform-avto .ah-listing-detail .lp-title {
   font-family: 'Manrope', 'Inter', system-ui, sans-serif;
@@ -690,9 +678,32 @@ body.platform-avto.dark-mode .ah-listing-detail .lp-subtitle {
 body.platform-avto.dark-mode .ah-listing-detail .lp-title-meta {
   color: #8ea3c2;
 }
+.platform-avto .ah-listing-detail .lp-seller-section {
+  padding: 24px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.platform-avto .ah-listing-detail .lp-seller-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+}
+
+/* Tab panels: only the selected tab's panel is visible (Pregled shows all) */
+.platform-avto .ah-listing-detail .ah-tab-hidden { display: none !important; }
+
 .platform-avto .ah-listing-detail .lp-title-card-logo {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
   flex: none;
 }
@@ -703,9 +714,16 @@ body.platform-avto.dark-mode .ah-listing-detail .lp-title-meta {
   display: flex;
   flex-direction: column;
   gap: 18px;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  border-radius: 28px;
+  background: var(--ah-surface, #fff);
+  border: 1px solid rgba(12,27,48,.05);
+  box-shadow: 0 1px 2px rgba(12,27,48,.05), 0 12px 32px -14px rgba(12,27,48,.16);
+}
+.platform-avto.dark-mode .ah-listing-detail .lp-header-price,
+body.platform-avto.dark-mode .ah-listing-detail .lp-header-price {
+  background: #13233a;
+  border-color: rgba(255,255,255,.08);
+  box-shadow: 0 14px 36px -14px rgba(0,0,0,.5);
 }
 .platform-avto .ah-listing-detail .lp-price {
   font-family: 'Manrope', 'Inter', system-ui, sans-serif;
@@ -976,7 +994,7 @@ body.platform-avto.dark-mode .ah-listing-detail #react-cost-panel-root .cost-pan
     border-radius: 24px;
   }
   .platform-avto .ah-listing-detail .lp-title-card {
-    border-radius: 24px 24px 0 0;
+    border-radius: 24px;
     padding: 16px 20px;
   }
   .platform-avto .ah-listing-detail .lp-header-price {
@@ -1002,3 +1020,57 @@ body.platform-avto.dark-mode .ah-listing-detail #react-cost-panel-root .cost-pan
     transition: none !important;
   }
 }
+
+/* Override legacy fixed-width/centered base rules from listing.css */
+.platform-avto .ah-listing-detail .ah-listing-summary,
+.platform-avto .ah-listing-detail .lp-title-card,
+.platform-avto .ah-listing-detail .lp-header-price {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.platform-avto .ah-listing-detail .lp-header-price {
+  align-items: stretch;
+  text-align: left;
+}
+.platform-avto .ah-listing-detail #gallThumbs .lp-thumb {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 2;
+}
+.platform-avto .ah-listing-detail .lp-sidebar > * { width: 100%; box-sizing: border-box; }
+
+/* Spacing: legacy margins stacked on top of the column gap */
+.platform-avto .ah-listing-detail .lp-main { gap: 20px; }
+.platform-avto .ah-listing-detail .lp-gallery { margin-bottom: 0; }
+.platform-avto .ah-listing-detail .ah-detail-tabs { margin: 0; }
+
+/* Gallery counter was absolutely positioned by legacy rules and wrapped */
+.platform-avto .ah-listing-detail .lp-gallery-ctrls .lp-gallery-counter {
+  position: static;
+  white-space: nowrap;
+  flex: none;
+}
+
+/* Action row must fit the narrow sidebar */
+.platform-avto .ah-listing-detail .lp-sidebar-actions {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.platform-avto .ah-listing-detail .lp-sidebar-actions .lp-fav-btn { flex: 1 1 100% !important; }
+.platform-avto .ah-listing-detail .lp-sidebar-actions .lp-compare-btn { flex: 1 1 0 !important; min-width: 0; }
+.platform-avto .ah-listing-detail .lp-sidebar-actions .ibtn { flex: none; }
+.platform-avto .ah-listing-detail .lp-views-card .lp-view-stat { min-width: 0; }
+
+/* Price block centered; tighter vertical rhythm in the CTA area */
+.platform-avto .ah-listing-detail .lp-header-price > div:first-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.platform-avto .ah-listing-detail .lp-header-price > div:first-child > div { justify-content: center; }
+.platform-avto .ah-listing-detail .lp-header-price { gap: 14px; }
+.platform-avto .ah-listing-detail .lp-sidebar-actions { margin-top: 0; padding-top: 0; }
+.platform-avto .ah-listing-detail .lp-header-price .lp-price-card,
+.platform-avto .ah-listing-detail #lpServiceBadge:empty { display: none; }

@@ -1,0 +1,8 @@
+/api/auctions
+/api/auctions/${listingId}
+/api/auctions/${listingId}/bids
+/api/listings
+/api/listings/${encodeURIComponent(listingId)}
+/api/listings/${listingId}
+/api/search/key?platform=${ENV.platform}
+/api/uploads/image

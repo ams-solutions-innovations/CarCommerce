@@ -239,7 +239,7 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                     </nav>
 
                     <!-- Ključni podatki card -->
-                    <section id="podatki" class="card lp-section lp-key-specs-box" style="padding:8px" aria-label="Tehnični podatki">
+                    <section id="podatki" data-tab-panel="podatki" class="card lp-section lp-key-specs-box" style="padding:8px" aria-label="Tehnični podatki">
                         <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 20px 6px">
                             <h2 class="h3">Ključni podatki</h2>
                             <button type="button" id="toggleAllSpecsBtn" style="background:transparent;border:0;cursor:pointer;font-size:13px;font-weight:700;color:#1d4ed8;display:inline-flex;align-items:center;gap:6px">
@@ -275,7 +275,7 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                     </section>
 
                     <!-- Two-card row: Ocena cene & Cena skozi čas -->
-                    <div id="ocena-cene" style="display:flex;flex-wrap:wrap;gap:24px">
+                    <div id="ocena-cene" data-tab-panel="ocena-cene" style="display:flex;flex-wrap:wrap;gap:24px">
 
                         <!-- Card 1: Ocena cene -->
                         <section class="card ah-price-assessment" style="flex:1 1 380px;padding:26px 26px 24px;display:flex;flex-direction:column;gap:18px" aria-label="Ocena cene">
@@ -373,7 +373,7 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                     </div>
 
                     <!-- Oprema card -->
-                    <section id="oprema" class="card lp-section" style="padding:26px 26px 28px;display:flex;flex-direction:column;gap:20px" aria-label="Oprema">
+                    <section id="oprema" data-tab-panel="oprema" class="card lp-section" style="padding:26px 26px 28px;display:flex;flex-direction:column;gap:20px" aria-label="Oprema">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
                             <h2 class="h3">Oprema</h2>
                             <span style="font-size:13px;color:#5a6b83">23 standardnih postavk in 3 dodatne</span>
@@ -412,8 +412,83 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                         </div>
                     </section>
 
+                    <!-- Realni mesečni strošek (TCO) card -->
+                    <div id="stroski" data-tab-panel="stroski" class="card lp-section" style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
+                        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#5a6b83">REALNI MESEČNI STROŠEK</div>
+                        <div style="display:flex;align-items:baseline;gap:8px">
+                            <span class="d num" style="font-size:36px;font-weight:800;letter-spacing:-.02em">~ ${new Intl.NumberFormat('sl-SI').format(monthlyTotal)} €</span>
+                            <span style="font-size:13px;color:#5a6b83">ocena lastništva na mesec</span>
+                        </div>
+                        <div style="display:flex;height:12px;border-radius:9999px;overflow:hidden;gap:2px" role="img" aria-label="Razčlenitev stroškov: izguba vrednosti 62 %, gorivo 21 %, zavarovanje 9 %, ostalo 8 %">
+                            <div style="width:62%;background:#0b1f3f"></div>
+                            <div style="width:21%;background:#2563eb"></div>
+                            <div style="width:9%;background:#7aa2f0"></div>
+                            <div style="width:8%;background:#c3d4f3"></div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:9px;font-size:13px">
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <span style="width:10px;height:10px;border-radius:3px;background:#0b1f3f;flex:none"></span>
+                                <span>Izguba vrednosti</span>
+                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(depVal)} €</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <span style="width:10px;height:10px;border-radius:3px;background:#2563eb;flex:none"></span>
+                                <span>Gorivo</span>
+                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(fuelCostVal)} €</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <span style="width:10px;height:10px;border-radius:3px;background:#7aa2f0;flex:none"></span>
+                                <span>Zavarovanje</span>
+                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(insVal)} €</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <span style="width:10px;height:10px;border-radius:3px;background:#c3d4f3;flex:none"></span>
+                                <span>Servis, pnevmatike, davki</span>
+                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(maintVal)} €</span>
+                            </div>
+                        </div>
+                        <button type="button" class="pill" id="btnAdjustTco" style="height:42px;font-size:13px;width:100%">Prilagodi izračun</button>
+                        <div id="react-cost-panel-root" style="display:none;margin-top:12px;"></div>
+                    </div>
+
+                    <!-- Prodajalec Card -->
+                    <div id="prodajalec" data-tab-panel="prodajalec" class="card lp-seller-section">
+                        <div style="display:flex;align-items:center;gap:14px">
+                            <span class="d lp-seller-avatar">${escHtml(sellerMonogram)}</span>
+                            <div>
+                                <div class="d" style="font-weight:800;font-size:17px;line-height:1.2">${escHtml(sellerName)}</div>
+                                <span style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:700;color:#1d4ed8">
+                                    <svg class="i" style="width:15px;height:15px"><use href="#i-verified"></use></svg>
+                                    Preverjena avtohiša
+                                </span>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#5a6b83">
+                            <div style="display:flex;gap:10px;align-items:flex-start">
+                                <svg class="i" style="width:16px;height:16px;margin-top:2px;color:currentColor"><use href="#i-pin"></use></svg>
+                                <span>${escHtml(sellerAddress)}</span>
+                            </div>
+                            <div style="display:flex;gap:10px;align-items:flex-start">
+                                <svg class="i" style="width:16px;height:16px;margin-top:2px;color:currentColor"><use href="#i-clock"></use></svg>
+                                <span>${sellerHours}</span>
+                            </div>
+                        </div>
+                        <div style="display:flex;flex-wrap:wrap;gap:8px">
+                            <span class="sp"><svg class="i"><use href="#i-wrench"></use></svg>Pooblaščeni serviser</span>
+                            <span class="sp"><svg class="i"><use href="#i-banknote"></use></svg>Leasing</span>
+                            <span class="sp"><svg class="i"><use href="#i-shield"></use></svg>${escHtml(make || 'AutoHub')} Approved</span>
+                            <span class="sp"><svg class="i"><use href="#i-repeat"></use></svg>Staro za novo</span>
+                        </div>
+                        <a href="#/oglasi?seller=${encodeURIComponent(sellerName)}" class="pill" style="height:46px;width:100%;box-sizing:border-box">
+                            Vsi oglasi prodajalca<svg class="i" style="width:15px;height:15px"><use href="#i-right"></use></svg>
+                        </a>
+                        <a href="#" id="lpReportBtn" style="display:inline-flex;align-items:center;gap:6px;align-self:center;font-size:13px;color:#5a6b83">
+                            <svg class="i" style="width:14px;height:14px"><use href="#i-flag"></use></svg>Prijavi oglas
+                        </a>
+                    </div>
+
                     <!-- Opis prodajalca card -->
-                    <section class="card lp-section" style="padding:26px 26px 28px" aria-label="Opis prodajalca">
+                    <section class="card lp-section" data-tab-panel="podatki" style="padding:26px 26px 28px" aria-label="Opis prodajalca">
                         <h2 class="h3">Opis prodajalca</h2>
                         <div style="font-size:16px;line-height:1.65;color:inherit;margin-top:12px;max-width:680px;text-wrap:pretty;opacity:.92">
                             ${l.description ? escHtml(l.description).replace(/\n/g, '<br>') : 'Vrhunsko stanje, brez praske. Prvi lastnik, SLO poreklo.'}
@@ -421,7 +496,7 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                     </section>
 
                     <!-- Service history (populated async if VIN exists) -->
-                    <div id="service-history-container" style="display:none;"></div>
+                    <div id="service-history-container" data-tab-panel="podatki" style="display:none;"></div>
 
                     <!-- Podobni oglasi -->
                     <section class="lp-similar" aria-label="Podobni oglasi">
@@ -491,7 +566,7 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                                 <button type="button" class="pill lp-action-btn lp-fav-btn" id="lpFavBtn" data-listing-id="${l.id}" style="flex:1.4;padding:0 12px" title="Shrani v mapo">
                                     <svg class="i"><use href="#i-heart"></use></svg>
                                     <span>Shrani v mapo</span>
-                                    <svg class="i" style="width:15px;height:15px"><use href="#i-down"></use></svg>
+                                    <svg class="i lp-fav-chevron" style="width:15px;height:15px"><use href="#i-down"></use></svg>
                                 </button>
                                 <button type="button" class="pill lp-action-btn lp-compare-btn" id="lpCompareBtn" data-listing-id="${l.id}" style="flex:1;padding:0 12px" title="Primerjaj">
                                     <svg class="i"><use href="#i-scale"></use></svg>
@@ -530,81 +605,6 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                         </div>
                     </div>
 
-                    <!-- Realni mesečni strošek (TCO) card -->
-                    <div id="stroski" class="card" style="padding:24px 26px;display:flex;flex-direction:column;gap:16px">
-                        <div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#5a6b83">REALNI MESEČNI STROŠEK</div>
-                        <div style="display:flex;align-items:baseline;gap:8px">
-                            <span class="d num" style="font-size:36px;font-weight:800;letter-spacing:-.02em">~ ${new Intl.NumberFormat('sl-SI').format(monthlyTotal)} €</span>
-                            <span style="font-size:13px;color:#5a6b83">ocena lastništva na mesec</span>
-                        </div>
-                        <div style="display:flex;height:12px;border-radius:9999px;overflow:hidden;gap:2px" role="img" aria-label="Razčlenitev stroškov: izguba vrednosti 62 %, gorivo 21 %, zavarovanje 9 %, ostalo 8 %">
-                            <div style="width:62%;background:#0b1f3f"></div>
-                            <div style="width:21%;background:#2563eb"></div>
-                            <div style="width:9%;background:#7aa2f0"></div>
-                            <div style="width:8%;background:#c3d4f3"></div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:9px;font-size:13px">
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <span style="width:10px;height:10px;border-radius:3px;background:#0b1f3f;flex:none"></span>
-                                <span>Izguba vrednosti</span>
-                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(depVal)} €</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <span style="width:10px;height:10px;border-radius:3px;background:#2563eb;flex:none"></span>
-                                <span>Gorivo</span>
-                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(fuelCostVal)} €</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <span style="width:10px;height:10px;border-radius:3px;background:#7aa2f0;flex:none"></span>
-                                <span>Zavarovanje</span>
-                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(insVal)} €</span>
-                            </div>
-                            <div style="display:flex;align-items:center;gap:10px">
-                                <span style="width:10px;height:10px;border-radius:3px;background:#c3d4f3;flex:none"></span>
-                                <span>Servis, pnevmatike, davki</span>
-                                <span class="num" style="margin-left:auto;font-weight:700">${new Intl.NumberFormat('sl-SI').format(maintVal)} €</span>
-                            </div>
-                        </div>
-                        <button type="button" class="pill" id="btnAdjustTco" style="height:42px;font-size:13px;width:100%">Prilagodi izračun</button>
-                        <div id="react-cost-panel-root" style="display:none;margin-top:12px;"></div>
-                    </div>
-
-                    <!-- Prodajalec Card -->
-                    <div id="prodajalec" class="card lp-seller-section">
-                        <div style="display:flex;align-items:center;gap:14px">
-                            <span class="d lp-seller-avatar">${escHtml(sellerMonogram)}</span>
-                            <div>
-                                <div class="d" style="font-weight:800;font-size:17px;line-height:1.2">${escHtml(sellerName)}</div>
-                                <span style="display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:700;color:#1d4ed8">
-                                    <svg class="i" style="width:15px;height:15px"><use href="#i-verified"></use></svg>
-                                    Preverjena avtohiša
-                                </span>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:10px;font-size:14px;color:#5a6b83">
-                            <div style="display:flex;gap:10px;align-items:flex-start">
-                                <svg class="i" style="width:16px;height:16px;margin-top:2px;color:currentColor"><use href="#i-pin"></use></svg>
-                                <span>${escHtml(sellerAddress)}</span>
-                            </div>
-                            <div style="display:flex;gap:10px;align-items:flex-start">
-                                <svg class="i" style="width:16px;height:16px;margin-top:2px;color:currentColor"><use href="#i-clock"></use></svg>
-                                <span>${sellerHours}</span>
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-wrap:wrap;gap:8px">
-                            <span class="sp"><svg class="i"><use href="#i-wrench"></use></svg>Pooblaščeni serviser</span>
-                            <span class="sp"><svg class="i"><use href="#i-banknote"></use></svg>Leasing</span>
-                            <span class="sp"><svg class="i"><use href="#i-shield"></use></svg>${escHtml(make || 'AutoHub')} Approved</span>
-                            <span class="sp"><svg class="i"><use href="#i-repeat"></use></svg>Staro za novo</span>
-                        </div>
-                        <a href="#/oglasi?seller=${encodeURIComponent(sellerName)}" class="pill" style="height:46px;width:100%;box-sizing:border-box">
-                            Vsi oglasi prodajalca<svg class="i" style="width:15px;height:15px"><use href="#i-right"></use></svg>
-                        </a>
-                        <a href="#" id="lpReportBtn" style="display:inline-flex;align-items:center;gap:6px;align-self:center;font-size:13px;color:#5a6b83">
-                            <svg class="i" style="width:14px;height:14px"><use href="#i-flag"></use></svg>Prijavi oglas
-                        </a>
-                    </div>
-
                 </aside>
 
             </div>
@@ -612,27 +612,30 @@ export function renderAutoHubListing(page, listing, allListings = []) {
         </div>
     `;
 
-    // Bind In-page Tabs smooth navigation
+    // In-page tabs: "Pregled" shows every panel, any other tab shows only its own panel (no auto-scroll)
     const tabsNav = page.querySelector('.ah-detail-tabs');
     if (tabsNav) {
         const tabLinks = tabsNav.querySelectorAll('.tab');
+        const panels = page.querySelectorAll('.lp-main > [data-tab-panel], .lp-main .lp-similar');
+        const showTab = (tabId) => {
+            tabLinks.forEach(a => {
+                const on = a.getAttribute('href') === `#${tabId}`;
+                a.classList.toggle('on', on);
+                a.classList.toggle('is-active', on);
+            });
+            panels.forEach(el => {
+                const names = (el.dataset.tabPanel || '').split(' ');
+                const visible = tabId === 'pregled' || names.includes(tabId);
+                el.classList.toggle('ah-tab-hidden', !visible);
+            });
+        };
         tabLinks.forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                const targetId = link.getAttribute('href')?.replace('#', '');
-                const targetEl = targetId === 'pregled'
-                    ? page.querySelector('.lp-gallery')
-                    : document.getElementById(targetId);
-                if (targetEl) {
-                    tabLinks.forEach(l => l.classList.remove('on', 'is-active'));
-                    link.classList.add('on', 'is-active');
-                    targetEl.scrollIntoView({
-                        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-                        block: 'start'
-                    });
-                }
+                showTab(link.getAttribute('href')?.replace('#', '') || 'pregled');
             });
         });
+        showTab('pregled');
     }
 
     // Bind Expandable specifications accordion
@@ -713,6 +716,28 @@ export function renderAutoHubListing(page, listing, allListings = []) {
                 costPanelRoot.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
+    }
+
+    // Favourite button: chevron opens the folder picker; saving a new favourite also offers a folder
+    const favBtn = page.querySelector('#lpFavBtn');
+    if (favBtn) {
+        let wasActive = false;
+        favBtn.addEventListener('click', (e) => {
+            const viaChevron = Boolean(e.target.closest?.('.lp-fav-chevron'));
+            wasActive = favBtn.classList.contains('active');
+            if (viaChevron) {
+                e.stopImmediatePropagation();
+                import('./collectionUi.js').then(m => m.openFolderPickerForListing(l));
+                return;
+            }
+            if (!wasActive) {
+                setTimeout(() => {
+                    if (favBtn.classList.contains('active')) {
+                        import('./collectionUi.js').then(m => m.openFolderPickerForListing(l));
+                    }
+                }, 350);
+            }
+        }, true);
     }
 
     // Load similar listings

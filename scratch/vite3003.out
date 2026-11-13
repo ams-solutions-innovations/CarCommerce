@@ -1,0 +1,60 @@
+
+  [32m[1mVITE[22m v8.0.16[39m  [2mready in [0m[1m485[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3003[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[2m13:47:36[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: Error: Not Found
+    at request (http://localhost:3003/src/lib/apiClient.js:21:15)
+    at async uploadImage (http://localhost:3003/src/lib/uploads.js:20:35)
+    at async Promise.all (index 2)
+    at async Promise.all (index 0)
+    at async createListing (http://localhost:3003/src/services/listingService.js:90:39)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m13:49:07[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: Error: Not Found
+    at request (http://localhost:3003/src/lib/apiClient.js:21:15)
+    at async uploadImage (http://localhost:3003/src/lib/uploads.js:20:35)
+    at async Promise.all (index 3)
+    at async Promise.all (index 0)
+    at async createListing (http://localhost:3003/src/services/listingService.js:90:39)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m14:01:48[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: Error: Internal Server Error
+    at request (http://localhost:3003/src/lib/apiClient.js:21:15)
+    at async createListing (http://localhost:3003/src/services/listingService.js:236:21)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m14:02:22[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: TypeError: Failed to fetch
+    at window.fetch (http://localhost:3003/main.js:41:23)
+    at uploadImage (http://localhost:3003/src/lib/uploads.js:26:20)
+    at async Promise.all (index 2)
+    at async Promise.all (index 0)
+    at async createListing (http://localhost:3003/src/services/listingService.js:90:39)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m14:03:03[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: TypeError: Failed to fetch
+    at window.fetch (http://localhost:3003/main.js:41:23)
+    at uploadImage (http://localhost:3003/src/lib/uploads.js:26:20)
+    at async Promise.all (index 2)
+    at async Promise.all (index 1)
+    at async createListing (http://localhost:3003/src/services/listingService.js:90:39)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m14:08:36[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22m[CreateListing] submit error: TypeError: Failed to fetch
+    at window.fetch (http://localhost:3003/main.js:41:23)
+    at uploadImage (http://localhost:3003/src/lib/uploads.js:26:20)
+    at async Promise.all (index 0)
+    at async Promise.all (index 0)
+    at async createListing (http://localhost:3003/src/services/listingService.js:90:39)
+    at async submitListing (http://localhost:3003/src/pages/create-listing.js:5582:16)
+[2m14:25:13[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub.css[22m
+[2m14:25:24[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:25:27[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:25:29[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:25:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:25:36[22m [31m[1m[vite][22m[39m [31m[2m(client)[22m[39m [2m[console.error] [22mError loading footer: TypeError: Failed to fetch
+[2m14:25:38[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:25:55[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/autohub/listingDetail.js[22m
+[2m14:26:51[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:28:23[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:29:37[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
+[2m14:32:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2msrc/components/autohub/listingDetail.js[22m
+[2m14:32:31[22m [36m[1m[vite][22m[39m [90m[2m(client)[22m[39m [32mpage reload [39m[2mcss/autohub-detail.css[22m
