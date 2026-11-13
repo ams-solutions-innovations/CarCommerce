@@ -16,7 +16,7 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@sentry/browser": "^8.40.0",
+    "@sentry/browser": "^10.65.0",
     "@supabase/supabase-js": "^2.46.1",
     "jspdf": "^4.2.1",
     "posthog-js": "^1.181.0",
