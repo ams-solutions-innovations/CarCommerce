@@ -29,7 +29,11 @@ export const uploadRoutes: FastifyPluginAsync = async (app) => {
     const uid = req.user!.id;
 
     // The caller must own the thing they're uploading for.
-    if (scope === 'listing') await assertOwner('listings', ownerId, uid);
+    // Photos are uploaded before the listing row exists, so the client passes its
+    // own user id: that only ever writes into the caller's own namespace.
+    if (scope === 'listing') {
+      if (ownerId !== uid) await assertOwner('listings', ownerId, uid);
+    }
     else if (scope === 'business') await assertOwner('businesses', ownerId, uid);
     else if (ownerId !== uid) {
       throw Object.assign(new Error('Dostop zavrnjen'), { statusCode: 403 }); // avatar
