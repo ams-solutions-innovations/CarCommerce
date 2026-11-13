@@ -51,7 +51,10 @@
       "Bash(npx cross-env *)",
       "mcp__claude-in-chrome__tabs_context_mcp",
       "ClaudeInChromeDomain(localhost:3000)",
-      "ClaudeInChromeDomain(localhost:5181)"
+      "ClaudeInChromeDomain(localhost:5181)",
+      "mcp__claude-in-chrome__select_browser",
+      "ClaudeInChromeDomain(localhost:3002)",
+      "mcp__claude-in-chrome__browser_batch"
     ],
     "additionalDirectories": [
       "c:\\Users\\marti\\.claude\\projects\\c--Users-marti-AMS-d-o-o-MojAvto-si\\memory"
