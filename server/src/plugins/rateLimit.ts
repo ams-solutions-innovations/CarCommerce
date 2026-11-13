@@ -1,5 +1,5 @@
 // Rate limiting backed by Upstash Redis (distributed — works across multiple
-// Fargate tasks, unlike in-memory limiting). A sliding window per client IP.
+// container instances, unlike in-memory limiting). A sliding window per client IP.
 // Authenticated users are keyed by user id; everyone else by IP.
 import fp from 'fastify-plugin';
 import type { FastifyPluginAsync } from 'fastify';

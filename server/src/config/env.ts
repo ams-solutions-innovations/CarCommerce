@@ -11,7 +11,7 @@ const schema = z.object({
   // Comma-separated list of allowed browser origins (the two portals + localhost).
   CORS_ORIGINS: z
     .string()
-    .default('http://localhost:3000,https://mojavto.si,https://mojanavtika.si'),
+    .default('http://localhost:3000,https://carcommerce.net,https://mojanavtika.si'),
 
   // ── Supabase (DB + Auth) ──────────────────────────────────────────────
   SUPABASE_URL: z.string().url(),
@@ -34,12 +34,6 @@ const schema = z.object({
   // Public CDN base URL fronting the bucket (custom domain via Cloudflare).
   R2_PUBLIC_BASE_URL: z.string().url(),
 
-  // ── AWS S3 (private system storage: invoices, exports, backups) ────────
-  AWS_REGION: z.string().default('eu-central-1'),
-  AWS_ACCESS_KEY_ID: z.string().min(1),
-  AWS_SECRET_ACCESS_KEY: z.string().min(1),
-  S3_BUCKET: z.string().min(1),
-
   // ── Typesense (search / filtering) ────────────────────────────────────
   TYPESENSE_HOST: z.string().min(1),
   TYPESENSE_PORT: z.coerce.number().default(443),
@@ -50,7 +44,7 @@ const schema = z.object({
 
   // ── Resend (transactional email) ──────────────────────────────────────
   RESEND_API_KEY: z.string().min(1),
-  RESEND_FROM_AVTO: z.string().default('MojAvto.si <info@mojavto.si>'),
+  RESEND_FROM_AVTO: z.string().default('Carcommerce <info@carcommerce.net>'),
   RESEND_FROM_NAVTIKA: z.string().default('MojaNavtika.si <info@mojanavtika.si>'),
 
   // ── Sentry (error tracking) ───────────────────────────────────────────

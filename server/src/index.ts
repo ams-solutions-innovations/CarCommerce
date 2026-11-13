@@ -1,5 +1,5 @@
 // Entry point. Builds the Fastify app and starts listening on 0.0.0.0:PORT
-// (0.0.0.0 is required so the container is reachable inside ECS Fargate).
+// (0.0.0.0 is required so the container is reachable from outside).
 import { buildApp } from './app.js';
 import { env } from './config/env.js';
 import { initSentry, flushSentry } from './lib/sentry.js';

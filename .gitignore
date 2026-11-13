@@ -34,7 +34,7 @@ npm-debug.log*
 .DS_Store
 Thumbs.db
 
-# Firebase
-.firebase/
-firebase-debug.log
 firestore-debug.log
+
+# Supabase CLI temp
+supabase/.temp/

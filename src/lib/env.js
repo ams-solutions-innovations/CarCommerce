@@ -6,7 +6,7 @@ import { getPlatform } from '../config/platform.js';
 const e = (typeof import.meta !== 'undefined' && import.meta.env) ? import.meta.env : {};
 
 export const ENV = {
-  // Base URL of the Fastify API on Fargate (e.g. https://api.mojavto.si).
+  // Base URL of the Fastify API (e.g. https://api.carcommerce.net).
   apiBaseUrl: e.VITE_API_BASE_URL || 'http://localhost:8080',
 
   // Supabase (DB + Auth) — anon key is safe to ship; RLS protects the data.

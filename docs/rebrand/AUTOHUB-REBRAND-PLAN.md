@@ -184,7 +184,7 @@ Delavnica, hotel gum, B2B rezervacije/storitve, skupinski uvoz, servisni vnos, n
 
 ## 8. Znamka, izdaja in odprte odločitve
 
-Vizualni rebrand ni samodejna selitev domene. Trenutna konfiguracija uporablja `AutoHub.si` kot prikaz imena, domena in e-pošta pa ostajata `mojavto.si`. Pred izdajo določimo dejansko domeno in kontaktne naslove; šele ob odločitvi vključimo redirecte, auth povratne URL-je, canonical/meta povezave, obvestila in druge zunanje reference. Obstoječa pravna in poslovna dejstva se ne spreminjajo zgolj zaradi logotipa.
+Vizualni rebrand ni samodejna selitev domene. Trenutna konfiguracija uporablja `AutoHub.si` kot prikaz imena, domena in e-pošta pa ostajata `carcommerce.net`. Pred izdajo določimo dejansko domeno in kontaktne naslove; šele ob odločitvi vključimo redirecte, auth povratne URL-je, canonical/meta povezave, obvestila in druge zunanje reference. Obstoječa pravna in poslovna dejstva se ne spreminjajo zgolj zaradi logotipa.
 
 Prenovo omogočimo postopoma v preview okolju in po potrjenih sklopih. Izberemo mehanizem za vrnitev na prejšnji prikaz, ki ne spreminja že shranjenih uporabniških podatkov. V produkcijski paket ne vključimo vseh podvojenih export runtime datotek.
 
@@ -192,7 +192,7 @@ Odprte odločitve, ki ne preprečujejo začetka A/B:
 
 1. Izvoz 60 je dodan in vključen v primerjavo vozil; ta odločitev je rešena.
 2. Ali obstaja živ Claude Design predogled z dodatnimi animacijami? ZIP-i sami jih ne vsebujejo dovolj za dokaz popolne gibalne zvestobe.
-3. Ali bo spletni naslov dejansko AutoHub.si ali ostane mojavto.si z znamko AutoHub?
+3. Ali bo spletni naslov dejansko AutoHub.si ali ostane carcommerce.net z znamko AutoHub?
 4. Temni način: reference vsebujejo gumb za temo, vendar popoln temni sistem iz trenutnega popisa ni potrjen. Določimo in preverimo različico, preden jo razglasimo za zvest prenos.
 5. Za funkcije brez dovolj obstoječe podpore po A določimo ločena opravila in realne odvisnosti; rok ocenimo šele nato.
 

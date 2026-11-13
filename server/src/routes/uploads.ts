@@ -1,6 +1,6 @@
 // Presigned upload endpoints. The browser asks for a URL, then PUTs the file
-// bytes straight to R2 (public images) or S3 (private docs). Keeps large
-// payloads off the API and out of Fargate's memory.
+// bytes straight to R2 (public images) (public images). Keeps large
+// payloads off the API.
 //
 // Hardening: very low per-IP rate limit (#9), ownership checks so a user can't
 // mint upload URLs against someone else's listing/business (#2 IDOR), and
@@ -9,7 +9,6 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { randomUUID } from 'node:crypto';
 import { createImageUploadUrl } from '../lib/r2.js';
-import { getPrivateDownloadUrl } from '../lib/s3.js';
 import { assertOwner } from '../lib/ownership.js';
 import { enforceIpLimit, ipUploadLimiter } from '../plugins/rateLimit.js';
 
@@ -40,13 +39,4 @@ export const uploadRoutes: FastifyPluginAsync = async (app) => {
     return createImageUploadUrl({ key, contentType });
   });
 
-  // Private system file download (e.g. an invoice the user owns) → S3.
-  app.get('/uploads/private-url', { preHandler: app.requireAuth }, async (req) => {
-    const { key } = z.object({ key: z.string().min(1).max(256) }).strip().parse(req.query);
-    // Only allow keys scoped to this user's own prefix (no traversal to others').
-    if (!key.startsWith(`users/${req.user!.id}/`)) {
-      throw Object.assign(new Error('Dostop zavrnjen'), { statusCode: 403 });
-    }
-    return { url: await getPrivateDownloadUrl(key) };
-  });
 };

@@ -1,4 +1,4 @@
-// Stale-while-revalidate cache — MojAvto.si
+// Stale-while-revalidate cache — Carcommerce
 // Returns cached data instantly (if present) while a fresh fetch revalidates in
 // the background. Pairs with the `.ui-updating` badge to signal "updating…".
 //

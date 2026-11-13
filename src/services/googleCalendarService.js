@@ -1,4 +1,4 @@
-// googleCalendarService.js — Google Calendar Integration — MojAvto.si
+// googleCalendarService.js — Google Calendar Integration — Carcommerce
 //
 // Approach: URL-based "Add to Google Calendar" — no OAuth required.
 // Opens Google Calendar in a new tab with the event pre-filled.

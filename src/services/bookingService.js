@@ -1,4 +1,4 @@
-// bookingService.js — Booking & Service business logic — MojAvto.si
+// bookingService.js — Booking & Service business logic — Carcommerce
 // Pure functions. No DOM. localStorage for persistence.
 // TODO: Replace localStorage calls with Firestore when backend is ready.
 

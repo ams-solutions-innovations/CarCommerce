@@ -1,4 +1,4 @@
-// Login page logic — MojAvto.si
+// Login page logic — Carcommerce
 import { loginWithEmail, loginWithGoogle } from '../auth/auth.js';
 import { navigateTo } from '../router.js';
 import { t } from '../core/i18n.js';

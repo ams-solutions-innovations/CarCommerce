@@ -2,15 +2,15 @@
 
 Cloudflare sits in front of everything. Two jobs here:
 
-1. **CDN + R2 public images** — `cdn.mojavto.si` / `cdn.mojanavtika.si` are custom
+1. **CDN + R2 public images** — `cdn.carcommerce.net` / `cdn.mojanavtika.si` are custom
    domains bound to the R2 bucket. `R2_PUBLIC_BASE_URL` (server `.env`) points here.
 2. **Edge security in front of the API + the static sites.**
 
 This is configuration, not code — captured here so it's not forgotten.
 
 ## DNS / proxying
-- `api.mojavto.si` → CNAME to the ALB in front of ECS Fargate, **proxied (orange cloud)**.
-- `mojavto.si` / `mojanavtika.si` → static frontend host (Pages / S3+CloudFront / current host).
+- `api.carcommerce.net` → CNAME to the API host, **proxied (orange cloud)**.
+- `carcommerce.net` / `mojanavtika.si` → static frontend host (Cloudflare Pages / current host).
 - `cdn.*` → R2 bucket binding.
 
 ## WAF / security ("internet safety")
@@ -23,7 +23,7 @@ This is configuration, not code — captured here so it's not forgotten.
 - **Geo rules**: optional — most traffic is SI/EU; can challenge outside EU.
 
 ## TLS
-- SSL/TLS mode **Full (strict)**. ACM cert on the ALB; Cloudflare edge cert public-side.
+- SSL/TLS mode **Full (strict)**. Cloudflare edge cert public-side.
 
 ## Cache rules
 - Cache `cdn.*` (images) aggressively (immutable, 1y — filenames are content-hashed/UUID).

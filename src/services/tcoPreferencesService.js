@@ -1,4 +1,4 @@
-// TCO Preferences Service — MojAvto.si (Supabase)
+// TCO Preferences Service — Carcommerce (Supabase)
 // Stored in profiles.prefs.tco with localStorage as primary cache.
 
 import { supabase } from '../lib/supabase.js';

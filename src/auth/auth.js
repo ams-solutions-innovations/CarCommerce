@@ -1,4 +1,4 @@
-// Authentication module — MojAvto.si (Supabase)
+// Authentication module — Carcommerce (Supabase)
 import { supabase } from '../lib/supabase.js';
 import { PLATFORM } from '../config/platform.js';
 

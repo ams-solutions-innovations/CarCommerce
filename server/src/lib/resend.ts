@@ -1,5 +1,5 @@
 // Resend — transactional email (outbid / won / sold notifications, booking
-// confirmations, business verification). Per-platform sender so MojAvto and
+// confirmations, business verification). Per-platform sender so Carcommerce and
 // MojaNavtika mail come from the right domain.
 import { Resend } from 'resend';
 import { env } from '../config/env.js';

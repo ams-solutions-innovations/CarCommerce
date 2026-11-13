@@ -1,4 +1,4 @@
-// Register page logic — MojAvto.si
+// Register page logic — Carcommerce
 import { registerWithEmail, loginWithGoogle } from '../auth/auth.js';
 import { navigateTo } from '../router.js';
 import { t } from '../core/i18n.js';

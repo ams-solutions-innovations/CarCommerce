@@ -1,5 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- MojAvto.si / MojaNavtika.si — Supabase (Postgres) schema
+-- Carcommerce / MojaNavtika.si — Supabase (Postgres) schema
 -- Maps the old Firestore collections to relational tables. Run this first, then
 -- policies.sql. Idempotent-ish: uses IF NOT EXISTS where practical.
 --
@@ -53,8 +53,17 @@ create trigger trg_profiles_updated before update on public.profiles
 create or replace function public.handle_new_user() returns trigger
   language plpgsql security definer set search_path = public, pg_temp as $$
 begin
-  insert into public.profiles (id, email, display_name)
-  values (new.id, new.email, new.raw_user_meta_data->>'display_name')
+  -- Email sign-up sets display_name; Google OAuth supplies full_name/name + avatar_url/picture.
+  insert into public.profiles (id, email, display_name, avatar_url)
+  values (
+    new.id,
+    new.email,
+    coalesce(nullif(new.raw_user_meta_data->>'display_name', ''),
+             nullif(new.raw_user_meta_data->>'full_name', ''),
+             nullif(new.raw_user_meta_data->>'name', '')),
+    coalesce(nullif(new.raw_user_meta_data->>'avatar_url', ''),
+             nullif(new.raw_user_meta_data->>'picture', ''))
+  )
   on conflict (id) do nothing;
   return new;
 end;

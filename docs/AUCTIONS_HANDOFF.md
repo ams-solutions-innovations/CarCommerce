@@ -4,7 +4,7 @@
 > zgrajeno na frontendu in KAJ je še potrebno za **delujoče dražbe** (samodejno zaprtje, e-pošta,
 > plačila, varna validacija ponudb, čiščenje podpisov).
 
-Datum: 2026-06-09 · Avtor konteksta: Claude (MojAvto.si)
+Datum: 2026-06-09 · Avtor konteksta: Claude (Carcommerce)
 
 ---
 
@@ -12,7 +12,7 @@ Datum: 2026-06-09 · Avtor konteksta: Claude (MojAvto.si)
 
 > Ta razdelek **nadgrajuje** vse spodaj. Ekonomika in tipi dražb so spremenjeni (zamenjava, ne
 > dodatek), backend pa zdaj **obstaja** v `server/` (Supabase + Fastify + Stripe Connect) — ni več
-> samo Firestore stub. Razdelki 1–4 spodaj so zgodovinski kontekst (stari Firestore model).
+> samo stub. Razdelki 1–4 spodaj so zgodovinski kontekst (stari model).
 
 ### 0.1 Poslovni model (AutoHub)
 - **Trajanje**: 7 dni brezplačno (privzeto) ali 10 dni za **4,99 €**.
@@ -64,9 +64,9 @@ Datum: 2026-06-09 · Avtor konteksta: Claude (MojAvto.si)
 1. **Zagnati `supabase/auctions_autohub.sql`** na hosted projektu (za `schema→policies→security`).
 2. **Stripe**: nastaviti `STRIPE_SECRET_KEY` + `STRIPE_WEBHOOK_SECRET`; onboarding prodajalcev v Stripe
    **Connect** (Express) → shraniti `profiles.stripe_account_id` (sicer escrow ostane "pending" do onboardinga).
-3. **Razporejevalnik**: EventBridge/Cloudflare cron → POST na oba `/internal/cron/*` z `CRON_SECRET`
+3. **Razporejevalnik**: Cloudflare cron → POST na oba `/internal/cron/*` z `CRON_SECRET`
    (priporočeno na ~1 min za close, ~5 min za escrow).
-4. **Frontend bidding migracija**: `auction-listing.js` še oddaja ponudbe prek Firestore; preklopiti na
+4. **Frontend bidding migracija**: `auction-listing.js` še oddaja ponudbe neposredno; preklopiti na
    `POST /api/auctions/:id/bids` (in branje na Supabase realtime), ko bo migracija aktivna.
 5. **E-pošta** (outbid / prag / kmalu konec / zmagovalec) prek Resend (F2 spodaj) — še TODO.
 6. **Brisanje podpisov** ob zaprtju (zasebnost, F4) — še TODO.
@@ -92,7 +92,7 @@ Frontend dražb je **v celoti zgrajen** in deluje na obeh platformah (avto + nav
 1. Dražba se **ne zapre sama** ob izteku (`endsAt`) — zdaj jo zapre admin ročno.
 2. **E-pošta se ne pošilja** (outbid, prag cene, kmalu konec, zmagovalec, newsletter).
 3. **Plačilo paketa se ne zaračuna** (`paidAmount` je zabeležen, `paymentRef` ostane `null`).
-4. Validacija ponudb je **best-effort na klientu + Firestore rules** — ni strežniško avtoritativna.
+4. Validacija ponudb je **best-effort na klientu** — ni strežniško avtoritativna.
 5. **Podpisi se ne brišejo** samodejno ob koncu dražbe (zahteva zasebnosti).
 
 ---
@@ -107,7 +107,7 @@ Frontend dražb je **v celoti zgrajen** in deluje na obeh platformah (avto + nav
   startPriceEur, reservePriceEur,        // reserve je lahko null
   currentBidEur, currentBidderId,
   bidCount, bidderCount,
-  durationWeeks, startsAt, endsAt,        // Firestore Timestamp
+  durationWeeks, startsAt, endsAt,        // timestamp
   sellerContract: { type:'sign'|'print', signatureData:<dataURL|null>, signedAt },
   packageId: 'auction3w'|'auction6w', paidAmount, paymentRef:null,  // plačilni stub
   priceSeries: [{ t:<ms>, amount, bidders }],   // denormalizirano za graf (max ~200)
@@ -141,43 +141,31 @@ createAuctionAlert, forceCloseAuction), `src/services/adminService.js` (getAdmin
 
 ---
 
-## 3. Cloud Functions, ki jih je treba zgraditi
+## 3. Strežniški opravki (`server/`)
 
-> Funkcije pišejo prek **Admin SDK** (obidejo Firestore rules). Postaviti `functions/` mapo
-> (zaenkrat je še ni — projekt je client-only). Firebase projekt: `mojavto-64b50`.
+> Opravki tečejo v Fastify API-ju (`server/`) in pišejo v Supabase s service role.
+> Ponudbe gredo prek `place_bid()` (`supabase/security.sql`, `auctions_autohub.sql`).
 
-### F1 — `closeAuctionsScheduled` (scheduled, npr. vsako minuto)
-Poišči `auctions` kjer `status=='active' && endsAt <= now`. Za vsako:
-- nastavi `status='ended'`, `winnerId = currentBidderId`;
-- (opcijsko) zapiši zmago v `users/{winnerId}` ali ločeno zbirko;
+### F1 — zapiranje dražb (cron, npr. vsako minuto)
+Poišči `auctions` kjer `status=='active' && ends_at <= now`. Za vsako:
+- nastavi `status='ended'`, `winner_id = current_bidder_id`;
 - sproži F2 (zmagovalec + prodajalec) in F4 (čiščenje podpisov).
 
-### F2 — `auctionEmails` (Firestore trigger + scheduled)
-SendGrid ali Firebase "Trigger Email" razširitev. E-pošte:
-- **outbid** — ob `onWrite` na `bids`, prejšnjemu vodilnemu, če je imel `notify.onOutbid`;
-- **prag cene** — komurkoli z `notify.thresholdEur` ko `currentBidEur >= threshold`;
-- **kmalu konec** — scheduled, 24h in 1h pred `endsAt`, vsem ponudnikom;
+### F2 — e-pošte (Resend, `server/src/lib/resend.ts`)
+- **outbid** — prejšnjemu vodilnemu, če je imel `notify.onOutbid`;
+- **prag cene** — komurkoli z `notify.thresholdEur` ko `current_bid >= threshold`;
+- **kmalu konec** — cron, 24h in 1h pred `ends_at`, vsem ponudnikom;
 - **zmagovalec / prodajalec** — ob zaprtju (iz F1);
-- **newsletter** — digest novih dražb tistim v `auctionAlerts`, ki ustrezajo `criteria`.
+- **newsletter** — digest novih dražb tistim z `auction_alerts`, ki ustrezajo `criteria`.
 
-### F3 — `auctionCheckout` (callable) + `stripeWebhook` (https)
-Stripe za paket (3 tedne 4,99 € / 6 tednov 9,99 €). Ob plačilu zapiši v `payments/{id}` in
-nastavi `auctions/{id}.paymentRef`. Po želji: dražbo objavi/aktiviraj šele po potrjenem plačilu.
+### F3 — plačilo paketa (Stripe Checkout + podpisan webhook)
+Paket (3 tedne 4,99 € / 6 tednov 9,99 €). Ob plačilu zapiši plačilo in nastavi `payment_ref`
+na dražbi. Po želji: dražbo objavi šele po potrjenem plačilu.
 
-### F4 — `pruneAuctionSignatures` (ob zaprtju / scheduled)
+### F4 — čiščenje podpisov (ob zaprtju)
 **Zahteva zasebnosti.** Ob koncu dražbe izprazni `sellerContract.signatureData` in vsem
-`bids[].contract.signatureData` nastavi `null`. Hranimo le še `type` + `signedAt` kot dokazilo.
+ponudbam nastavi `contract.signatureData = null`. Hranimo le `type` + `signedAt`.
 
-### F5 — (priporočeno) `validateBid` strežniško
-Trenutno integriteto ponudb varujejo Firestore rules (nova ponudba mora preseči staro, bidCount+1).
-Za zanesljivost premakni `placeBid` logiko v callable funkcijo z avtoritativno validacijo
-(min. korak `MIN_BID_INCREMENT = 50 €`, čas, anti-sniping podaljšanje, ipd.).
-
----
-
-## 4. Firestore rules — že dodano (za referenco)
-`firestore.rules`: bloki `auctions/{id}`, `auctions/{id}/bids/{bid}`, `auctionAlerts/{id}`.
-Indeks: `listings (entryType, status, endsAt)` v `firestore.indexes.json`.
-
-Ko bo F5 (strežniška validacija) na mestu, **zaostri** update-rule na `auctions/{id}` tako, da
-neposredne klientske posodobitve `currentBid*`/`bidCount` niso več dovoljene (samo Admin SDK).
+### F5 — strežniška validacija ponudb
+`place_bid()` je avtoritativen (min. korak `MIN_BID_INCREMENT = 50 €`, čas, anti-sniping).
+Klientske posodobitve `current_bid*`/`bid_count` morajo biti z RLS prepovedane.

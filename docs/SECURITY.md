@@ -58,8 +58,8 @@ can inherit request A's identity.
 - `server/src/plugins/rateLimit.ts` → `ipEmailLimiter` (5/hour/IP),
   `ipAuthLimiter` (10/15min/IP), enforced via `enforceIpLimit(limiter, req.ip)`.
 - Keyed by `ip:<addr>` so creating many accounts does **not** raise the ceiling.
-- `req.ip` is trustworthy because Fastify runs with `trustProxy: true` behind the
-  ALB/Cloudflare (`server/src/app.ts`).
+- `req.ip` is trustworthy because Fastify runs with `trustProxy: true` behind
+  Cloudflare (`server/src/app.ts`).
 - Applied to `/api/emails/contact-seller`; reuse on any new send/lead endpoint.
 - Edge complement: a Cloudflare rate-limiting rule on `/api/emails/*` and
   `/api/auth/*` (`infra/cloudflare-notes.md`).
@@ -146,9 +146,8 @@ npm run check:sql   # scripts/check-no-raw-sql.mjs — greps for sql`` / client.
 | - | ------- | ----- |
 | 1 | Supply-chain scanning + strict lockfile | `.github/dependabot.yml`, `.github/workflows/security.yml` (`npm ci` + `npm audit --audit-level=high` + optional Snyk) |
 | 2 | IDOR / mass-assignment | UUID PKs (`gen_random_uuid()`); `server/src/lib/ownership.ts` `assertOwner()` on every mutation (uploads, listing delete) on top of RLS |
-| 3 | Secret leakage | `.gitleaks.toml` + gitleaks in CI; prod secrets injected at runtime from AWS Secrets Manager (`infra/ecs-task-definition.json`), never on disk |
+| 3 | Secret leakage | `.gitleaks.toml` + gitleaks in CI; prod secrets injected at runtime from the host's secret store, never on disk |
 | 4 | Cookie security | `SECURE_COOKIE` (HttpOnly, Secure, SameSite=Strict) registered as `@fastify/cookie` defaults in `server/src/app.ts` |
-| 5 | WORM backups | `infra/s3-object-lock.md` — S3 Object Lock **COMPLIANCE** mode on the backups bucket |
 | 6 | SECURITY DEFINER search_path | `set search_path = public, pg_temp` on `handle_new_user`, `is_admin`, `place_bid` (`supabase/*.sql`) |
 | 7 | JWT algorithm pinning | `server/src/plugins/auth.ts` — `jwtVerify(..., { algorithms: ['HS256'] })` rejects `alg:none` / RS-HS confusion |
 | 8 | Typesense key scoping | `createScopedSearchKey` — 15-min TTL + embedded `platform` + `status:=active` filters baked into the key |
@@ -164,7 +163,7 @@ npm run check:sql   # scripts/check-no-raw-sql.mjs — greps for sql`` / client.
 
 ## Notes / follow-ups
 - **CSP lives in two places.** `app.ts` sets it for API responses; the **SPA host**
-  (Pages/CloudFront) must send the same `Content-Security-Policy` for the actual
+  (Cloudflare Pages) must send the same `Content-Security-Policy` for the actual
   pages — that's where script injection matters most.
 - **Payments** (when added): reuse the `place_bid` locking pattern (`FOR UPDATE`
   or a unique constraint on the idempotency key) and verify the gateway webhook

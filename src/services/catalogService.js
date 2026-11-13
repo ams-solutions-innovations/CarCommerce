@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Catalog service — MojAvto.si
+// Catalog service — Carcommerce
 // Public read access to the price-comparison catalog (`partsCatalog`).
 // Currently merges Firestore products with MOCK sample data so the UI works before
 // the webscraping backend exists. See docs/WEBSCRAPING_HANDOFF.md.

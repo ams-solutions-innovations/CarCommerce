@@ -54,6 +54,29 @@ function toSearchDoc(row: Record<string, unknown>) {
 }
 
 export const listingRoutes: FastifyPluginAsync = async (app) => {
+  // Public: paginated list of active listings (newest first).
+  app.get('/listings', async (req) => {
+    const q = z
+      .object({
+        platform: z.enum(['avto', 'navtika']).optional(),
+        itemType: z.enum(['vehicle', 'parts', 'auction', 'oprema']).optional(),
+        limit: z.coerce.number().int().min(1).max(50).default(20),
+        offset: z.coerce.number().int().min(0).max(10_000).default(0),
+      })
+      .parse(req.query);
+    let query = supabaseAdmin
+      .from('listings')
+      .select('*', { count: 'exact' })
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .range(q.offset, q.offset + q.limit - 1);
+    if (q.platform) query = query.eq('platform', q.platform);
+    if (q.itemType) query = query.eq('item_type', q.itemType);
+    const { data, error, count } = await query;
+    if (error) throw error;
+    return { items: data ?? [], total: count ?? 0, limit: q.limit, offset: q.offset };
+  });
+
   // Public: single listing.
   app.get('/listings/:id', async (req, reply) => {
     const { id } = z.object({ id: z.string() }).parse(req.params);

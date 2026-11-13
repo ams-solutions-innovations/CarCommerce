@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════════════════════
-// Admin Service — MojAvto.si (Supabase)
+// Admin Service — Carcommerce (Supabase)
 // All operations require the logged-in user to have is_admin = true in profiles.
 // ═══════════════════════════════════════════════════════════════════════════════
 

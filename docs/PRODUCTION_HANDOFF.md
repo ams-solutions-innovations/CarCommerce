@@ -1,9 +1,10 @@
-# MojAvto.si / MojaNavtika.si — Full Production Handoff Document
+# Carcommerce / MojaNavtika.si — Full Production Handoff Document
 
 **Date:** 2026-06-12  
 **Prepared by:** Martin Dumanic (frontend) + Claude audit  
 **Backend owner:** Aleksandar  
-**Scope:** Everything identified during the full site audit as needing work before production launch, plus feature suggestions. Covers both portals (MojAvto.si and MojaNavtika.si — one codebase, `VITE_PLATFORM=avto|navtika`).
+**Note (2026-11):** the stack is now Supabase + Cloudflare. Items below that mention Firestore, Firebase or Cloud Functions are historical; read them as the equivalent Supabase table / RLS policy / `server/` endpoint.
+**Scope:** Everything identified during the full site audit as needing work before production launch, plus feature suggestions. Covers both portals (Carcommerce and MojaNavtika.si — one codebase, `VITE_PLATFORM=avto|navtika`).
 
 ---
 
@@ -27,22 +28,21 @@
 
 ```
 One codebase → two portals
-  VITE_PLATFORM=avto    → MojAvto.si    (cars, moto, commercial, recreation)
+  VITE_PLATFORM=avto    → Carcommerce    (cars, moto, commercial, recreation)
   VITE_PLATFORM=navtika → MojaNavtika.si (boats, rental/charter)
 
 Routing:        Hash-based SPA (#/oglas?id=...) via src/router.js
 Page loading:   src/pageController.js lazy-imports per-page JS chunks
-Auth:           Firebase Auth (email + Google) → Firestore users/{uid}
-Database:       Firestore
-Storage:        Firebase Storage (listing images, business assets)
+Auth:           Supabase Auth (email + Google) → profiles
+Database:       Supabase Postgres (RLS)
+Storage:        Cloudflare R2 (listing images, business assets)
 Build:          Vite — per-page code splitting, ~1s build time
 ```
 
 **Key config files:**
 - `src/config/platform.js` — single source of truth for which portal is active
 - `src/router.js` — all routes with auth/b2b guards
-- `firestore.rules` — all Firestore security rules
-- `storage.rules` — Firebase Storage rules
+- `supabase/policies.sql` — all row level security policies
 
 ---
 
@@ -330,7 +330,7 @@ Then add "Naloži več" / infinite scroll in `oglasi.js`.
 **Options (discuss with team):**
 1. **Prerendering (recommended):** Use `vite-plugin-ssr` or deploy via Netlify/Vercel with prerender rules. Each listing page gets a static HTML snapshot for crawlers.
 2. **History API routing:** Switch from hash (`#/`) to real URLs (`/oglas/ford-focus-2019`). Requires server-side catch-all redirect to `index.html`. Clean URLs also improve user trust and sharing.
-3. **SSR:** Most work, but best long-term. Firebase Hosting + Cloud Functions can serve SSR.
+3. **SSR:** Most work, but best long-term. Cloudflare Pages Functions / Workers can serve SSR.
 
 Short-term minimum: Add `<meta name="robots" content="index, follow">` and a proper `sitemap.xml` with listing URLs.
 
@@ -425,7 +425,7 @@ Emails needed:
 | Auction ended (seller) | Seller | "Vaša dražba se je zaključila — kontaktirajte zmagovalca" |
 | New booking | Business + customer | "Nova rezervacija" |
 | Booking confirmed | Customer | "Rezervacija potrjena" |
-| Registration | New user | "Dobrodošli na MojAvto.si" |
+| Registration | New user | "Dobrodošli na Carcommerce" |
 | Password reset | User | Firebase built-in (just configure template) |
 
 The `auctionAlerts` collection (with `email`, `criteria`, `notify` prefs) is already written. The Cloud Function just needs to query it and send.
@@ -561,7 +561,7 @@ Avto categories infer `itemType` from context; navtika categories have an explic
 | `public/json/brands_models_moto.json` | 907 kB | Loads on create-listing + oglasi for moto category |
 | `public/json/brands_models_global.json` | 436 kB | Loads on create-listing + oglasi for avto |
 
-**Fix:** Ensure your hosting (Firebase Hosting / CDN) serves these with `Content-Encoding: gzip` or `br`. Firebase Hosting does this automatically. Verify in browser DevTools → Network tab.
+**Fix:** Ensure your hosting (Cloudflare Pages / CDN) serves these with `Content-Encoding: gzip` or `br`. Cloudflare does this automatically. Verify in browser DevTools → Network tab.
 
 Long-term: split by first letter of brand (A-F.json, G-M.json, etc.) and load on demand when user selects a brand initial.
 
@@ -675,7 +675,7 @@ What to build:
 ### 10.2 In-App Messaging (HIGH VALUE)
 Currently sellers expose their phone/email directly. In-app messaging:
 - Keeps users on platform
-- Gives MojAvto.si a dataset on lead quality
+- Gives Carcommerce a dataset on lead quality
 - Enables spam prevention
 - Enables seller response rate metrics
 

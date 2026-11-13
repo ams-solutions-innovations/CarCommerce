@@ -4,15 +4,15 @@
 > točno KAJ je že zgrajeno na frontendu in KAJ je še potrebno za delujoč avtomatski zajem cen
 > (ceneje.si-slog) za stran **Gume in deli**.
 
-Datum: 2026-06-02 · Avtor konteksta: Claude (MojAvto.si)
+Datum: 2026-06-02 · Avtor konteksta: Claude (Carcommerce)
 
 ---
 
 ## 1. Cilj
 
-Avtomatsko polniti Firestore zbirko **`partsCatalog`** s ponudbami trgovin, tako da stran
+Avtomatsko polniti tabelo **`parts_catalog`** (Supabase) s ponudbami trgovin, tako da stran
 `#/gume-in-deli` prikazuje **najnižjo ceno ("od X€")** in povezave do trgovin, kjer se izdelek kupi.
-Zajemamo **samo** domene, ki so v zbirki **`scrapingSources`** označene z `approved == true`
+Zajemamo **samo** domene, ki so v zbirki **`scraping_sources`** označene z `approved == true`
 (lastnik ima zanje pisno dovoljenje).
 
 Trenutno (do backenda) se katalog polni z **mock podatki** (`src/data/sampleCatalog.js`) in
@@ -69,7 +69,7 @@ Trenutno (do backenda) se katalog polni z **mock podatki** (`src/data/sampleCata
 
 | Datoteka | Vloga |
 |---|---|
-| `src/services/catalogService.js` | Javni read: `getCatalogProducts({itemType, vehicleCategory})`, `getCatalogProductById(id)`, `getLowestPrice(p)`. **Zliva** Firestore `partsCatalog` + mock `SAMPLE_CATALOG`. |
+| `src/services/catalogService.js` | Javni read: `getCatalogProducts({itemType, vehicleCategory})`, `getCatalogProductById(id)`, `getLowestPrice(p)`. **Zliva** Supabase `parts_catalog` + mock `SAMPLE_CATALOG`. |
 | `src/data/sampleCatalog.js` | MOCK izdelki (zamenjati/izprazniti, ko backend polni resnične). |
 | `src/services/adminService.js` | CRUD: `getScrapingSources / createScrapingSource / updateScrapingSource / deleteScrapingSource / getApprovedScrapingDomains`, `getCatalogProductsAdmin / createCatalogProduct / updateCatalogProduct / deleteCatalogProduct`. `create/updateScrapingSource` že **normalizira domeno**; `create/updateCatalogProduct` že **predračuna `lowestPrice`/`offerCount`**. |
 | `src/pages/admin.js` | Sekciji **Webscraping** (`renderWebscraping`) in **Katalog izdelkov** (`renderCatalog`) z modali + audit logom. |
@@ -77,34 +77,30 @@ Trenutno (do backenda) se katalog polni z **mock podatki** (`src/data/sampleCata
 | `src/pages/catalog-product.js` | Detajl izdelka — `od X€` + zunanje povezave (`rel="noopener nofollow sponsored"`). |
 | `src/data/partTypes.js` | Taksonomija sklopov/vrst delov po vrsti vozila — backend naj se preslika na iste `partGroup`/`partType` ključe. |
 
-### Firestore varnostna pravila — že dodano (`firestore.rules`)
-```
-match /partsCatalog/{id}    { allow read: if true;  allow write: if isEditor(); }
-match /scrapingSources/{id} { allow read, write: if isAdmin(); }
-```
-> Backend bo pisal preko **Admin SDK (service account)**, ki pravila obide — client ostane read-only na `partsCatalog`.
+### Varnost (RLS)
+`parts_catalog` je javno berljiv, pisanje samo uredniki/admin; `scraping_sources` samo admin.
+> Backend piše prek **service role**, ki RLS obide — client ostane read-only na katalogu.
 
 ---
 
 ## 3. Kaj je ŠE POTREBNO (backend) — to gradimo naslednjič
 
-### 3.1 Firebase Cloud Functions projekt (`functions/`)
-- Inicializacija: `firebase init functions` (Node 20, ESM ali CJS).
-- **Zahteva Firebase Blaze plan** (Functions + scheduler + odhodni network za fetch).
-- Service account za Admin SDK (`firebase-admin`) — pisanje v `partsCatalog` obide pravila.
+### 3.1 Scraper v `server/`
+- Nov modul v `server/src/jobs/` (Node 20, TypeScript) + cron prek `POST /internal/cron/*` z `CRON_SECRET`.
+- Pisanje v `parts_catalog` s service role (`server/src/lib/supabase.ts`).
 
-### 3.2 Dve funkciji
-1. **Scheduled** — npr. `exports.scrapeCatalog = onSchedule('every 24 hours', …)`.
-2. **Callable** — `exports.runScrapeNow = onCall(…)` za gumb "Zaženi zdaj" v admin Webscraping sekciji
-   (gumb je treba še dodati v `renderWebscraping`, kliče funkcijo s `sourceId`).
+### 3.2 Dva vstopa
+1. **Cron** — npr. enkrat na 24 ur, prek `/internal/cron/scrape-catalog`.
+2. **Admin akcija** — `POST /api/admin/scrape/:sourceId` (`requireAdmin`) za gumb "Zaženi zdaj"
+   v admin Webscraping sekciji (gumb je treba še dodati v `renderWebscraping`).
 
 ### 3.3 Potek zajema (oba klica si delita kodo)
-1. Preberi `scrapingSources` kjer `approved == true && status == 'active'`.
+1. Preberi `scraping_sources` kjer `approved == true && status == 'active'`.
    (Helper `getApprovedScrapingDomains()` že obstaja na servisu — backend naj naredi enako poizvedbo.)
 2. Za vsako domeno: preveri `robots.txt` / `robotsAllowed` + spoštuj `permissionNote`.
    **Zavrni vsako domeno, ki ni na allowlistu.**
-3. Fetch + parse: **Cheerio** za statičen HTML; **Playwright/Puppeteer** (Cloud Run container) za JS-rendered strani.
-4. **Per-domain adapter**: `functions/scrapers/<domain>.js` (en modul na trgovino, izbran po `domain`).
+3. Fetch + parse: **Cheerio** za statičen HTML; **Playwright/Puppeteer** (ločen container) za JS-rendered strani.
+4. **Per-domain adapter**: `server/src/jobs/scrapers/<domain>.ts` (en modul na trgovino, izbran po `domain`).
    Vsak adapter vrne normalizirano: `{ title, brand, attributes, price, url, inStock }`.
 5. **Matching** na obstoječ `partsCatalog` izdelek:
    - gume: po `attributes.size` + `brand`,
@@ -112,22 +108,20 @@ match /scrapingSources/{id} { allow read, write: if isAdmin(); }
    Če ni zadetka → ustvari nov izdelek.
 6. **Upsert ponudbe** v `offers[]` po `domain` (zamenjaj obstoječo ponudbo iste domene), nato
    **predračunaj `lowestPrice` in `offerCount`**, nastavi `ingestSource:'scraper'`, `lastAggregatedAt`.
-7. Posodobi vir: `scrapingSources/{id}.lastScrapedAt` + `lastScrapeStatus`.
+7. Posodobi vir: `scraping_sources.last_scraped_at` + `lastScrapeStatus`.
 
 ### 3.4 Po vzpostavitvi
 - Izprazni / onemogoči `src/data/sampleCatalog.js` (ali pusti kot demo fallback — `catalogService` ju zliva).
-- Dodaj gumb "Zaženi zdaj" (callable `runScrapeNow`) v `renderWebscraping` tabelo (stolpec Akcije).
-- (Opcijsko) Če `offers[]` na izdelek naraste, premakni na subzbirko `partsCatalog/{id}/offers`.
+- Dodaj gumb "Zaženi zdaj" (`POST /api/admin/scrape/:sourceId`) v `renderWebscraping` tabelo (stolpec Akcije).
+- (Opcijsko) Če `offers[]` na izdelek naraste, premakni v ločeno tabelo `parts_offers`.
 
 ---
 
 ## 4. Kontrolni seznam za začetek naslednjega pogovora
-- [ ] Potrdi Firebase Blaze plan je aktiven.
-- [ ] `firebase init functions` + `firebase-admin`, `cheerio` (+ Playwright po potrebi).
-- [ ] Napiši 1 adapter za prvo odobreno trgovino (npr. iz `scrapingSources`).
-- [ ] Scheduled + callable funkcija z allowlist enforcementom.
-- [ ] Test: en zajem zapiše/posodobi `partsCatalog`, frontend `#/gume-in-deli` pokaže "od X€" iz resničnih podatkov.
-- [ ] Posodobi `firestore.indexes.json`, če bodo potrebni indeksi za poizvedbe kataloga.
+- [ ] Dodaj odvisnosti `cheerio` (+ Playwright po potrebi) v `server/`.
+- [ ] Napiši 1 adapter za prvo odobreno trgovino (npr. iz `scraping_sources`).
+- [ ] Cron + admin endpoint z allowlist enforcementom.
+- [ ] Test: en zajem zapiše/posodobi `parts_catalog`, frontend `#/gume-in-deli` pokaže "od X€" iz resničnih podatkov.
 
 **Pomembno:** frontend je agnostičen do izvora ponudb (`ingestSource`), zato backend ne zahteva
 sprememb na frontendu — je "drop-in writer".

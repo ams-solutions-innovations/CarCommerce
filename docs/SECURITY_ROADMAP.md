@@ -21,8 +21,7 @@ dashboard / infra (no code) · ⬜ todo (needs build-out, often tied to a future
 | Item | Status | Where documented |
 | ---- | ------ | ---------------- |
 | Supabase: confirm email, Turnstile, HIBP, rate limits | ⚙️ | `docs/SECURITY.md` checklist |
-| Set `SUPABASE_JWT_SECRET` in prod | ⚙️ | `docs/BACKEND_HANDOFF.md` §6 |
-| S3 Object Lock (WORM) on backups bucket | ⚙️ | `infra/s3-object-lock.md` |
+| JWT verification (ES256 / JWKS) | ⚙️ | `docs/BACKEND_HANDOFF.md` §6 |
 | Cloudflare WAF: block `OPTIONS` / introspection | ⚙️ | `infra/cloudflare-notes.md` |
 | Exposed schemas = `public` only | ⚙️ | `supabase/security.sql`, `docs/SECURITY.md` |
 
@@ -32,7 +31,7 @@ dashboard / infra (no code) · ⬜ todo (needs build-out, often tied to a future
 | Honeypot fields → auto IP ban | ✅ | `server/src/lib/honeypot.ts`; global ban check in `rateLimit.ts` |
 | Contact info NOT in payload; reveal-on-click + Turnstile + IP limit | ✅ | `routes/leads.ts` `POST /listings/:id/contact`; **frontend must stop embedding phone/email** |
 | SPF / DKIM / DMARC `p=reject` | ⚙️ | Add Resend's SPF+DKIM to DNS; set DMARC reject — see `infra/cloudflare-notes.md` (DNS) |
-| Block datacenter ASNs (AWS/DO/Hetzner) + Tor | ⚙️ | Cloudflare WAF ASN/Tor rules — `infra/cloudflare-notes.md` |
+| Block datacenter ASNs (cloud hosts) + Tor | ⚙️ | Cloudflare WAF ASN/Tor rules — `infra/cloudflare-notes.md` |
 | Dynamic DDoS shield (auto "Under Attack" via CF API) | ⬜ | Needs an anomaly-watch worker that calls the Cloudflare API; not built |
 
 ## D. B2B profile security & access control
@@ -52,7 +51,7 @@ dashboard / infra (no code) · ⬜ todo (needs build-out, often tied to a future
 | External persistent cache survives restart | ✅ | Upstash Redis (`lib/redis.ts`) |
 | Mass-assignment / param hijack → strip unknown | ✅ | Zod `.strip()` on all input schemas |
 | API-key enumeration defense (store SHA-256 hash) | ✅ | `apiKeys.ts` `hashApiKey` / `verifyApiKey` (constant-time) |
-| Compute hard caps (avoid runaway bills on rebuild) | ⚙️ | Supabase has its own limits; if self-hosting Postgres set max connections + ACU caps. Fargate: cap service desiredCount/autoscaling |
+| Compute hard caps (avoid runaway bills on rebuild) | ⚙️ | Supabase has its own limits; if self-hosting Postgres set max connections + ACU caps. |
 | DB connection-pool ceiling | ⚙️ | Use Supabase pooler (Supavisor) transaction mode; cap pool size below DB max |
 | Zip/XML-bomb stream guard (abort > ~50 MB) | ⬜ | When bulk import lands: stream-decompress, abort on size threshold |
 
@@ -62,7 +61,7 @@ dashboard / infra (no code) · ⬜ todo (needs build-out, often tied to a future
 | Open-redirect (`returnTo`) validation | ✅ | `src/lib/redirect.js` `safeReturnTo()` (used in sample login) |
 | Clickjacking (`frame-ancestors 'none'`) | ✅ | helmet CSP in `server/src/app.ts`; SPA host must send it too |
 | Idempotency keys (form replay / double-submit) | ✅ | `idempotency.ts` `requireIdempotency()` |
-| Strict CSP | 🧩 | Set on API (`app.ts`); **the SPA host must send the same header** — GitHub Pages can't, so plan CloudFront/Cloudflare in front |
+| Strict CSP | 🧩 | Set on API (`app.ts`); **the SPA host must send the same header** — Cloudflare Pages: use a `_headers` file |
 | XSS: entity-encode user input | 🧩 | Server bounds + `.replace('<','&lt;')` in email; ensure frontend never `innerHTML`s raw user text (audit `*.js` render paths) |
 | SRI hashes on external scripts | ⬜ | Add `integrity` to Turnstile/analytics `<script>` tags (build step) |
 | Source maps off + minify in prod | ⬜ | Vite: ensure `build.sourcemap=false` (default) and no source maps shipped |
@@ -87,8 +86,8 @@ dashboard / infra (no code) · ⬜ todo (needs build-out, often tied to a future
 
 ## Priority order for the remaining ⬜ items
 1. **MFA for dealer/admin** + **RBAC sub-accounts** (account-takeover blast radius).
-2. **CDN/CloudFront in front of the SPA** so the strict CSP + security headers
-   actually apply to pages (today GitHub Pages can't set them).
+2. **Security headers on the SPA** (Cloudflare Pages `_headers`) so the strict CSP
+   actually applies to pages.
 3. **B2B import hardening** (XXE, zip-bomb, per-row Zod, VIN validation) — ship
    together with the import feature.
 4. **Reverse-tabnabbing + SRI + source-map** audit (cheap frontend hygiene).

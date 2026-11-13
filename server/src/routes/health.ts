@@ -1,4 +1,4 @@
-// Health/readiness probes for the ALB target group and ECS container checks.
+// Health/readiness probes for load balancer and container checks.
 // /healthz: liveness (process up). /readyz: readiness (deps reachable).
 import type { FastifyPluginAsync } from 'fastify';
 import { redis } from '../lib/redis.js';
